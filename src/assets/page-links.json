@@ -1,0 +1,20 @@
+{
+    "pages": [
+        {
+            "name": "Home",
+            "url": "index.html"
+        },
+        {
+            "name": "Pages",
+            "url": "pages.html"
+        },
+        {
+            "name": "Notes",
+            "url": "placeholder.html"
+        },
+        {
+            "name": "About",
+            "url": "#about"
+        }
+    ]
+}
