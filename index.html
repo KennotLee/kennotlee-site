@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html lang="">
-
   <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kenneth Lee Profile</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js">  </script>
-    <p>hello there</p>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
   </head>
   <body>
     <div id="app">{{message}}</div>
+    
 <!--^^ meant for some vue stuff-->
-
+    <ul class="navbar">
+      <li><a>Hover text</a></li>
+      <li><a href="#home" class="active">Home</a></li>
+      <li><a href="#news">News</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <div>
+      <div class="walloftext">
+        <h3>Introduction</h3>
+        <p>Hello I am Kenneth Lee and this is my website</p>
+      </div>
+      <div class="walloftext">
+        <h3>About Me</h3>
+        <p>
+          I am a graduate from <a href="https://www.nushigh.edu.sg/">NUS High School of Math and Science</a>
+        </p>
+      </div>
+    </div>
 <!--    <script type="module" src="/src/main.js"></script>-->
     <script>
         // import HelloWorld from "@/components/HelloWorld.vue";
 
-      
+        const app = Vue.createApp({
+            data(){
+                return {
+                    message: "HelloWorld"
+                }
+            }
+        });
         app.mount('#app');
     </script>
   </body>
