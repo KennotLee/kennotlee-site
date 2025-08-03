@@ -29,6 +29,7 @@ li a:hover:not(.active) {
 
 .active {
   background-color: #04AA6D;
+  color:black
 }
 .walloftext {
   margin-left: 8px;
