@@ -15,7 +15,7 @@
     <div class="header">
       <p hidden>Please I don't know how to make a website oh god oh god oh god I am just going based on feelings barely with any AI in case the whole website falls apart and I am not even using chrome and I don't know if this will change things</p>
       <h1>kennotlee</h1>
-      
+      <div style="color:#3b82f6; font-size:1.2rem; font-weight:400; margin-top:8px; letter-spacing:1px;">Personal Profile & Portfolio</div>
     </div>
     <ul class="navbar">
       <!-- <li><a>Hover text</a></li> -->
@@ -40,24 +40,82 @@
         <h3>My experience</h3>
 
       </div>
-      <div id="Contact" class="walloftext">
+      <div id="Contact" class="walloftext" style="background:rgba(226,234,252,0.95); box-shadow:0 6px 32px rgba(30,64,175,0.10); border:1.5px solid #b6ccfe;">
         <h3>Contact</h3>
-        <h4>Find me via:</h3>
-          <a href="https://github.com/kennotLee">KennotLee</a>
+        <h4 style="margin-bottom:18px; color:#3b82f6;">Find me via:</h4>
+        <div style="display: flex; justify-content: center; gap: 36px; align-items: center; margin-top: 8px; flex-wrap: wrap;">
+          <a href="https://github.com/kennotLee" target="_blank" title="GitHub" class="contact-logo-link">
+            <div class="contact-logo-card">
+              <img src="./src/assets/github-mark.svg" alt="GitHub Logo" class="contact-logo-img" />
+              <span>GitHub</span>
+            </div>
+          </a>
+          <a href="https://instagram.com/" target="_blank" title="Instagram" class="contact-logo-link">
+            <div class="contact-logo-card">
+              <img src="./src/assets/Instagram_Glyph_Black.svg" alt="Instagram Logo" class="contact-logo-img" />
+              <span>Instagram</span>
+            </div>
+          </a>
+          <a href="https://linkedin.com/" target="_blank" title="LinkedIn" class="contact-logo-link">
+            <div class="contact-logo-card">
+              <img src="./src/assets/InBug-Black.png" alt="LinkedIn Logo" class="contact-logo-img" />
+              <span>LinkedIn</span>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
 <!--    <script type="module" src="/src/main.js"></script>-->
     <script>
-        // import HelloWorld from "@/components/HelloWorld.vue";
-
-        const app = Vue.createApp({
-            data(){
-                return {
-                    message: "HelloWorld"
-                }
-            }
-        });
-        app.mount('#app');
+      // import HelloWorld from "@/components/HelloWorld.vue";
+      const app = Vue.createApp({
+        data(){
+          return {
+            message: "HelloWorld"
+          }
+        }
+      });
+      app.mount('#app');
     </script>
+    <style>
+      .contact-logo-link {
+        text-decoration: none;
+        color: inherit;
+        transition: filter 0.18s;
+      }
+      .contact-logo-link:hover {
+        filter: brightness(1.08) drop-shadow(0 2px 12px #b6ccfe);
+      }
+      .contact-logo-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #f9fbff;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(30,64,175,0.10);
+        padding: 16px 18px 10px 18px;
+        min-width: 90px;
+        transition: box-shadow 0.18s, transform 0.18s;
+      }
+      .contact-logo-link:hover .contact-logo-card {
+        box-shadow: 0 6px 32px #b6ccfe;
+        transform: translateY(-4px) scale(1.04);
+      }
+      .contact-logo-img {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        background: #e2eafc;
+        margin-bottom: 7px;
+        box-shadow: 0 2px 8px rgba(30,64,175,0.07);
+      }
+      .contact-logo-card span {
+        font-size: 1em;
+        color: #1a237e;
+        font-weight: 500;
+        margin-top: 2px;
+        letter-spacing: 0.5px;
+      }
+    </style>
   </body>
 </html>
