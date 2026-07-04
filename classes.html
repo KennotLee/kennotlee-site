@@ -8,7 +8,8 @@
     <title>Kenneth Lee Profile</title>
     <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
   </head>
-  <body>
+  <!-- "page-classes" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-classes">
     <div class="header">
       <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
       <h1>kennotlee</h1>
@@ -34,7 +35,14 @@
         <h3>Classes</h3>
         <p>Coursework from NUS Electrical Engineering (with a Computing second major). <span class="placeholder-note">Placeholder content — swap in your real classes</span></p>
 
-        <div class="class-category">
+        <!-- MANUAL EDIT: each .class-category is one group/box color (see the
+             "cat-*" comment block near the top of stylesheets/style.css for
+             what colors are available). Each <li> inside .class-list is one
+             course — just a class-code + class-name pair. To make a course
+             link to its own detail page like CS2040 does, wrap both spans in
+             an <a href="yourcourse.html">...</a> (copy cs2040.html as a
+             starting template for the new page). -->
+        <div class="class-category cat-blue">
           <h4>Electrical Engineering Core</h4>
           <ul class="class-list">
             <li><span class="class-code">EE2027</span><span class="class-name">Signals and Systems</span></li>
@@ -43,7 +51,7 @@
           </ul>
         </div>
 
-        <div class="class-category">
+        <div class="class-category cat-red">
           <h4>Computing (Second Major)</h4>
           <ul class="class-list">
             <li><a href="cs2040.html"><span class="class-code">CS2040</span><span class="class-name">Data Structures and Algorithms</span></a></li>
@@ -52,7 +60,7 @@
           </ul>
         </div>
 
-        <div class="class-category">
+        <div class="class-category cat-green">
           <h4>Math & Fundamentals</h4>
           <ul class="class-list">
             <li><span class="class-code">MA1521</span><span class="class-name">Calculus for Computing</span></li>

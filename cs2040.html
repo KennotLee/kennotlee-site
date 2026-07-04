@@ -8,7 +8,8 @@
     <title>Kenneth Lee Profile</title>
     <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
   </head>
-  <body>
+  <!-- "page-classes" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-classes">
     <div class="header">
       <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
       <h1>kennotlee</h1>
@@ -30,6 +31,13 @@
       <li><a href="classes.html" class="active">Classes</a></li>
     </ul>
     <div>
+      <!-- MANUAL EDIT: this whole file is a template for one class's detail
+           page. To add a page for another course (e.g. CS2030), copy this
+           file, rename it (cs2030.html), update the <title>/<h3>/tags/body
+           text below, and wrap that course's entry in classes.html with
+           <a href="cs2030.html">. Also give its <body> the right
+           "page-*" class near the top of this file if you want a
+           different page accent color than Classes' red. -->
       <div class="walloftext">
         <h3>CS2040 &mdash; Data Structures and Algorithms</h3>
         <div class="class-detail-meta">
