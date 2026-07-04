@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <script src="./scripts/theme.js"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Lee Profile</title>
+    <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+  </head>
+  <body>
+    <div class="header">
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+      <h1>kennotlee</h1>
+      <div class="subtitle">Personal Profile & Portfolio</div>
+    </div>
+    <ul class="navbar">
+      <li class="dropdown">
+        <details>
+          <summary>Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
+      <li><a href="pages.html">Pages</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="classes.html" class="active">Classes</a></li>
+    </ul>
+    <div>
+      <div class="walloftext">
+        <h3>Classes</h3>
+        <p>Coursework from NUS Electrical Engineering (with a Computing second major). <span class="placeholder-note">Placeholder content — swap in your real classes</span></p>
+
+        <div class="class-category">
+          <h4>Electrical Engineering Core</h4>
+          <ul class="class-list">
+            <li><span class="class-code">EE2027</span><span class="class-name">Signals and Systems</span></li>
+            <li><span class="class-code">EE2028</span><span class="class-name">Embedded Hardware Design</span></li>
+            <li><span class="class-code">EE3131</span><span class="class-name">Digital Signal Processing</span></li>
+          </ul>
+        </div>
+
+        <div class="class-category">
+          <h4>Computing (Second Major)</h4>
+          <ul class="class-list">
+            <li><a href="cs2040.html"><span class="class-code">CS2040</span><span class="class-name">Data Structures and Algorithms</span></a></li>
+            <li><span class="class-code">CS2030</span><span class="class-name">Programming Methodology II</span></li>
+            <li><span class="class-code">CS3230</span><span class="class-name">Design and Analysis of Algorithms</span></li>
+          </ul>
+        </div>
+
+        <div class="class-category">
+          <h4>Math & Fundamentals</h4>
+          <ul class="class-list">
+            <li><span class="class-code">MA1521</span><span class="class-name">Calculus for Computing</span></li>
+            <li><span class="class-code">MA1508</span><span class="class-name">Linear Algebra for Computing</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
