@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <script src="./scripts/theme.js"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Lee Profile</title>
+    <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+  </head>
+  <!-- "page-projects" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-projects">
+    <div class="header">
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+      <h1>kennotlee</h1>
+      <div class="subtitle">Personal Profile & Portfolio</div>
+    </div>
+    <ul class="navbar">
+      <li class="dropdown">
+        <details>
+          <summary>Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
+      <li><a href="pages.html">Pages</a></li>
+      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="classes.html">Classes</a></li>
+    </ul>
+    <div>
+      <div class="walloftext">
+        <h3>Projects</h3>
+        <p>A few things I've built. <span class="placeholder-note">Placeholder content — swap in your real projects</span></p>
+
+        <!-- MANUAL EDIT: each .project-card below is one project. Copy/paste
+             a whole <div class="project-card">...</div> block to add another,
+             or delete one to remove a project. Replace the "#" hrefs with your
+             real GitHub/demo links, and delete the placeholder-note <span>
+             in the <p> above once all three are real. -->
+        <div class="card-grid">
+          <div class="project-card">
+            <h4>Project One</h4>
+            <p>One or two sentences describing what this project does and why you built it.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">Flask</span>
+            </div>
+            <div class="project-links">
+              <a href="#" target="_blank">GitHub</a>
+              <a href="#" target="_blank">Demo</a>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <h4>Project Two</h4>
+            <p>One or two sentences describing what this project does and why you built it.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">C++</span>
+              <span class="tech-tag">Embedded</span>
+            </div>
+            <div class="project-links">
+              <a href="#" target="_blank">GitHub</a>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <h4>Project Three</h4>
+            <p>One or two sentences describing what this project does and why you built it.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">Vue</span>
+              <span class="tech-tag">JavaScript</span>
+            </div>
+            <div class="project-links">
+              <a href="#" target="_blank">GitHub</a>
+              <a href="#" target="_blank">Write-up</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

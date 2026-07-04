@@ -1,110 +1,357 @@
+/* ============================================================
+   THEME VARIABLES
+   Every color on the site is a CSS custom property (variable)
+   defined here. To recolor anything, change the hex value next
+   to the variable name below — you don't need to touch any of
+   the rules further down this file.
+   ============================================================ */
+
+/* Light mode (default) palette */
+:root {
+  --bg-page: #e8e6e2;       /* page background, outside the cards */
+  --bg-card: #f5f4f2;       /* background of walloftext/project/class cards */
+  --text: #2b2b2b;          /* body copy color */
+  --heading: #262626;       /* h3/h4 heading color */
+  --border: #262626;        /* neutral card border / divider color */
+  --nav-bg: #1a1a1a;        /* header + navbar background (dark bar) */
+  --nav-bg-hover: #262626;  /* navbar item hover background */
+  --nav-text: #f5f4f2;      /* text/icon color on the dark navbar */
+  --accent: #0064a4;        /* DEFAULT accent — overridden per-page below */
+  --highlight: #ffc72c;     /* "you are here" active-tab yellow, and link hover */
+  --highlight-text: #1a1a1a;/* text color used on top of --highlight */
+  --tag-bg: #262626;        /* project tech-tag pill background */
+  --tag-text: #f5f4f2;      /* project tech-tag pill text */
+
+  /* Fixed category colors — used for the Classes page category coding
+     (see ".cat-*" rules below), independent of page accent/theme */
+  --line-blue: #0064a4;
+  --line-green: #2e7d32;
+  --line-orange: #b35900;
+  --line-red: #c62828;
+}
+
+/* Dark mode palette — applied when <html data-theme="dark">.
+   Toggled by scripts/theme.js and the "Dark mode" button. */
+[data-theme="dark"] {
+  --bg-page: #121212;
+  --bg-card: #1e1e1e;
+  --text: #e6e6e6;
+  --heading: #f5f4f2;
+  --border: #4a4a4a;
+  --nav-bg: #000000;
+  --nav-bg-hover: #1a1a1a;
+  --nav-text: #f5f4f2;
+  --accent: #4da3ff;
+  --highlight: #ffc72c;
+  --highlight-text: #1a1a1a;
+  --tag-bg: #333333;
+  --tag-text: #f5f4f2;
+
+  /* Brighter versions of the category colors so they still read on dark cards */
+  --line-blue: #4da3ff;
+  --line-green: #6fcf73;
+  --line-orange: #ffb347;
+  --line-red: #ff6f60;
+}
+
+/* ============================================================
+   PER-PAGE ACCENT
+   Each page's <body> carries a "page-*" class (set in the HTML,
+   e.g. <body class="page-home">). That class swaps --accent, which
+   recolors the header underline, navbar underline, card left/top
+   borders, and links — so the whole page's "subway line color"
+   changes as you move between Home/Pages/Projects/Classes.
+
+   TO CHANGE A PAGE'S COLOR: edit the hex value in the matching
+   line below (light mode) and the matching line further down
+   (dark mode). TO ADD A NEW PAGE: add a body.page-yourpage rule
+   here, its dark-mode counterpart below, and add
+   class="page-yourpage" to that page's <body> tag.
+   ============================================================ */
+body.page-home { --accent: #0064a4; }     /* index.html      — blue   */
+body.page-pages { --accent: #2e7d32; }    /* pages.html       — green  */
+body.page-projects { --accent: #b35900; } /* projects.html    — orange */
+body.page-classes { --accent: #c62828; }  /* classes.html, cs2040.html — red */
+
+html[data-theme="dark"] body.page-home { --accent: #4da3ff; }
+html[data-theme="dark"] body.page-pages { --accent: #6fcf73; }
+html[data-theme="dark"] body.page-projects { --accent: #ffb347; }
+html[data-theme="dark"] body.page-classes { --accent: #ff6f60; }
+
+/* ============================================================
+   PER-CATEGORY COLORS (Classes page only)
+   Each <div class="class-category"> in classes.html also carries
+   a "cat-*" modifier class (cat-blue / cat-green / cat-orange /
+   cat-red). That colors just that category's course boxes and
+   heading underline, using the fixed --line-* variables above —
+   deliberately separate from the page accent, so all categories
+   don't turn red just because the Classes page's accent is red.
+
+   TO RECOLOR A CATEGORY: change its "cat-*" class in classes.html
+   to a different one of the four below (or add a new cat-xxx pair
+   here plus a matching --line-xxx variable above).
+   ============================================================ */
+.class-category.cat-blue .class-list li { border-left-color: var(--line-blue); }
+.class-category.cat-blue h4 { border-bottom-color: var(--line-blue); }
+.class-category.cat-green .class-list li { border-left-color: var(--line-green); }
+.class-category.cat-green h4 { border-bottom-color: var(--line-green); }
+.class-category.cat-orange .class-list li { border-left-color: var(--line-orange); }
+.class-category.cat-orange h4 { border-bottom-color: var(--line-orange); }
+.class-category.cat-red .class-list li { border-left-color: var(--line-red); }
+.class-category.cat-red h4 { border-bottom-color: var(--line-red); }
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-  background: linear-gradient(135deg, #e2eafc 0%, #f9fbff 100%);
-  color: #1a237e;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text);
   min-height: 100vh;
+  transition: background 0.2s, color 0.2s;
 }
+
+/* ============================================================
+   HEADER — the dark "kennotlee" banner at the top of every page
+   ============================================================ */
+.header {
+  position: relative;
+  background: var(--nav-bg);
+  padding: 40px 0 22px 0;
+  text-align: center;
+  border-bottom: 8px solid var(--accent); /* this page's accent color */
+  margin-bottom: 0;
+}
+.header h1 {
+  color: var(--nav-text);
+  font-size: 3rem;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  margin: 0;
+  font-weight: 700;
+}
+.subtitle {
+  display: block;
+  color: var(--highlight);
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-top: 10px;
+}
+
+/* Dark/light toggle button, top-right of the header.
+   Clicking it calls toggleTheme() from scripts/theme.js, which flips
+   <html data-theme="..."> and saves the choice to localStorage. */
+.theme-toggle {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: transparent;
+  color: var(--nav-text);
+  border: 2px solid var(--nav-text);
+  padding: 8px 14px;
+  font-family: inherit;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.theme-toggle:hover {
+  background: var(--nav-text);
+  color: var(--nav-bg);
+}
+
+/* ============================================================
+   NAVBAR
+   One single-color underline runs along the bottom of the whole
+   bar (border-bottom below) — deliberately not a per-tab border,
+   since two adjacent colored lines looked misaligned/doubled.
+   ============================================================ */
 ul.navbar {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  background: linear-gradient(90deg, #b6ccfe 0%, #e2eafc 100%);
-  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.07);
-  border-bottom: 1.5px solid #b6ccfe;
+  overflow: visible;
+  background: var(--nav-bg);
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 3px solid var(--accent);
 }
 
+/* NOTE: kept unscoped (not ".navbar li") on purpose so it also
+   affects plain <li> elsewhere (e.g. contact icon list); it only
+   sets float, which harmless/overridden where not wanted (see
+   ".class-list li { float: none }" and ".dropdown-content li"). */
 li {
   float: left;
 }
 
-li a {
+/* IMPORTANT: keep this scoped to ".navbar li a" (not a bare "li a").
+   An earlier bug used the unscoped selector and it leaked this bold/
+   centered/uppercase nav styling onto unrelated links elsewhere on
+   the page (e.g. the CS2040 link inside .class-list). */
+.navbar li a,
+.navbar summary {
   display: block;
-  color: #1a237e;
+  color: var(--nav-text);
   text-align: center;
-  padding: 14px 24px;
+  padding: 16px 22px;
   text-decoration: none;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  border-radius: 6px 6px 0 0;
-  transition: background 0.2s, color 0.2s;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+  cursor: pointer;
+  list-style: none;
+}
+.navbar summary::-webkit-details-marker {
+  display: none;
 }
 
-li a:hover:not(.active) {
-  background: #b6ccfe;
-  color: #0d1333;
+.navbar li a:hover:not(.active),
+.navbar summary:hover {
+  background: var(--nav-bg-hover);
 }
 
+/* "You are here" marker — put class="active" on the current page's
+   nav <a> (or its <summary>, for the Home dropdown) in each HTML file.
+   Uses !important because it must win over both the per-page accent
+   background and the hover background. */
 .active {
-  background: #e2eafc;
-  color: #0d1333;
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.08);
+  background: var(--highlight);
+  color: var(--highlight-text) !important;
 }
+
+/* Dropdown ("Home ▾" menu) built with native <details>/<summary> —
+   no JS required; the browser handles open/close and click-outside. */
+.navbar li.dropdown {
+  position: relative;
+}
+.navbar details[open] summary {
+  background: var(--nav-bg-hover);
+}
+.dropdown-content {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  background: var(--nav-bg);
+  border: 2px solid var(--accent);
+  z-index: 10;
+}
+.dropdown-content li {
+  float: none;
+}
+.dropdown-content li a {
+  padding: 10px 14px;
+  border-left: 4px solid var(--accent);
+  font-size: 0.85rem;
+}
+.dropdown-content li a:hover {
+  background: var(--nav-bg-hover);
+}
+
+/* Generic content card used on Home/Pages (Introduction, About Me,
+   Contact, "Here are my pages"). The left border picks up whatever
+   --accent this page has set. */
 .walloftext {
   margin: 32px auto;
   max-width: 700px;
-  background: rgba(255,255,255,0.85);
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(30, 64, 175, 0.07);
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-left: 8px solid var(--accent);
   padding: 32px 28px 24px 28px;
 }
+
 p a {
   text-decoration: underline;
-  color: #3b82f6;
+  color: var(--accent);
+  font-weight: 700;
   transition: color 0.2s;
 }
 p a:visited {
-  color: #5c6bc0;
+  color: var(--accent);
+  opacity: 0.8;
 }
 p a:hover {
-  color: #1a237e;
-  text-decoration: underline wavy;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #e2eafc;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(30,64,175,0.10);
-  padding: 12px 16px;
-  z-index: 1;
-  border-radius: 8px;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-/* Header styling */
-.header {
-  background: linear-gradient(90deg, #e2eafc 60%, #b6ccfe 100%);
-  padding: 36px 0 18px 0;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.04);
-  margin-bottom: 0;
-}
-.header h1 {
-  color: #1a237e;
-  font-size: 2.8rem;
-  letter-spacing: 2px;
-  margin: 0;
-  font-weight: 700;
-  text-shadow: 0 2px 8px rgba(30, 64, 175, 0.07);
+  color: var(--highlight);
 }
 
 /* General headings */
 h3, h4 {
-  color: #1a237e;
+  color: var(--heading);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   margin-top: 0;
+}
+h3 {
+  border-bottom: 3px solid var(--border);
+  padding-bottom: 10px;
+}
+
+/* Contact section on index.html. Deliberately overrides the walloftext
+   left border to always be yellow (--highlight), regardless of page
+   accent, so it stands out as a call-to-action. */
+.contact-section {
+  border-left-color: var(--highlight);
+}
+.contact-lede {
+  margin-bottom: 18px;
+  color: var(--heading);
+}
+.contact-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 36px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.contact-logo-link {
+  text-decoration: none;
+  color: inherit;
+  transition: filter 0.18s;
+}
+.contact-logo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg-page);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  padding: 16px 18px 10px 18px;
+  min-width: 90px;
+  transition: box-shadow 0.18s, transform 0.18s, border-color 0.18s;
+}
+.contact-logo-link:hover .contact-logo-card {
+  border-color: var(--highlight);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 0 var(--accent);
+}
+.contact-logo-img {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 7px;
+  background: var(--bg-card);
+  border-radius: 4px;
+}
+.contact-logo-card span {
+  font-size: 0.85rem;
+  color: var(--heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
 }
 
 /* Responsive tweaks */
@@ -115,8 +362,180 @@ h3, h4 {
   }
   .header h1 {
     font-size: 2rem;
+    letter-spacing: 3px;
   }
-  ul.navbar li a {
-    padding: 10px 10px;
+  .theme-toggle {
+    position: static;
+    display: block;
+    margin: 14px auto 0 auto;
   }
+  ul.navbar li a,
+  ul.navbar summary {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ============================================================
+   CARD GRID — shared by Projects and Classes pages
+   ============================================================ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+  margin-top: 20px;
+}
+
+/* Yellow "swap in your real content" badge — every placeholder
+   project/class card carries one. Delete the <span class="placeholder-
+   note">...</span> in the HTML once you replace that card's content. */
+.placeholder-note {
+  display: inline-block;
+  margin: 8px 0 0 0;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--highlight-text);
+  background: var(--highlight);
+  border: 2px solid var(--border);
+}
+
+/* Project cards */
+.project-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-top: 6px solid var(--accent);
+  padding: 20px 20px 16px 20px;
+  transition: transform 0.18s, box-shadow 0.18s;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 0 var(--border);
+}
+
+.project-card h4 {
+  margin: 0 0 8px 0;
+  color: var(--heading);
+  font-size: 1.1rem;
+}
+
+.project-card p {
+  margin: 0 0 14px 0;
+  font-size: 0.95rem;
+  color: var(--text);
+  flex-grow: 1;
+}
+
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.tech-tag {
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  letter-spacing: 0.5px;
+}
+
+.project-links {
+  display: flex;
+  gap: 14px;
+}
+
+.project-links a {
+  font-size: 0.9rem;
+}
+
+/* ============================================================
+   CLASSES / COURSEWORK (classes.html)
+   Base (neutral) styling — the ".cat-*" rules near the top of this
+   file override the border colors per category on top of this.
+   ============================================================ */
+.class-category {
+  margin-top: 28px;
+}
+.class-category:first-of-type {
+  margin-top: 12px;
+}
+.class-category h4 {
+  border-bottom: 3px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+}
+
+.class-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.class-list li {
+  float: none;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-left: 5px solid var(--accent);
+  padding: 12px 14px;
+  transition: border-color 0.15s;
+}
+/* Only CS2040 currently links out (to cs2040.html); this resets the
+   anchor back to plain text styling so a linked course box looks
+   identical to a plain (non-linked) one, just clickable. To link
+   another course, wrap its two <span>s in the same way in classes.html. */
+.class-list li a {
+  display: block;
+  padding: 0;
+  color: inherit;
+  text-transform: none;
+  font-weight: normal;
+  letter-spacing: normal;
+  border-bottom: none;
+  text-decoration: none;
+}
+.class-list li:has(a):hover {
+  border-left-color: var(--highlight);
+  cursor: pointer;
+}
+
+.class-code {
+  display: block;
+  font-weight: 700;
+  color: var(--heading);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.class-name {
+  display: block;
+  color: var(--text);
+  font-size: 0.95rem;
+  margin-top: 2px;
+}
+
+/* Individual class detail page (cs2040.html is the template — copy it
+   for other courses, e.g. cs2030.html, and link it the same way
+   CS2040 is linked from classes.html). */
+.class-detail-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.back-link {
+  display: inline-block;
+  margin-top: 18px;
+  font-weight: 700;
 }

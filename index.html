@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="">
   <head>
+    <script src="./scripts/theme.js"></script>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,21 +9,31 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js">  </script>
     <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
   </head>
-  <body>
+  <!-- "page-home" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-home">
     <!-- <div id="app">{{message}}</div> -->
-    
+
 <!--^^ meant for some vue stuff-->
     <div class="header">
       <p hidden>Please I don't know how to make a website oh god oh god oh god I am just going based on feelings barely with any AI in case the whole website falls apart and I am not even using chrome and I don't know if this will change things</p>
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
       <h1>kennotlee</h1>
-      <div style="color:#3b82f6; font-size:1.2rem; font-weight:400; margin-top:8px; letter-spacing:1px;">Personal Profile & Portfolio</div>
+      <div class="subtitle">Personal Profile & Portfolio</div>
     </div>
     <ul class="navbar">
-      <!-- <li><a>Hover text</a></li> -->
-      <li><a href="#home" class="active">Home</a></li>
+      <li class="dropdown">
+        <details>
+          <summary class="active">Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
       <li><a href="pages.html">Pages</a></li>
-      <li><a href="#contact">Contact</a></li>
-      <li><a href="#about">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="classes.html">Classes</a></li>
     </ul>
     <div>
       <div class="walloftext">
@@ -40,10 +51,13 @@
         <h3>My experience</h3>
 
       </div>
-      <div id="Contact" class="walloftext" style="background:rgba(226,234,252,0.95); box-shadow:0 6px 32px rgba(30,64,175,0.10); border:1.5px solid #b6ccfe;">
+      <div id="Contact" class="walloftext contact-section">
         <h3>Contact</h3>
-        <h4 style="margin-bottom:18px; color:#3b82f6;">Find me via:</h4>
-        <div style="display: flex; justify-content: center; gap: 36px; align-items: center; margin-top: 8px; flex-wrap: wrap;">
+        <h4 class="contact-lede">Find me via:</h4>
+        <!-- MANUAL EDIT: GitHub already points at the real profile. Instagram
+             and LinkedIn below are still placeholder URLs (instagram.com/,
+             linkedin.com/) — replace them with your actual profile links. -->
+        <div class="contact-row">
           <a href="https://github.com/kennotLee" target="_blank" title="GitHub" class="contact-logo-link">
             <div class="contact-logo-card">
               <img src="./src/assets/github-mark.svg" alt="GitHub Logo" class="contact-logo-img" />
@@ -77,45 +91,5 @@
       });
       app.mount('#app');
     </script>
-    <style>
-      .contact-logo-link {
-        text-decoration: none;
-        color: inherit;
-        transition: filter 0.18s;
-      }
-      .contact-logo-link:hover {
-        filter: brightness(1.08) drop-shadow(0 2px 12px #b6ccfe);
-      }
-      .contact-logo-card {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background: #f9fbff;
-        border-radius: 12px;
-        box-shadow: 0 2px 12px rgba(30,64,175,0.10);
-        padding: 16px 18px 10px 18px;
-        min-width: 90px;
-        transition: box-shadow 0.18s, transform 0.18s;
-      }
-      .contact-logo-link:hover .contact-logo-card {
-        box-shadow: 0 6px 32px #b6ccfe;
-        transform: translateY(-4px) scale(1.04);
-      }
-      .contact-logo-img {
-        width: 48px;
-        height: 48px;
-        border-radius: 8px;
-        background: #e2eafc;
-        margin-bottom: 7px;
-        box-shadow: 0 2px 8px rgba(30,64,175,0.07);
-      }
-      .contact-logo-card span {
-        font-size: 1em;
-        color: #1a237e;
-        font-weight: 500;
-        margin-top: 2px;
-        letter-spacing: 0.5px;
-      }
-    </style>
   </body>
 </html>

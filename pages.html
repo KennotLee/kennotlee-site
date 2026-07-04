@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="">
   <head>
+    <script src="./scripts/theme.js"></script>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +9,30 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js">  </script>
     <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
   </head>
-  <body>
+  <!-- "page-pages" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-pages">
     <!-- <div id="app">{{message}}</div> -->
-    
+
 <!--^^ meant for some vue stuff-->
+    <div class="header">
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+      <h1>kennotlee</h1>
+      <div class="subtitle">Personal Profile & Portfolio</div>
+    </div>
     <ul class="navbar">
-      <!-- <li><a>Hover text</a></li> -->
-      <li><a href="index.html">Home</a></li>
+      <li class="dropdown">
+        <details>
+          <summary>Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
       <li><a href="pages.html" class="active">Pages</a></li>
-      <li><a href="#contact">Contact</a></li>
-      <li><a href="index.html/#about">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="classes.html">Classes</a></li>
     </ul>
     <div>
       <div class="walloftext">

@@ -9,6 +9,14 @@
             "url": "pages.html"
         },
         {
+            "name": "Projects",
+            "url": "projects.html"
+        },
+        {
+            "name": "Classes",
+            "url": "classes.html"
+        },
+        {
             "name": "Notes",
             "url": "placeholder.html"
         },
