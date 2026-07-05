@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<!-- TEMPLATE for a single class's detail page.
+
+     HOW TO USE: copy this file, rename it to the course code (e.g.
+     cs2030.html), then:
+       1. Change <title> if you want (optional, it's the same on every page).
+       2. Replace COURSE CODE / Course Title / tags in the <h3> and
+          .class-detail-meta below.
+       3. Delete the placeholder-note <span> once the content is real.
+       4. Write your notes in the "Notes" section — plain <p>, <ul>/<ol>,
+          <strong>/<em>, <code>, <blockquote> all just work (see the demo
+          below), no markdown parser needed.
+       5. Delete this HTML comment block, it's instructions, not content.
+       6. Link it from classes.html: wrap that course's two <span>s in
+          <a href="classes/yourcourse.html">...</a>. -->
+<html lang="">
+  <head>
+    <script src="../scripts/theme.js"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Lee Profile</title>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+  </head>
+  <!-- "page-classes" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-classes">
+    <div class="header">
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+      <h1>kennotlee</h1>
+      <div class="subtitle">Personal Profile & Portfolio</div>
+    </div>
+    <ul class="navbar">
+      <li class="dropdown">
+        <details>
+          <summary>Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
+      <li><a href="../pages.html">Pages</a></li>
+      <li><a href="../projects.html">Projects</a></li>
+      <li><a href="../classes.html" class="active">Classes</a></li>
+    </ul>
+    <div>
+      <div class="walloftext">
+        <h3>COURSE CODE &mdash; Course Title</h3>
+        <div class="class-detail-meta">
+          <span class="tech-tag">Category</span>
+          <span class="tech-tag">Semester</span>
+        </div>
+        <p><span class="placeholder-note">Placeholder content — delete this once the page is real</span></p>
+      </div>
+
+      <!-- Demo of plain-HTML "markdown" content — delete this whole
+           walloftext once you've copied whichever bits you actually need. -->
+      <div class="walloftext">
+        <h4>Notes</h4>
+        <p>A normal paragraph. <strong>Bold</strong>, <em>italic</em>, and <code>inline code</code> all work as you'd expect.</p>
+        <ul>
+          <li>Bullet list item one</li>
+          <li>Bullet list item two</li>
+          <li>Bullet list item three</li>
+        </ul>
+        <ol>
+          <li>Ordered item one</li>
+          <li>Ordered item two</li>
+        </ol>
+        <blockquote>A blockquote, e.g. for a quote from a textbook or a professor's remark.</blockquote>
+        <pre><code>// a code block
+function example() {
+  return 42;
+}</code></pre>
+      </div>
+
+      <!-- Prerequisite map — a subway-line diagram of what leads into this
+           course, in its own card below the notes/review. Delete this whole
+           walloftext if this course has no prerequisites; otherwise add one
+           .prereq-station per course in the chain, left to right. Give THIS
+           course's station the extra "current" class (filled dot). Use
+           <a href="../classes/other-course.html" class="prereq-station">
+           instead of <div> for any prerequisite that has its own page — it
+           becomes clickable and gets a hover lift for free. -->
+      <div class="walloftext">
+        <h4>Prerequisites</h4>
+        <div class="prereq-map">
+          <div class="prereq-station">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">PREREQ CODE</span>
+          </div>
+          <div class="prereq-station current">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">COURSE CODE</span>
+          </div>
+        </div>
+        <a class="back-link" href="../classes.html">&larr; Back to Classes</a>
+      </div>
+    </div>
+    <footer class="theme-picker">
+      <h4>Subway Theme</h4>
+      <p class="theme-picker-hint">Inspired by each city's subway line colors and fonts :)</p>
+      <div class="theme-swatches">
+        <button type="button" class="theme-swatch" data-city="sf" onclick="setCityTheme('sf')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-sf-1"></span>
+            <span class="swatch-dot dot-sf-2"></span>
+            <span class="swatch-dot dot-sf-3"></span>
+            <span class="swatch-dot dot-sf-4"></span>
+          </span>
+          <span class="swatch-label">San Francisco</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="nyc" onclick="setCityTheme('nyc')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-nyc-1"></span>
+            <span class="swatch-dot dot-nyc-2"></span>
+            <span class="swatch-dot dot-nyc-3"></span>
+            <span class="swatch-dot dot-nyc-4"></span>
+          </span>
+          <span class="swatch-label">New York</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="chicago" onclick="setCityTheme('chicago')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-chicago-1"></span>
+            <span class="swatch-dot dot-chicago-2"></span>
+            <span class="swatch-dot dot-chicago-3"></span>
+            <span class="swatch-dot dot-chicago-4"></span>
+          </span>
+          <span class="swatch-label">Chicago</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="tokyo" onclick="setCityTheme('tokyo')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-tokyo-1"></span>
+            <span class="swatch-dot dot-tokyo-2"></span>
+            <span class="swatch-dot dot-tokyo-3"></span>
+            <span class="swatch-dot dot-tokyo-4"></span>
+          </span>
+          <span class="swatch-label">Tokyo</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="seoul" onclick="setCityTheme('seoul')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-seoul-1"></span>
+            <span class="swatch-dot dot-seoul-2"></span>
+            <span class="swatch-dot dot-seoul-3"></span>
+            <span class="swatch-dot dot-seoul-4"></span>
+          </span>
+          <span class="swatch-label">Seoul</span>
+        </button>
+      </div>
+      <p class="theme-current" id="theme-current-label">Current: <strong>San Francisco</strong></p>
+    </footer>
+  </body>
+</html>

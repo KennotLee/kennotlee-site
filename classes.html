@@ -40,9 +40,9 @@
              what colors are available). Each <li> inside .class-list is one
              course — just a class-code + class-name pair. To make a course
              link to its own detail page like CS2040 does, wrap both spans in
-             an <a href="yourcourse.html">...</a> (copy cs2040.html as a
-             starting template for the new page). -->
-        <div class="class-category cat-blue">
+             an <a href="classes/yourcourse.html">...</a> (copy
+             classes/_template.html as the starting point for the new page). -->
+        <div class="class-category cat-1">
           <h4>Electrical Engineering Core</h4>
           <ul class="class-list">
             <li><span class="class-code">EE2027</span><span class="class-name">Signals and Systems</span></li>
@@ -51,16 +51,16 @@
           </ul>
         </div>
 
-        <div class="class-category cat-red">
+        <div class="class-category cat-4">
           <h4>Computing (Second Major)</h4>
           <ul class="class-list">
-            <li><a href="cs2040.html"><span class="class-code">CS2040</span><span class="class-name">Data Structures and Algorithms</span></a></li>
+            <li><a href="./classes/cs2040.html"><span class="class-code">CS2040</span><span class="class-name">Data Structures and Algorithms</span></a></li>
             <li><span class="class-code">CS2030</span><span class="class-name">Programming Methodology II</span></li>
             <li><span class="class-code">CS3230</span><span class="class-name">Design and Analysis of Algorithms</span></li>
           </ul>
         </div>
 
-        <div class="class-category cat-green">
+        <div class="class-category cat-2">
           <h4>Math & Fundamentals</h4>
           <ul class="class-list">
             <li><span class="class-code">MA1521</span><span class="class-name">Calculus for Computing</span></li>
@@ -69,5 +69,57 @@
         </div>
       </div>
     </div>
+    <footer class="theme-picker">
+      <h4>Subway Theme</h4>
+      <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system, just for fun.</p>
+      <div class="theme-swatches">
+        <button type="button" class="theme-swatch" data-city="sf" onclick="setCityTheme('sf')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-sf-1"></span>
+            <span class="swatch-dot dot-sf-2"></span>
+            <span class="swatch-dot dot-sf-3"></span>
+            <span class="swatch-dot dot-sf-4"></span>
+          </span>
+          <span class="swatch-label">San Francisco</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="nyc" onclick="setCityTheme('nyc')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-nyc-1"></span>
+            <span class="swatch-dot dot-nyc-2"></span>
+            <span class="swatch-dot dot-nyc-3"></span>
+            <span class="swatch-dot dot-nyc-4"></span>
+          </span>
+          <span class="swatch-label">New York</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="chicago" onclick="setCityTheme('chicago')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-chicago-1"></span>
+            <span class="swatch-dot dot-chicago-2"></span>
+            <span class="swatch-dot dot-chicago-3"></span>
+            <span class="swatch-dot dot-chicago-4"></span>
+          </span>
+          <span class="swatch-label">Chicago</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="tokyo" onclick="setCityTheme('tokyo')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-tokyo-1"></span>
+            <span class="swatch-dot dot-tokyo-2"></span>
+            <span class="swatch-dot dot-tokyo-3"></span>
+            <span class="swatch-dot dot-tokyo-4"></span>
+          </span>
+          <span class="swatch-label">Tokyo</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="seoul" onclick="setCityTheme('seoul')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-seoul-1"></span>
+            <span class="swatch-dot dot-seoul-2"></span>
+            <span class="swatch-dot dot-seoul-3"></span>
+            <span class="swatch-dot dot-seoul-4"></span>
+          </span>
+          <span class="swatch-label">Seoul</span>
+        </button>
+      </div>
+      <p class="theme-current" id="theme-current-label">Current: <strong>San Francisco</strong></p>
+    </footer>
   </body>
 </html>

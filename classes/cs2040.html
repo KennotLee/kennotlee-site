@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <script src="../scripts/theme.js"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Lee Profile</title>
+    <link rel="stylesheet" type="text/css" href=".././stylesheets/style.css">
+  </head>
+  <!-- "page-classes" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-classes">
+    <div class="header">
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+      <h1>kennotlee</h1>
+      <div class="subtitle">Personal Profile & Portfolio</div>
+    </div>
+    <ul class="navbar">
+      <li class="dropdown">
+        <details>
+          <summary>Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
+      <li><a href="../pages.html">Pages</a></li>
+      <li><a href="../projects.html">Projects</a></li>
+      <li><a href="../classes.html" class="active">Classes</a></li>
+    </ul>
+    <div>
+      <!-- MANUAL EDIT: to add a page for another course, don't copy this
+           file — copy classes/_template.html instead, it has the blank
+           fields and instructions. This file is CS2040's actual content. -->
+      <div class="walloftext">
+        <h3>CS2040 &mdash; Data Structures and Algorithms</h3>
+        <div class="class-detail-meta">
+          <span class="tech-tag">Computing Second Major</span>
+          <span class="tech-tag">Semester 2</span>
+          <span class="tech-tag">AY25/26</span>
+        </div>
+        <p><span class="placeholder-note">Incomplete content — this page is incomplete</span></p>
+
+        <p>
+          This class is a classic Data Structures and Algorithms course. Lectures are done online via zoom and recorded attendance optional. Tutorials have class participation and attendance taken. Goes through the tutorials for each week. Labs are just submitting a pseudocode of the kattis assignments and then coding on Java afterwards. You just need to submit the pseudocode and then you can code on your own time.
+          <br>
+          <br>
+          <b>Course contents:</b>
+        </p>
+        <ol>
+          <li>Time Complexity</li>
+          <li>Sorting Algorithms</li>
+          <li>Linked Lists</li>
+          <li>ArrayList, Linked List</li>
+          <li>Stack, Queue</li>
+          <li>HashMap/Set</li>
+          <li>Priority Queue/Heap</li>
+          <li>Union Find/Disjoint Set</li>
+          <li>Binary Search Tree/AVL Tree</li>     
+          <li>Graphs</li>
+          <li>Minimum spanning tree</li>
+          <li>single source shortest path</li>
+          <li>all pairs shortest path</li>
+        </ol>
+          <p>Grades breakdown:</p>
+        <ul>
+          <li>In Lab Assignments (ILA): 10%</li>
+          <li>Midterm: 30%</li>
+          <li>Final Exam: 50%</li>
+        </ul>
+        <p>
+          Took this class over <a href="https://nusmods.com/courses/CS2040DE/data-structures-and-algorithms">CS2040DE</a> because I wanted to take it with my friends tbh. Also I did not really entrust a CS module to be handled by ECE department since I have heard feedback that the admin side of the module was not well run. I also wanted to challenge myself and just not coop myself up in Engineering. This module is probably harder than the DE variant. DE variant is filled with ISE Majors and Engineering Majors with <a href="https://cde.nus.edu.sg/ece/second-major-in-computing-design-and-engineering/"> Computing (Design and Engineering) Minor / 2nd Major </a> while this was filled with DSA and BZA students. When comparing both variants I preferred the style done by SOC since it's more structured and the questions were reasonably challenging. (Or maybe I'm biased by my choices)
+        </p>
+      </div>
+
+      <div class="walloftext">
+        <h4>Prerequisites</h4>
+        <div class="prereq-map">
+          <div class="prereq-station">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">CS1010E</span>
+          </div>
+          <div class="prereq-station current">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">CS2040</span>
+          </div>
+        </div>
+        <a class="back-link" href="../classes.html">&larr; Back to Classes</a>
+        <br>
+        <a href="https://nusmods.com/courses/CS2040/data-structures-and-algorithms"> nusmods page &rarr;</a>
+      </div>
+    </div>
+    <footer class="theme-picker">
+      <h4>Subway Theme</h4>
+      <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system, just for fun.</p>
+      <div class="theme-swatches">
+        <button type="button" class="theme-swatch" data-city="sf" onclick="setCityTheme('sf')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-sf-1"></span>
+            <span class="swatch-dot dot-sf-2"></span>
+            <span class="swatch-dot dot-sf-3"></span>
+            <span class="swatch-dot dot-sf-4"></span>
+          </span>
+          <span class="swatch-label">San Francisco</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="nyc" onclick="setCityTheme('nyc')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-nyc-1"></span>
+            <span class="swatch-dot dot-nyc-2"></span>
+            <span class="swatch-dot dot-nyc-3"></span>
+            <span class="swatch-dot dot-nyc-4"></span>
+          </span>
+          <span class="swatch-label">New York</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="chicago" onclick="setCityTheme('chicago')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-chicago-1"></span>
+            <span class="swatch-dot dot-chicago-2"></span>
+            <span class="swatch-dot dot-chicago-3"></span>
+            <span class="swatch-dot dot-chicago-4"></span>
+          </span>
+          <span class="swatch-label">Chicago</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="tokyo" onclick="setCityTheme('tokyo')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-tokyo-1"></span>
+            <span class="swatch-dot dot-tokyo-2"></span>
+            <span class="swatch-dot dot-tokyo-3"></span>
+            <span class="swatch-dot dot-tokyo-4"></span>
+          </span>
+          <span class="swatch-label">Tokyo</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="seoul" onclick="setCityTheme('seoul')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-seoul-1"></span>
+            <span class="swatch-dot dot-seoul-2"></span>
+            <span class="swatch-dot dot-seoul-3"></span>
+            <span class="swatch-dot dot-seoul-4"></span>
+          </span>
+          <span class="swatch-label">Seoul</span>
+        </button>
+      </div>
+      <p class="theme-current" id="theme-current-label">Current: <strong>San Francisco</strong></p>
+    </footer>
+  </body>
+</html>

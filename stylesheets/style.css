@@ -16,18 +16,56 @@
   --nav-bg: #1a1a1a;        /* header + navbar background (dark bar) */
   --nav-bg-hover: #262626;  /* navbar item hover background */
   --nav-text: #f5f4f2;      /* text/icon color on the dark navbar */
-  --accent: #0064a4;        /* DEFAULT accent — overridden per-page below */
+  --accent: #0099cc;        /* DEFAULT accent — overridden per-page below */
   --highlight: #ffc72c;     /* "you are here" active-tab yellow, and link hover */
   --highlight-text: #1a1a1a;/* text color used on top of --highlight */
   --tag-bg: #262626;        /* project tech-tag pill background */
   --tag-text: #f5f4f2;      /* project tech-tag pill text */
+  --theme-font: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* SF/BART default — real subway signage face */
+  /* Text color to use ON TOP OF --accent. Light mode's --accent is a dark
+     saturated hue (needs light text); dark mode's --accent is auto-
+     brightened toward white (needs dark text) — see the nav hover rule
+     further down, which highlights in var(--accent) and needs this to
+     stay readable in both themes. */
+  --accent-text: var(--nav-text);
 
-  /* Fixed category colors — used for the Classes page category coding
-     (see ".cat-*" rules below), independent of page accent/theme */
-  --line-blue: #0064a4;
-  --line-green: #2e7d32;
-  --line-orange: #b35900;
-  --line-red: #c62828;
+  /* --line-*-raw holds the "true" hue for the active CITY THEME (see the
+     city-theme block below) at full light-mode saturation. --line-* is what
+     the rest of the CSS actually uses; in dark mode it's recomputed below
+     via color-mix() so every city theme automatically gets a lighter/dark-
+     mode-safe variant without needing to hand-pick a second color.
+
+     Numbered (not color-named) on purpose so this scales past 4 — to add
+     a 5th color, add --line-5-raw/--line-5 here and in the dark-mode block
+     below, give every city theme a --line-5-raw value, and use var(--line-5)
+     wherever you want it (a page accent, a new .cat-5, a new .dot-<city>-5). */
+  /* Real BART line colors: Blue, Green, Orange, Red. */
+  --line-1-raw: #0099cc;
+  --line-2-raw: #00a650;
+  --line-3-raw: #f7941d;
+  --line-4-raw: #ed1c24;
+
+  --line-1: var(--line-1-raw);
+  --line-2: var(--line-2-raw);
+  --line-3: var(--line-3-raw);
+  --line-4: var(--line-4-raw);
+
+  /* Prerequisite-map "cartography" — how THAT city's real map draws a
+     line/station, not just its colors (used by .prereq-map, further down
+     this file). BART's real system map doesn't draw circles at all: each
+     station is a short black tick mark crossing the colored line, with
+     the name next to it — the line carries the color, the station mark
+     is always plain black. This is the DEFAULT (SF/BART); every other
+     city theme overrides all of these back to some circle/badge variant
+     (see the per-city blocks below). */
+  --prereq-dot-width: 5px;
+  --prereq-dot-height: 28px;
+  --prereq-dot-radius: 2px;
+  --prereq-dot-fill: var(--nav-bg);
+  --prereq-dot-border-width: 0px;
+  --prereq-dot-border-color: transparent;
+  --prereq-dot-ring: none;
+  --prereq-line-height: 6px;
 }
 
 /* Dark mode palette — applied when <html data-theme="dark">.
@@ -41,64 +79,154 @@
   --nav-bg: #000000;
   --nav-bg-hover: #1a1a1a;
   --nav-text: #f5f4f2;
-  --accent: #4da3ff;
+  --accent: color-mix(in srgb, #0099cc 65%, white);
   --highlight: #ffc72c;
   --highlight-text: #1a1a1a;
   --tag-bg: #333333;
   --tag-text: #f5f4f2;
+  --accent-text: var(--highlight-text);
 
-  /* Brighter versions of the category colors so they still read on dark cards */
-  --line-blue: #4da3ff;
-  --line-green: #6fcf73;
-  --line-orange: #ffb347;
-  --line-red: #ff6f60;
+  /* Auto-brighten whichever city theme is active (mixed toward white) so it
+     still reads on dark cards, instead of hand-tuning a dark hex per city. */
+  --line-1: color-mix(in srgb, var(--line-1-raw) 65%, white);
+  --line-2: color-mix(in srgb, var(--line-2-raw) 65%, white);
+  --line-3: color-mix(in srgb, var(--line-3-raw) 65%, white);
+  --line-4: color-mix(in srgb, var(--line-4-raw) 65%, white);
+}
+
+/* ============================================================
+   CITY THEME — swaps the whole subway color palette
+   Set via <html data-city-theme="..."> by the footer theme-picker
+   (scripts/theme.js: setCityTheme()), persisted in localStorage.
+   "sf" (San Francisco / BART) is the default and lives in :root
+   above, so it needs no override rule here.
+
+   TO ADD A NEW CITY: add a block below with its four --line-*-raw
+   hex values, then add a matching swatch button + .dot-<city>-*
+   CSS (search "THEME PICKER" further down this file) and a new
+   option in the footer markup on each HTML page.
+   ============================================================ */
+html[data-city-theme="nyc"] {
+  --line-1-raw: #0039a6; /* A/C/E */
+  --line-2-raw: #00933c; /* 4/5/6 */
+  --line-3-raw: #ff6319; /* B/D/F/M */
+  --line-4-raw: #ee352e; /* 1/2/3 */
+  /* MTA signage has used Helvetica since the 1970 Unimark/Vignelli
+     standards manual — same face as SF, kept explicit for clarity. */
+  --theme-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* Vignelli's 1972 diagram: very bold lines, small stations drawn as
+     plain white circles with a BLACK ring — the line carries the color,
+     not the station. The current stop still fills solid with --accent
+     (see ".prereq-station.current" further down) so "you are here"
+     still reads clearly even though other stations' rings go black. */
+  --prereq-line-height: 8px;
+  --prereq-dot-width: 16px;
+  --prereq-dot-height: 16px;
+  --prereq-dot-radius: 50%;
+  --prereq-dot-fill: var(--bg-card);
+  --prereq-dot-border-width: 4px;
+  --prereq-dot-border-color: var(--nav-bg);
+}
+html[data-city-theme="chicago"] {
+  --line-1-raw: #00a1de; /* Blue Line */
+  --line-2-raw: #009b3a; /* Green Line */
+  --line-3-raw: #f9461c; /* Orange Line */
+  --line-4-raw: #c60c30; /* Red Line */
+  /* CTA wayfinding uses a bold gothic sans; Franklin Gothic is the closest
+     widely-installed match. */
+  --theme-font: 'Franklin Gothic Medium', 'Segoe UI', Arial, sans-serif;
+
+  /* CTA's map is comparatively minimal — thinner lines, small plain dots. */
+  --prereq-line-height: 3px;
+  --prereq-dot-width: 14px;
+  --prereq-dot-height: 14px;
+  --prereq-dot-radius: 50%;
+  --prereq-dot-fill: var(--bg-card);
+  --prereq-dot-border-width: 3px;
+  --prereq-dot-border-color: var(--accent);
+}
+html[data-city-theme="tokyo"] {
+  --line-1-raw: #009bbf; /* Tozai Line */
+  --line-2-raw: #00a650; /* Chiyoda Line */
+  --line-3-raw: #f39700; /* Ginza Line */
+  --line-4-raw: #f62e36; /* Marunouchi Line */
+  /* Tokyo Metro signage pairs Latin type with Japanese gothic faces —
+     these render Latin text with a subtly different rhythm than Helvetica. */
+  --theme-font: 'Yu Gothic', 'Meiryo', 'Helvetica Neue', sans-serif;
+
+  /* Tokyo Metro labels stations with rounded-square line/number badges
+     (e.g. "T-01"), not plain circles — approximated here with a rounded
+     square instead of a full circle. */
+  --prereq-dot-width: 20px;
+  --prereq-dot-height: 20px;
+  --prereq-dot-radius: 6px;
+  --prereq-dot-fill: var(--bg-card);
+  --prereq-dot-border-width: 4px;
+  --prereq-dot-border-color: var(--accent);
+}
+html[data-city-theme="seoul"] {
+  --line-1-raw: #0032a0; /* Line 1 */
+  --line-2-raw: #00a84d; /* Line 2 */
+  --line-3-raw: #ef7c1c; /* Line 3 */
+  --line-4-raw: #00A4E3; /* Line 4 */
+  /* Same idea for Seoul Metro — Korean gothic system fonts instead of Helvetica. */
+  --theme-font: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Helvetica Neue', sans-serif;
+
+  /* Seoul Metro draws stations as a colored ring with a white gap before
+     the colored border — a "target" look, simulated with a two-layer
+     box-shadow (see .prereq-dot further down). */
+  --prereq-dot-width: 20px;
+  --prereq-dot-height: 20px;
+  --prereq-dot-radius: 50%;
+  --prereq-dot-fill: var(--bg-card);
+  --prereq-dot-border-width: 4px;
+  --prereq-dot-border-color: var(--accent);
+  --prereq-dot-ring: 0 0 0 3px var(--bg-page), 0 0 0 5px var(--accent);
 }
 
 /* ============================================================
    PER-PAGE ACCENT
    Each page's <body> carries a "page-*" class (set in the HTML,
-   e.g. <body class="page-home">). That class swaps --accent, which
-   recolors the header underline, navbar underline, card left/top
-   borders, and links — so the whole page's "subway line color"
-   changes as you move between Home/Pages/Projects/Classes.
+   e.g. <body class="page-home">). That class points --accent at
+   one of the --line-* variables above, which recolors the header
+   underline, navbar underline, card left/top borders, and links —
+   so the whole page's "line color" changes as you move between
+   Home/Pages/Projects/Classes, AND changes again if you switch
+   city themes, with no extra rules needed per theme.
 
-   TO CHANGE A PAGE'S COLOR: edit the hex value in the matching
-   line below (light mode) and the matching line further down
-   (dark mode). TO ADD A NEW PAGE: add a body.page-yourpage rule
-   here, its dark-mode counterpart below, and add
-   class="page-yourpage" to that page's <body> tag.
+   TO CHANGE WHICH LINE COLOR A PAGE USES: point it at a different
+   --line-* variable below. TO ADD A NEW PAGE: add a body.page-
+   yourpage rule here and add class="page-yourpage" to that page's
+   <body> tag.
    ============================================================ */
-body.page-home { --accent: #0064a4; }     /* index.html      — blue   */
-body.page-pages { --accent: #2e7d32; }    /* pages.html       — green  */
-body.page-projects { --accent: #b35900; } /* projects.html    — orange */
-body.page-classes { --accent: #c62828; }  /* classes.html, cs2040.html — red */
-
-html[data-theme="dark"] body.page-home { --accent: #4da3ff; }
-html[data-theme="dark"] body.page-pages { --accent: #6fcf73; }
-html[data-theme="dark"] body.page-projects { --accent: #ffb347; }
-html[data-theme="dark"] body.page-classes { --accent: #ff6f60; }
+body.page-home { --accent: var(--line-1); }     /* index.html */
+body.page-pages { --accent: var(--line-2); }    /* pages.html */
+body.page-projects { --accent: var(--line-3); } /* projects.html */
+body.page-classes { --accent: var(--line-4); }  /* classes.html, classes/*.html */
 
 /* ============================================================
    PER-CATEGORY COLORS (Classes page only)
    Each <div class="class-category"> in classes.html also carries
-   a "cat-*" modifier class (cat-blue / cat-green / cat-orange /
-   cat-red). That colors just that category's course boxes and
-   heading underline, using the fixed --line-* variables above —
-   deliberately separate from the page accent, so all categories
-   don't turn red just because the Classes page's accent is red.
+   a "cat-*" modifier class (cat-1 / cat-2 / cat-3 / cat-4). That
+   colors just that category's course boxes and heading underline,
+   using the --line-* variables above — deliberately separate from
+   the page accent, so all categories don't turn red just because
+   the Classes page's accent is red.
 
    TO RECOLOR A CATEGORY: change its "cat-*" class in classes.html
-   to a different one of the four below (or add a new cat-xxx pair
-   here plus a matching --line-xxx variable above).
+   to a different one of the four below. TO ADD A 5TH CATEGORY
+   COLOR: add a --line-5(-raw) pair above (see the note there),
+   then add a ".cat-5" pair of rules here matching the pattern below.
    ============================================================ */
-.class-category.cat-blue .class-list li { border-left-color: var(--line-blue); }
-.class-category.cat-blue h4 { border-bottom-color: var(--line-blue); }
-.class-category.cat-green .class-list li { border-left-color: var(--line-green); }
-.class-category.cat-green h4 { border-bottom-color: var(--line-green); }
-.class-category.cat-orange .class-list li { border-left-color: var(--line-orange); }
-.class-category.cat-orange h4 { border-bottom-color: var(--line-orange); }
-.class-category.cat-red .class-list li { border-left-color: var(--line-red); }
-.class-category.cat-red h4 { border-bottom-color: var(--line-red); }
+.class-category.cat-1 .class-list li { border-left-color: var(--line-1); }
+.class-category.cat-1 h4 { border-bottom-color: var(--line-1); }
+.class-category.cat-2 .class-list li { border-left-color: var(--line-2); }
+.class-category.cat-2 h4 { border-bottom-color: var(--line-2); }
+.class-category.cat-3 .class-list li { border-left-color: var(--line-3); }
+.class-category.cat-3 h4 { border-bottom-color: var(--line-3); }
+.class-category.cat-4 .class-list li { border-left-color: var(--line-4); }
+.class-category.cat-4 h4 { border-bottom-color: var(--line-4); }
 
 * {
   box-sizing: border-box;
@@ -106,7 +234,7 @@ html[data-theme="dark"] body.page-classes { --accent: #ff6f60; }
 
 body {
   margin: 0;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: var(--theme-font);
   background: var(--bg-page);
   color: var(--text);
   min-height: 100vh;
@@ -171,6 +299,12 @@ body {
    One single-color underline runs along the bottom of the whole
    bar (border-bottom below) — deliberately not a per-tab border,
    since two adjacent colored lines looked misaligned/doubled.
+
+   Sticky on purpose: the header (h1 "kennotlee" banner) is NOT
+   sticky and scrolls away normally, but the navbar itself pins to
+   the top of the viewport once you scroll past it, so the tabs
+   stay reachable. z-index keeps it above page content (which has
+   no z-index of its own, so this only needs to beat "auto").
    ============================================================ */
 ul.navbar {
   list-style-type: none;
@@ -180,21 +314,29 @@ ul.navbar {
   background: var(--nav-bg);
   display: flex;
   flex-wrap: wrap;
-  border-bottom: 3px solid var(--accent);
+  border-bottom: 8px solid var(--accent);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-/* NOTE: kept unscoped (not ".navbar li") on purpose so it also
-   affects plain <li> elsewhere (e.g. contact icon list); it only
-   sets float, which harmless/overridden where not wanted (see
-   ".class-list li { float: none }" and ".dropdown-content li"). */
-li {
-  float: left;
-}
+/* NOTE: navbar <li> tabs need no float — ul.navbar is display:flex above,
+   and flex items ignore float entirely. A previous version of this file
+   had a global "li { float: left }" here for the navbar; it turned out to
+   be dead weight for the navbar (flex already ignored it) while silently
+   breaking any plain <ul><li> list written elsewhere on the page (e.g. in
+   a .walloftext) — floated list items don't wrap/stack like a normal
+   list. Removed. ".class-list li" and ".dropdown-content li" set their
+   own layout directly and don't depend on this rule. */
 
 /* IMPORTANT: keep this scoped to ".navbar li a" (not a bare "li a").
    An earlier bug used the unscoped selector and it leaked this bold/
    centered/uppercase nav styling onto unrelated links elsewhere on
    the page (e.g. the CS2040 link inside .class-list). */
+/* padding/border/font stay IDENTICAL across default/hover/active below —
+   only background, text color, and a transform (which doesn't affect
+   layout) ever change, so no tab ever changes height when hovered or
+   selected. */
 .navbar li a,
 .navbar summary {
   display: block;
@@ -206,7 +348,9 @@ li {
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.9rem;
-  transition: background 0.15s;
+  line-height: 1.2; /* fixed, so the "Home ▾" arrow glyph can't make that tab a px taller than the rest */
+  border: none;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
   cursor: pointer;
   list-style: none;
 }
@@ -214,18 +358,38 @@ li {
   display: none;
 }
 
-.navbar li a:hover:not(.active),
-.navbar summary:hover {
-  background: var(--nav-bg-hover);
+/* Both hover AND the "you are here" active tab highlight in the CURRENT
+   PAGE's own accent color (var(--accent) — blue on Home, green on Pages,
+   orange on Projects, red on Classes/course pages; see "PER-PAGE ACCENT"
+   above) — no more separate yellow "active" color, hover and selected
+   now look like the same family of state. --accent-text keeps the label
+   readable in both light mode (dark accent → light text) and dark mode
+   (accent auto-brightened → dark text).
+   IMPORTANT: kept scoped to ".navbar" on purpose — an earlier bug used a
+   bare ".active" and it bled into the theme-picker's ".theme-swatch
+   .active" state (same class name, different feature), making swatch
+   labels render invisible (near-black text on a dark background). */
+.navbar li a:hover,
+.navbar li a.active,
+.navbar summary:hover,
+.navbar summary.active {
+  background: var(--accent);
+  color: var(--accent-text);
 }
 
-/* "You are here" marker — put class="active" on the current page's
-   nav <a> (or its <summary>, for the Home dropdown) in each HTML file.
-   Uses !important because it must win over both the per-page accent
-   background and the hover background. */
-.active {
-  background: var(--highlight);
-  color: var(--highlight-text) !important;
+/* Lift only on actual hover, not on a merely-active-but-not-hovered tab —
+   otherwise the current page's tab would always sit 2px higher than its
+   neighbors instead of lining up with them.
+   The box-shadow is load-bearing, not decorative: translateY(-2px) alone
+   would lift the tab and expose 2px of the dark navbar background (var(
+   --nav-bg)) underneath it as a black sliver. The shadow, in the exact
+   same accent color as the tab's own hover background, fills that gap so
+   the highlighted area reads as one continuous block instead of a tab
+   floating above a gap. */
+.navbar li a:hover,
+.navbar summary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 0 var(--accent);
 }
 
 /* Dropdown ("Home ▾" menu) built with native <details>/<summary> —
@@ -298,11 +462,66 @@ h3 {
   padding-bottom: 10px;
 }
 
+/* ============================================================
+   BASIC MARKDOWN-STYLE CONTENT
+   Write plain <ul>/<ol>/<li>, <code>, <pre>, <blockquote>, <hr>,
+   <strong>/<em> directly inside a .walloftext (e.g. a class detail
+   page's notes section) and it'll look reasonable without any extra
+   classes — no markdown parser involved, you're just writing the
+   HTML a markdown renderer would have produced.
+   ============================================================ */
+.walloftext ul,
+.walloftext ol {
+  margin: 0 0 16px 0;
+  padding-left: 1.4em;
+  color: var(--text);
+}
+.walloftext li {
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+.walloftext li:last-child {
+  margin-bottom: 0;
+}
+.walloftext code {
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  font-size: 0.9em;
+  font-family: 'Courier New', Courier, monospace;
+}
+.walloftext pre {
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  overflow-x: auto;
+  margin: 0 0 16px 0;
+}
+.walloftext pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+.walloftext blockquote {
+  margin: 0 0 16px 0;
+  padding: 4px 16px;
+  border-left: 4px solid var(--accent);
+  color: var(--text);
+  opacity: 0.85;
+  font-style: italic;
+}
+.walloftext hr {
+  border: none;
+  border-top: 2px solid var(--border);
+  margin: 24px 0;
+}
+
 /* Contact section on index.html. Deliberately overrides the walloftext
-   left border to always be yellow (--highlight), regardless of page
-   accent, so it stands out as a call-to-action. */
+   left border to a fixed line color (red) instead of following Home's
+   own accent (blue), so it stands out a bit as a call-to-action even
+   though it lives on the Home page. Pick any --line-1..4 you like. */
 .contact-section {
-  border-left-color: var(--highlight);
+  border-left-color: var(--line-4);
 }
 .contact-lede {
   margin-bottom: 18px;
@@ -504,10 +723,19 @@ h3 {
   letter-spacing: normal;
   border-bottom: none;
   text-decoration: none;
+  height: 100%;
+}
+/* Lift-on-hover, same language as .project-card/.theme-swatch, but only
+   for boxes that actually link somewhere (:has(a)) — a plain, non-linked
+   course entry shouldn't look interactive since clicking it does nothing. */
+.class-list li:has(a) {
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
 }
 .class-list li:has(a):hover {
   border-left-color: var(--highlight);
   cursor: pointer;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 0 var(--border);
 }
 
 .class-code {
@@ -538,4 +766,274 @@ h3 {
   display: inline-block;
   margin-top: 18px;
   font-weight: 700;
+}
+
+/* ============================================================
+   PREREQUISITE MAP — a literal subway-line diagram of a course's
+   prerequisite chain, read left-to-right like a transit line: each
+   "station" is one course, connected by a single continuous colored
+   line (var(--accent), so it's red on a Classes/course page, but
+   still tracks whichever page accent it's used on). The CURRENT
+   course's station is a filled solid dot (like a "you are here"
+   stop); prerequisite stations are hollow rings.
+
+   Not just colors — the actual cartography changes per city theme too,
+   via --prereq-line-height/--prereq-dot-size/--prereq-dot-radius/
+   --prereq-dot-border-color/--prereq-dot-ring (defaults in :root, city
+   overrides live in the "CITY THEME" block near the top of this file):
+   SF/BART is bold-line-plain-circle, NYC is extra-bold-line with small
+   black-ringed circles (the line carries the color, not the station —
+   real Vignelli-diagram style), Chicago is thin and minimal, Tokyo uses
+   rounded-square badges, Seoul uses a white-gap double ring.
+
+   Markup — a station is just a <div class="prereq-station"> (add
+   "current" for the course this page is about); use <a href="...">
+   instead of <div> for any course that has its own page, so it's
+   clickable and gets a hover animation for free:
+
+   <div class="prereq-map">
+     <div class="prereq-station">
+       <span class="prereq-dot"></span>
+       <span class="prereq-label">CS1010E</span>
+     </div>
+     <div class="prereq-station current">
+       <span class="prereq-dot"></span>
+       <span class="prereq-label">CS2040</span>
+     </div>
+   </div>
+   ============================================================ */
+.prereq-map {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+/* Each station draws its OWN connector segment running from its dot's
+   center to the next station's dot center, instead of one line spanning
+   the whole map independent of where the dots actually land. Since every
+   station is the same fixed width, "left: 50%, width: 100%" always lands
+   exactly on the next station's center — this stays correctly aligned no
+   matter how many stations there are, unlike a single full-span line
+   guessing where the first/last dot happen to be. */
+.prereq-station {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 140px;
+  flex: none;
+  text-decoration: none;
+  color: var(--text);
+  transition: transform 0.15s;
+}
+.prereq-station:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  /* The dot's vertical CENTER is at half its own size (it's the station's
+     first child, flush with the top). A line's "top" is its top EDGE, not
+     its center, so centering a --prereq-line-height-tall bar on that point
+     means backing off by half the line's own height too — forgetting that
+     second half-step is what made this line sit visibly below the dots
+     before. Both halves use the same theme variables driving the dot/line
+     themselves, so this can't drift out of sync when a city theme changes
+     dot or line size. */
+  top: calc((var(--prereq-dot-height) / 2) - (var(--prereq-line-height) / 2));
+  left: 50%;
+  width: 100%;
+  height: var(--prereq-line-height);
+  background: var(--accent);
+  z-index: 0;
+}
+.prereq-dot {
+  position: relative;
+  z-index: 1;
+  width: var(--prereq-dot-width);
+  height: var(--prereq-dot-height);
+  border-radius: var(--prereq-dot-radius);
+  background: var(--prereq-dot-fill);
+  border: var(--prereq-dot-border-width) solid var(--prereq-dot-border-color);
+  box-shadow: var(--prereq-dot-ring);
+}
+/* The current course always fills solid with the real line color
+   (var(--accent), not --prereq-dot-fill/border-color) so "you are here"
+   reads clearly regardless of the active theme's normal station style —
+   a plain black BART tick, or another theme's black-ringed circle. */
+.prereq-station.current .prereq-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.prereq-label {
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+/* Only clickable stations (real <a> tags) get the hover animation —
+   "current" and plain (no-page) prerequisites are inert. */
+a.prereq-station:hover {
+  transform: translateY(-4px);
+}
+a.prereq-station:hover .prereq-label {
+  color: var(--accent);
+}
+
+/* ============================================================
+   THEME PICKER — footer on every page, lets you swap the whole
+   city subway theme (colors + font) just for fun. Swatch buttons
+   call setCityTheme('sf' | 'nyc' | 'chicago' | 'tokyo' | 'seoul')
+   from scripts/theme.js, which sets <html data-city-theme="...">
+   and saves the choice to localStorage.
+   ============================================================ */
+.theme-picker {
+  max-width: 700px;
+  margin: 12px auto 40px auto;
+  padding: 20px 24px 24px 24px;
+  text-align: center;
+  border-top: 3px solid var(--border);
+}
+.theme-picker h4 {
+  margin-bottom: 4px;
+}
+.theme-picker-hint {
+  font-size: 0.8rem;
+  color: var(--text);
+  opacity: 0.75;
+  text-transform: none;
+  letter-spacing: normal;
+  margin: 0 0 16px 0;
+}
+.theme-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+}
+
+/* Each swatch looks like a little station sign: a solid color-stripe
+   "legend" across the top (the city's actual line colors), a dark
+   plate below with the city name. The active one gets a yellow
+   border/shadow plus a checkmark badge — kept obvious on purpose,
+   since a subtle hover-only cue is easy to miss. */
+.theme-swatch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 128px;
+  background: var(--nav-bg);
+  border: 2px solid var(--border);
+  padding: 0 0 12px 0;
+  font-family: inherit;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.72rem;
+  color: var(--nav-text);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.theme-swatch:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 0 var(--accent);
+}
+.theme-swatch.active {
+  border-color: var(--highlight);
+  box-shadow: 0 6px 0 var(--highlight);
+}
+.theme-swatch.active:hover {
+  box-shadow: 0 6px 0 var(--highlight);
+}
+/* Checkmark badge, generated purely in CSS — no matching HTML element
+   needed. Only shows once scripts/theme.js adds the "active" class. */
+.theme-swatch.active::before {
+  content: "\2713";
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  color: var(--highlight);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.swatch-dots {
+  display: flex;
+  width: 100%;
+  height: 12px;
+  margin-bottom: 10px;
+}
+.swatch-dot {
+  flex: 1;
+}
+.swatch-label {
+  display: block;
+  padding: 0 8px;
+}
+
+/* Each swatch label renders in THAT city's own font, independent of
+   whichever theme is currently active — same idea as the fixed .dot-*
+   preview colors above: the swatch previews what you'd get, it doesn't
+   just reflect the live page. Without this, every label would render in
+   whatever font is currently active, so e.g. "NEW YORK" wouldn't
+   actually look like Helvetica unless NYC was already selected. */
+.theme-swatch[data-city="sf"] .swatch-label,
+.theme-swatch[data-city="nyc"] .swatch-label {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.theme-swatch[data-city="chicago"] .swatch-label {
+  font-family: 'Franklin Gothic Medium', 'Segoe UI', Arial, sans-serif;
+}
+.theme-swatch[data-city="tokyo"] .swatch-label {
+  font-family: 'Yu Gothic', 'Meiryo', 'Helvetica Neue', sans-serif;
+}
+.theme-swatch[data-city="seoul"] .swatch-label {
+  font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Helvetica Neue', sans-serif;
+}
+
+/* Live confirmation line under the swatches, updated by
+   updateCityThemeUI() — spells out the active city by name so it's
+   unambiguous the click actually did something. */
+.theme-current {
+  margin: 16px 0 0 0;
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text);
+}
+.theme-current strong {
+  color: var(--accent);
+}
+
+/* Fixed preview colors for each swatch — intentionally NOT tied to the
+   live --line-* variables, so a swatch always shows what that city
+   looks like regardless of which theme is currently active. */
+.dot-sf-1 { background: #0099cc; }
+.dot-sf-2 { background: #00a650; }
+.dot-sf-3 { background: #f7941d; }
+.dot-sf-4 { background: #ed1c24; }
+
+.dot-nyc-1 { background: #0039a6; }
+.dot-nyc-2 { background: #00933c; }
+.dot-nyc-3 { background: #ff6319; }
+.dot-nyc-4 { background: #ee352e; }
+
+.dot-chicago-1 { background: #00a1de; }
+.dot-chicago-2 { background: #009b3a; }
+.dot-chicago-3 { background: #f9461c; }
+.dot-chicago-4 { background: #c60c30; }
+
+.dot-tokyo-1 { background: #009bbf; }
+.dot-tokyo-2 { background: #00a650; }
+.dot-tokyo-3 { background: #f39700; }
+.dot-tokyo-4 { background: #f62e36; }
+
+.dot-seoul-1 { background: #0032a0; }
+.dot-seoul-2 { background: #00a84d; }
+.dot-seoul-3 { background: #ef7c1c; }
+.dot-seoul-4 { background: #00a4e3; }
+
+@media (max-width: 800px) {
+  .theme-picker {
+    margin: 8px 4px 24px 4px;
+    padding: 16px 8px 20px 8px;
+  }
 }
