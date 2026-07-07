@@ -221,6 +221,93 @@ body.page-classes { --accent: var(--line-4); }  /* classes.html, classes/*.html 
    ============================================================ */
 .class-category.cat-1 .class-list li { border-left-color: var(--line-1); }
 .class-category.cat-1 h4 { border-bottom-color: var(--line-1); }
+
+.view-switcher {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 20px 0 6px 0;
+}
+
+.view-switcher-btn {
+  appearance: none;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.view-switcher-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.view-switcher-btn.is-active {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+
+.classes-view.is-hidden {
+  display: none;
+}
+
+.semester-group {
+  margin-top: 28px;
+}
+
+.semester-group:first-child {
+  margin-top: 12px;
+}
+
+.semester-group h4 {
+  border-bottom: 3px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+}
+
+.class-list-semester {
+  grid-template-columns: 1fr;
+}
+
+/* Category tag pills + read-time badge, appended as a trailing row on a
+   course <li> by buildTagsRow() in classes.html. In the category view this
+   only holds SECONDARY categories (the primary one is implied by which
+   cat-* box the course sits in); the semester view rebuilds it with ALL
+   categories, since there's no box heading there to imply one. */
+.class-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.class-tag {
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 3px 8px;
+}
+.read-time-badge {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 2px 7px;
+  opacity: 0.85;
+}
 .class-category.cat-2 .class-list li { border-left-color: var(--line-2); }
 .class-category.cat-2 h4 { border-bottom-color: var(--line-2); }
 .class-category.cat-3 .class-list li { border-left-color: var(--line-3); }
@@ -703,12 +790,63 @@ h3 {
 }
 
 .class-list li {
+  position: relative;
   float: none;
   background: var(--bg-card);
   border: 1.5px solid var(--border);
   border-left: 5px solid var(--accent);
   padding: 12px 14px;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+/* Highlight badge — top-right corner of any course marked data-highlight=
+   "true" in classes.html (curated by hand, not a visitor toggle: see the
+   comment block near the top of the category view markup, and
+   applyHighlightState() in the script below). Positioned absolutely so it
+   never disturbs the class-code/class-name flow underneath it. */
+.highlight-badge {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 2;
+  color: var(--highlight);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* Highlighted course card — background tint + inset ring apply everywhere
+   with no specificity fight; border-left needs the extra
+   ".class-category"-scoped selector below to outrank the ".cat-*"
+   left-border rules in the category view (same specificity, wins on source
+   order since it's declared later). */
+.class-list li.is-highlight {
+  background: color-mix(in srgb, var(--highlight) 12%, var(--bg-card));
+  box-shadow: inset 0 0 0 1px var(--highlight);
+}
+.class-category .class-list li.is-highlight,
+.class-list-semester li.is-highlight {
+  border-left-color: var(--highlight);
+}
+
+/* "★ Highlights only" filter button (top of the Classes page) — toggles
+   body.show-highlights-only, which hides every non-highlighted course in
+   WHICHEVER view is currently showing, plus any category box / semester
+   group left with nothing highlighted in it. Reuses .view-switcher-btn's
+   base look but its own (later, so it wins the tie) active-state color, so
+   it doesn't get confused with the category/semester view tabs. */
+.highlights-filter-btn.is-active {
+  background: var(--highlight);
+  color: var(--highlight-text);
+  border-color: var(--highlight);
+}
+body.show-highlights-only .class-list li:not(.is-highlight) {
+  display: none;
+}
+body.show-highlights-only .class-category:not(:has(.is-highlight)) {
+  display: none;
+}
+body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
+  display: none;
 }
 /* Only CS2040 currently links out (to cs2040.html); this resets the
    anchor back to plain text styling so a linked course box looks

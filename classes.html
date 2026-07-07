@@ -34,41 +34,213 @@
       <div class="walloftext">
         <h3>Classes</h3>
         <p>Coursework from NUS Electrical Engineering (with a Computing second major). <span class="placeholder-note">Placeholder content — swap in your real classes</span></p>
-
-        <!-- MANUAL EDIT: each .class-category is one group/box color (see the
-             "cat-*" comment block near the top of stylesheets/style.css for
-             what colors are available). Each <li> inside .class-list is one
-             course — just a class-code + class-name pair. To make a course
-             link to its own detail page like CS2040 does, wrap both spans in
-             an <a href="classes/yourcourse.html">...</a> (copy
-             classes/_template.html as the starting point for the new page). -->
-        <div class="class-category cat-1">
-          <h4>Electrical Engineering Core</h4>
-          <ul class="class-list">
-            <li><span class="class-code">EE2027</span><span class="class-name">Signals and Systems</span></li>
-            <li><span class="class-code">EE2028</span><span class="class-name">Embedded Hardware Design</span></li>
-            <li><span class="class-code">EE3131</span><span class="class-name">Digital Signal Processing</span></li>
-          </ul>
+        <div class="view-switcher" role="tablist" aria-label="Class view selector">
+          <button type="button" class="view-switcher-btn is-active" id="category-view-btn" aria-pressed="true">By category</button>
+          <button type="button" class="view-switcher-btn" id="semester-view-btn" aria-pressed="false">By semester</button>
+          <button type="button" class="view-switcher-btn highlights-filter-btn" id="highlights-filter-btn" aria-pressed="false">&#9733; Highlights only</button>
         </div>
 
-        <div class="class-category cat-4">
-          <h4>Computing (Second Major)</h4>
-          <ul class="class-list">
-            <li><a href="./classes/cs2040.html"><span class="class-code">CS2040</span><span class="class-name">Data Structures and Algorithms</span></a></li>
-            <li><span class="class-code">CS2030</span><span class="class-name">Programming Methodology II</span></li>
-            <li><span class="class-code">CS3230</span><span class="class-name">Design and Analysis of Algorithms</span></li>
-          </ul>
+        <div id="classes-category-view" class="classes-view">
+          <!-- MANUAL EDIT: each .class-category is one group/box color (see the
+               "cat-*" comment block near the top of stylesheets/style.css for
+               what colors are available). Each <li> inside .class-list is one
+               course — just a class-code + class-name pair. To make a course
+               link to its own detail page like CS2040 does, wrap both spans in
+               an <a href="classes/yourcourse.html">...</a> (copy
+               classes/_template.html as the starting point for the new page).
+
+               Data attributes on each <li> (all optional except the semester
+               ones, which the semester view needs to group/sort correctly):
+                 data-semester-order / data-semester-label   — required, same as before
+                 data-categories="A, B"                      — comma-separated. First
+                   entry should match the box this <li> physically lives in; any
+                   extra entries are "tags" shown as extra pills (in this view)
+                   and as full tag chips in the semester view.
+                 data-highlight="true"                       — YOUR curated pick for
+                   a course you enjoyed / have the most to say about (visitors can't
+                   change this — it's not a visitor toggle). Adds a small star badge
+                   and a highlighted border/tint in both views, and is what the
+                   "★ Highlights only" button up top filters down to.
+                 data-read-minutes="N"                       — only makes sense for
+                   courses with a detail page; renders a "~N min read" pill next to
+                   the tags. Estimate it yourself (roughly wordcount/200), there's
+                   no auto-calculation. -->
+          <div class="class-category cat-1">
+            <h4>Electrical Engineering Core</h4>
+            <ul class="class-list">
+              <li data-semester-order="1" data-semester-label="AY24/25 Semester 1" data-categories="Electrical Engineering Core, Math & Fundamentals"><span class="class-code">EE2027</span><span class="class-name">Signals and Systems</span></li>
+              <li data-semester-order="2" data-semester-label="AY24/25 Semester 2" data-categories="Electrical Engineering Core"><span class="class-code">EE2028</span><span class="class-name">Embedded Hardware Design</span></li>
+              <li data-semester-order="3" data-semester-label="AY25/26 Semester 1" data-categories="Electrical Engineering Core, Computing (Second Major)" data-highlight="true"><span class="class-code">EE3131</span><span class="class-name">Digital Signal Processing</span></li>
+            </ul>
+          </div>
+
+          <div class="class-category cat-4">
+            <h4>Computing (Second Major)</h4>
+            <ul class="class-list">
+              <li data-semester-order="4" data-semester-label="AY25/26 Semester 2" data-categories="Computing (Second Major)" data-highlight="true" data-read-minutes="2"><a href="./classes/cs2040.html"><span class="class-code">CS2040</span><span class="class-name">Data Structures and Algorithms</span></a></li>
+              <li data-semester-order="3" data-semester-label="AY25/26 Semester 1" data-categories="Computing (Second Major)"><span class="class-code">CS2030</span><span class="class-name">Programming Methodology II</span></li>
+              <li data-semester-order="4" data-semester-label="AY25/26 Semester 2" data-categories="Computing (Second Major), Math & Fundamentals"><span class="class-code">CS3230</span><span class="class-name">Design and Analysis of Algorithms</span></li>
+            </ul>
+          </div>
+
+          <div class="class-category cat-2">
+            <h4>Math & Fundamentals</h4>
+            <ul class="class-list">
+              <li data-semester-order="1" data-semester-label="AY24/25 Semester 1" data-categories="Math & Fundamentals"><span class="class-code">MA1521</span><span class="class-name">Calculus for Computing</span></li>
+              <li data-semester-order="1" data-semester-label="AY24/25 Semester 1" data-categories="Math & Fundamentals"><span class="class-code">MA1508</span><span class="class-name">Linear Algebra for Computing</span></li>
+            </ul>
+          </div>
         </div>
 
-        <div class="class-category cat-2">
-          <h4>Math & Fundamentals</h4>
-          <ul class="class-list">
-            <li><span class="class-code">MA1521</span><span class="class-name">Calculus for Computing</span></li>
-            <li><span class="class-code">MA1508</span><span class="class-name">Linear Algebra for Computing</span></li>
-          </ul>
-        </div>
+        <div id="classes-semester-view" class="classes-view is-hidden" aria-live="polite"></div>
       </div>
     </div>
+    <script>
+      const categoryView = document.getElementById('classes-category-view');
+      const semesterView = document.getElementById('classes-semester-view');
+      const categoryViewBtn = document.getElementById('category-view-btn');
+      const semesterViewBtn = document.getElementById('semester-view-btn');
+      const highlightsFilterBtn = document.getElementById('highlights-filter-btn');
+
+      function getCategories(courseItem) {
+        return (courseItem.dataset.categories || '')
+          .split(',')
+          .map((label) => label.trim())
+          .filter(Boolean);
+      }
+
+      // (Re)builds the trailing row of category-tag pills + read-time badge
+      // on a course <li>. Called both on the category view's own items and
+      // again on each semester-view clone (which needs ALL categories shown,
+      // not just the secondary ones — there's no box heading there to imply
+      // the primary one), so it always throws away any previous row first.
+      function buildTagsRow(courseItem, categories) {
+        const existing = courseItem.querySelector('.class-tags');
+        if (existing) {
+          existing.remove();
+        }
+        const readMinutes = courseItem.dataset.readMinutes;
+        if (categories.length === 0 && !readMinutes) {
+          return;
+        }
+        const row = document.createElement('div');
+        row.className = 'class-tags';
+        categories.forEach((label) => {
+          const tag = document.createElement('span');
+          tag.className = 'class-tag';
+          tag.textContent = label;
+          row.appendChild(tag);
+        });
+        if (readMinutes) {
+          const readBadge = document.createElement('span');
+          readBadge.className = 'read-time-badge';
+          readBadge.textContent = `~${readMinutes} min read`;
+          row.appendChild(readBadge);
+        }
+        courseItem.appendChild(row);
+      }
+
+      // Highlights are curated by hand (data-highlight="true" in the HTML) —
+      // not something a visitor can toggle. This just paints that fixed
+      // state: a badge + highlighted card styling. The "★ Highlights only"
+      // button further down filters using the same .is-highlight class.
+      function applyHighlightState(courseItem) {
+        const isHighlighted = courseItem.dataset.highlight === 'true';
+        courseItem.classList.toggle('is-highlight', isHighlighted);
+        if (isHighlighted && !courseItem.querySelector('.highlight-badge')) {
+          const badge = document.createElement('span');
+          badge.className = 'highlight-badge';
+          badge.setAttribute('aria-hidden', 'true');
+          badge.title = 'A course I especially enjoyed / have a lot to say about';
+          badge.textContent = '★';
+          courseItem.prepend(badge);
+        }
+      }
+
+      // Decorate the category view's source <li>s once up front: give each
+      // its tag-pill row and its highlight badge/state. The semester view
+      // clones these same nodes later, so all of this comes along for free.
+      Array.from(categoryView.querySelectorAll('.class-list li[data-semester-label]')).forEach((courseItem) => {
+        const categories = getCategories(courseItem);
+        buildTagsRow(courseItem, categories.slice(1));
+        applyHighlightState(courseItem);
+      });
+
+      highlightsFilterBtn.addEventListener('click', () => {
+        const isActive = !document.body.classList.contains('show-highlights-only');
+        document.body.classList.toggle('show-highlights-only', isActive);
+        highlightsFilterBtn.classList.toggle('is-active', isActive);
+        highlightsFilterBtn.setAttribute('aria-pressed', String(isActive));
+      });
+
+      function setActiveView(viewName) {
+        const showCategoryView = viewName === 'category';
+        categoryView.classList.toggle('is-hidden', !showCategoryView);
+        semesterView.classList.toggle('is-hidden', showCategoryView);
+        categoryViewBtn.classList.toggle('is-active', showCategoryView);
+        semesterViewBtn.classList.toggle('is-active', !showCategoryView);
+        categoryViewBtn.setAttribute('aria-pressed', String(showCategoryView));
+        semesterViewBtn.setAttribute('aria-pressed', String(!showCategoryView));
+      }
+
+      function renderSemesterView() {
+        if (semesterView.dataset.rendered === 'true') {
+          return;
+        }
+
+        const courseItems = Array.from(categoryView.querySelectorAll('.class-list li[data-semester-label]'));
+        const semesterGroups = new Map();
+
+        courseItems.forEach((courseItem) => {
+          const semesterLabel = courseItem.dataset.semesterLabel || 'Unknown semester';
+          const semesterOrder = Number(courseItem.dataset.semesterOrder || Number.MAX_SAFE_INTEGER);
+          const clone = courseItem.cloneNode(true);
+          buildTagsRow(clone, getCategories(courseItem));
+
+          if (!semesterGroups.has(semesterLabel)) {
+            semesterGroups.set(semesterLabel, { order: semesterOrder, items: [] });
+          }
+          semesterGroups.get(semesterLabel).items.push(clone);
+        });
+
+        const sortedSemesters = Array.from(semesterGroups.entries())
+          .sort((left, right) => left[1].order - right[1].order);
+
+        semesterView.innerHTML = '';
+
+        sortedSemesters.forEach(([semesterLabel, semesterData]) => {
+          const semesterGroup = document.createElement('div');
+          semesterGroup.className = 'semester-group';
+
+          const semesterHeading = document.createElement('h4');
+          semesterHeading.textContent = semesterLabel;
+          semesterGroup.appendChild(semesterHeading);
+
+          const semesterList = document.createElement('ul');
+          semesterList.className = 'class-list class-list-semester';
+          // Highlighted courses float to the top of their semester — these
+          // are "what I'd most want a reader to notice first" — stable
+          // otherwise (Array#sort is stable, so ties keep source order).
+          semesterData.items
+            .slice()
+            .sort((left, right) => Number(right.classList.contains('is-highlight')) - Number(left.classList.contains('is-highlight')))
+            .forEach((courseItem) => {
+              semesterList.appendChild(courseItem);
+            });
+
+          semesterGroup.appendChild(semesterList);
+          semesterView.appendChild(semesterGroup);
+        });
+
+        semesterView.dataset.rendered = 'true';
+      }
+
+      categoryViewBtn.addEventListener('click', () => setActiveView('category'));
+      semesterViewBtn.addEventListener('click', () => {
+        renderSemesterView();
+        setActiveView('semester');
+      });
+    </script>
     <footer class="theme-picker">
       <h4>Subway Theme</h4>
       <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system, just for fun.</p>
