@@ -75,18 +75,32 @@ function example() {
 }</code></pre>
       </div>
 
-      <!-- Prerequisite map — a subway-line diagram of what leads into this
-           course, in its own card below the notes/review. Delete this whole
-           walloftext if this course has no prerequisites; otherwise add one
-           .prereq-station per course in the chain, left to right. Give THIS
-           course's station the extra "current" class (filled dot). Use
-           <a href="../classes/other-course.html" class="prereq-station">
-           instead of <div> for any prerequisite that has its own page — it
-           becomes clickable and gets a hover lift for free. -->
+      <!-- Prerequisite map — a subway-line diagram read as three zones:
+           Prerequisite(s) (grayed) >>> Current >>> Next (omit the whole
+           "next" station if there isn't one — don't leave it empty). In
+           its own card below the notes/review. Delete this whole
+           walloftext if this course has no prerequisites.
+
+           - Every actual prerequisite gets class="prereq-station prereq"
+             (grays the dot/tick AND the line leading out of it).
+           - THIS course's own station gets class="prereq-station current"
+             (filled solid).
+           - Anything after current (a course this one unlocks) is a plain
+             class="prereq-station" with no modifier — reads as "next".
+           - Use <a href="../classes/other-course.html" class="prereq-
+             station ..."> instead of <div> for any station that has its
+             own page (prereq or next) — it becomes clickable and gets a
+             hover lift for free; grayed "prereq" stations can still link.
+           - For an OR-relationship (either course satisfies the
+             requirement), stack the alternatives in a .prereq-branch
+             instead of side by side — see classes/ee2028.html for a real
+             example (CS1010E AND (EE1111A OR EE2111A)). Two separate
+             top-level items (two stations, or a station next to a branch)
+             means AND. -->
       <div class="walloftext">
         <h4>Prerequisites</h4>
         <div class="prereq-map">
-          <div class="prereq-station">
+          <div class="prereq-station prereq">
             <span class="prereq-dot"></span>
             <span class="prereq-label">PREREQ CODE</span>
           </div>

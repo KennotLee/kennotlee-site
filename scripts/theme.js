@@ -48,7 +48,31 @@ function updateCityThemeUI() {
   }
 }
 
+// Toggles between a page's .prereq-map (subway diagram) and .prereq-tree
+// (plain boxes-and-labels diagram) — only runs on pages that actually
+// have both, via the "[data-prereq-view]" buttons documented in
+// stylesheets/style.css next to ".prereq-tree". Safe no-op elsewhere.
+function initPrereqViewSwitcher() {
+  var buttons = document.querySelectorAll('[data-prereq-view]');
+  if (buttons.length === 0) return;
+  var map = document.querySelector('.prereq-map');
+  var tree = document.querySelector('.prereq-tree');
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var showTree = btn.dataset.prereqView === 'tree';
+      map.classList.toggle('is-hidden', showTree);
+      tree.classList.toggle('is-hidden', !showTree);
+      buttons.forEach(function (other) {
+        var isActive = other === btn;
+        other.classList.toggle('is-active', isActive);
+        other.setAttribute('aria-pressed', String(isActive));
+      });
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   updateToggleLabel();
   updateCityThemeUI();
+  initPrereqViewSwitcher();
 });

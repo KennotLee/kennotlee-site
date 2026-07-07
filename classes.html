@@ -54,13 +54,14 @@
                  data-semester-order / data-semester-label   — required, same as before
                  data-categories="A, B"                      — comma-separated. First
                    entry should match the box this <li> physically lives in; any
-                   extra entries are "tags" shown as extra pills (in this view)
-                   and as full tag chips in the semester view.
+                   extra entries are shown as tag chips in the semester view only
+                   (the category view doesn't render tags at all — which box a
+                   course sits in already says its primary category).
                  data-highlight="true"                       — YOUR curated pick for
                    a course you enjoyed / have the most to say about (visitors can't
                    change this — it's not a visitor toggle). Adds a small star badge
-                   and a highlighted border/tint in both views, and is what the
-                   "★ Highlights only" button up top filters down to.
+                   in both views, and is what the "★ Highlights only" button up top
+                   filters down to.
                  data-read-minutes="N"                       — only makes sense for
                    courses with a detail page; renders a "~N min read" pill next to
                    the tags. Estimate it yourself (roughly wordcount/200), there's
@@ -68,9 +69,10 @@
           <div class="class-category cat-1">
             <h4>Electrical Engineering Core</h4>
             <ul class="class-list">
-              <li data-semester-order="1" data-semester-label="AY24/25 Semester 1" data-categories="Electrical Engineering Core, Math & Fundamentals"><span class="class-code">EE2027</span><span class="class-name">Signals and Systems</span></li>
-              <li data-semester-order="2" data-semester-label="AY24/25 Semester 2" data-categories="Electrical Engineering Core"><span class="class-code">EE2028</span><span class="class-name">Embedded Hardware Design</span></li>
+              <li data-semester-order="2" data-semester-label="AY24/25 Semester 2" data-categories="Electrical Engineering Core, Math & Fundamentals"><a href="./classes/ee2023.html"><span class="class-code">EE2023</span><span class="class-name">Signals and Systems</span></a></li>
+              <li data-semester-order="2" data-semester-label="AY24/25 Semester 2" data-categories="Electrical Engineering Core"><a href="./classes/ee2028.html"><span class="class-code">EE2028</span><span class="class-name">Microcontroller Programming and Interfacing</span></a></li>
               <li data-semester-order="3" data-semester-label="AY25/26 Semester 1" data-categories="Electrical Engineering Core, Computing (Second Major)" data-highlight="true"><span class="class-code">EE3131</span><span class="class-name">Digital Signal Processing</span></li>
+              <li data-semester-order="4" data-semester-label="AY25/26 Semester 2" data-categories="Electrical Engineering Core"><a href="./classes/ee3131c.html"><span class="class-code">EE3131C</span><span class="class-name">Communications Systems</span></a></li>
             </ul>
           </div>
 
@@ -88,6 +90,7 @@
             <ul class="class-list">
               <li data-semester-order="1" data-semester-label="AY24/25 Semester 1" data-categories="Math & Fundamentals"><span class="class-code">MA1521</span><span class="class-name">Calculus for Computing</span></li>
               <li data-semester-order="1" data-semester-label="AY24/25 Semester 1" data-categories="Math & Fundamentals"><span class="class-code">MA1508</span><span class="class-name">Linear Algebra for Computing</span></li>
+              <li data-semester-order="1" data-semester-label="AY24/25 Semester 1" data-categories="Math & Fundamentals"><a href="./classes/ma1512.html"><span class="class-code">MA1512</span><span class="class-name">Differential Equations for Engineering</span></a></li>
             </ul>
           </div>
         </div>
@@ -110,10 +113,12 @@
       }
 
       // (Re)builds the trailing row of category-tag pills + read-time badge
-      // on a course <li>. Called both on the category view's own items and
-      // again on each semester-view clone (which needs ALL categories shown,
-      // not just the secondary ones — there's no box heading there to imply
-      // the primary one), so it always throws away any previous row first.
+      // on a course <li>. Called both on the category view's own items
+      // (with an empty categories list — that view doesn't show tags at
+      // all, only the read-time badge if present) and again on each
+      // semester-view clone (with ALL categories — there's no box heading
+      // there to imply the primary one), so it always throws away any
+      // previous row first.
       function buildTagsRow(courseItem, categories) {
         const existing = courseItem.querySelector('.class-tags');
         if (existing) {
@@ -158,11 +163,12 @@
       }
 
       // Decorate the category view's source <li>s once up front: give each
-      // its tag-pill row and its highlight badge/state. The semester view
-      // clones these same nodes later, so all of this comes along for free.
+      // its read-time badge (no category tags in this view) and its
+      // highlight badge/state. The semester view clones these same nodes
+      // later and rebuilds the tags row with the full category list, so
+      // none of this needs to be redone for that view.
       Array.from(categoryView.querySelectorAll('.class-list li[data-semester-label]')).forEach((courseItem) => {
-        const categories = getCategories(courseItem);
-        buildTagsRow(courseItem, categories.slice(1));
+        buildTagsRow(courseItem, []);
         applyHighlightState(courseItem);
       });
 

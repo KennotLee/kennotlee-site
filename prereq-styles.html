@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <script src="./scripts/theme.js"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Lee Profile</title>
+    <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+  </head>
+  <!-- "page-pages" sets this page's accent color (see stylesheets/style.css) —
+       matches the "Pages" nav tab this is reached from. -->
+  <body class="page-pages">
+    <div class="header">
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+      <h1>kennotlee</h1>
+      <div class="subtitle">Personal Profile & Portfolio</div>
+    </div>
+    <ul class="navbar">
+      <li class="dropdown">
+        <details>
+          <summary>Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
+      <li><a href="pages.html" class="active">Pages</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="classes.html">Classes</a></li>
+    </ul>
+    <div>
+      <div class="walloftext">
+        <h3>Prerequisite Branch Style Gallery</h3>
+        <p><span class="placeholder-note">Test page — not linked from Classes</span></p>
+        <p>
+          Eleven different ways to draw an OR-branch (EE1111A OR EE2111A) merging into a
+          line, all showing the same example so they're directly comparable. Pick
+          whichever one actually looks good and tell me the number — or copy/adjust
+          the CSS yourself (each one is a self-contained block below, search
+          stylesheets/style.css for "GALLERY" to find the ones that aren't already
+          part of the real .prereq-branch component used on classes/ee2028.html).
+        </p>
+      </div>
+
+      <div class="walloftext">
+        <h4>1. Current: smooth turnout curve</h4>
+        <p class="theme-picker-hint">The real .prereq-branch component, default radius. Used on classes/ee2028.html right now.</p>
+        <div class="prereq-map">
+          <div class="prereq-branch">
+            <div class="prereq-station prereq">
+              <span class="prereq-dot"></span>
+              <span class="prereq-label">EE1111A</span>
+            </div>
+            <div class="prereq-station prereq">
+              <span class="prereq-dot"></span>
+              <span class="prereq-label">EE2111A</span>
+            </div>
+            <span class="prereq-branch-arm prereq-branch-arm-top"></span>
+            <span class="prereq-branch-arm prereq-branch-arm-bottom"></span>
+            <span class="prereq-branch-curve prereq-branch-curve-top"></span>
+            <span class="prereq-branch-curve prereq-branch-curve-bottom"></span>
+          </div>
+          <div class="prereq-station prereq">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">CS1010E</span>
+          </div>
+          <div class="prereq-station current">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">EE2028</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>2. Sharp corners (no curve at all)</h4>
+        <p class="theme-picker-hint">Same component, --prereq-curve-radius set to 0px — degrades cleanly to a hard right angle.</p>
+        <div class="prereq-map">
+          <div class="prereq-branch" style="--prereq-curve-radius: 0px;">
+            <div class="prereq-station prereq">
+              <span class="prereq-dot"></span>
+              <span class="prereq-label">EE1111A</span>
+            </div>
+            <div class="prereq-station prereq">
+              <span class="prereq-dot"></span>
+              <span class="prereq-label">EE2111A</span>
+            </div>
+            <span class="prereq-branch-arm prereq-branch-arm-top"></span>
+            <span class="prereq-branch-arm prereq-branch-arm-bottom"></span>
+            <span class="prereq-branch-curve prereq-branch-curve-top"></span>
+            <span class="prereq-branch-curve prereq-branch-curve-bottom"></span>
+          </div>
+          <div class="prereq-station prereq">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">CS1010E</span>
+          </div>
+          <div class="prereq-station current">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">EE2028</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>3. Bigger, wider curve</h4>
+        <p class="theme-picker-hint">Same component, --prereq-curve-radius bumped to 34px — a wider, gentler bend.</p>
+        <div class="prereq-map">
+          <div class="prereq-branch" style="--prereq-curve-radius: 34px;">
+            <div class="prereq-station prereq">
+              <span class="prereq-dot"></span>
+              <span class="prereq-label">EE1111A</span>
+            </div>
+            <div class="prereq-station prereq">
+              <span class="prereq-dot"></span>
+              <span class="prereq-label">EE2111A</span>
+            </div>
+            <span class="prereq-branch-arm prereq-branch-arm-top"></span>
+            <span class="prereq-branch-arm prereq-branch-arm-bottom"></span>
+            <span class="prereq-branch-curve prereq-branch-curve-top"></span>
+            <span class="prereq-branch-curve prereq-branch-curve-bottom"></span>
+          </div>
+          <div class="prereq-station prereq">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">CS1010E</span>
+          </div>
+          <div class="prereq-station current">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">EE2028</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>4. Fork merge (3-way trident — USB logo / Boston Green Line style)</h4>
+        <p class="theme-picker-hint">Was a 2-line "V"; now a 3-prong fork — two angled outer prongs plus a straight middle one, all meeting at one point, same idea as the USB trident icon or how Boston's Green Line branches (B/C/D/E) converge into one trunk downtown. GALLERY-ONLY markup, not the real component.</p>
+        <!-- GALLERY: fork/trident variant. Self-contained SVG, fixed pixel
+             coordinates (not derived from theme variables like the real
+             component) since this is just a one-off comparison. Third
+             prong added on request — straight/flat since it's already at
+             trunk height, no diagonal needed for that one. -->
+        <div class="gallery-diagram">
+          <svg viewBox="0 0 420 140" class="gallery-diagram-svg">
+            <line x1="30" y1="20" x2="150" y2="70" style="stroke: var(--border); stroke-width: 3;" />
+            <line x1="30" y1="70" x2="150" y2="70" style="stroke: var(--border); stroke-width: 3;" />
+            <line x1="30" y1="120" x2="150" y2="70" style="stroke: var(--border); stroke-width: 3;" />
+            <line x1="150" y1="70" x2="400" y2="70" style="stroke: var(--accent); stroke-width: 3;" />
+          </svg>
+          <div class="gallery-node" style="left: 8px; top: 8px;">EE1111A</div>
+          <div class="gallery-node" style="left: 8px; top: 58px;">EE4111A</div>
+          <div class="gallery-node" style="left: 8px; top: 108px;">EE2111A</div>
+          <div class="gallery-node" style="left: 205px; top: 58px;">CS1010E</div>
+          <div class="gallery-node gallery-node-current" style="left: 355px; top: 58px;">EE2028</div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>5. Junction dot</h4>
+        <p class="theme-picker-hint">Right-angle lines like #2, but the merge point is marked with an explicit dot instead of left as a bare corner. GALLERY-ONLY markup.</p>
+        <!-- GALLERY: junction-dot variant. Also fixed-pixel SVG. -->
+        <div class="gallery-diagram">
+          <svg viewBox="0 0 420 140" class="gallery-diagram-svg">
+            <line x1="30" y1="24" x2="30" y2="116" style="stroke: var(--border); stroke-width: 3;" />
+            <line x1="30" y1="70" x2="150" y2="70" style="stroke: var(--border); stroke-width: 3;" />
+            <line x1="150" y1="70" x2="400" y2="70" style="stroke: var(--accent); stroke-width: 3;" />
+            <circle cx="30" cy="70" r="6" style="fill: var(--border);" />
+          </svg>
+          <div class="gallery-node" style="left: 8px; top: 12px;">EE1111A</div>
+          <div class="gallery-node" style="left: 8px; top: 104px;">EE2111A</div>
+          <div class="gallery-node" style="left: 205px; top: 58px;">CS1010E</div>
+          <div class="gallery-node gallery-node-current" style="left: 355px; top: 58px;">EE2028</div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>6. Real subway-map station markers</h4>
+        <p class="theme-picker-hint">Matches the reference image directly: hollow ring "station" circles sitting ON the line (not boxed labels above/below it), short flat stub out of each outer station, one smooth curve bending each into the merge point, current course filled solid. GALLERY-ONLY markup.</p>
+        <!-- GALLERY: reference-match variant. Circle markers drawn IN the
+             SVG (not HTML .gallery-node boxes) so they can sit precisely
+             on the line the way real subway maps draw stations — a plain
+             text .gallery-node-label sits next to each one instead. -->
+        <div class="gallery-diagram" style="height: 180px;">
+          <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
+            <path d="M 40 30 L 110 30 Q 170 30 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
+            <path d="M 40 150 L 110 150 Q 170 150 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
+            <circle cx="40" cy="30" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="40" cy="150" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="220" cy="90" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="400" cy="90" r="9" style="fill: var(--accent); stroke: var(--accent); stroke-width: 4;" />
+          </svg>
+          <div class="gallery-node-label" style="left: 10px; top: 4px;">EE1111A</div>
+          <div class="gallery-node-label" style="left: 10px; top: 124px;">EE2111A</div>
+          <div class="gallery-node-label" style="left: 190px; top: 64px;">CS1010E</div>
+          <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>7. Strict 45&deg; transitions</h4>
+        <p class="theme-picker-hint">Vignelli-style transit-diagram convention: every segment is either flat or a perfect 45&deg; diagonal, no curves, no other angle. Straight stub out of each outer station, one 45&deg; diagonal each, meeting at a shared vertex, then flat into the merge station. GALLERY-ONLY markup.</p>
+        <!-- GALLERY: pure-angle variant. Diagonals are exactly 45 degrees
+             (dx == dy == 60) by construction — stub length was shortened
+             from the other variants' 60px to 30px specifically to push the
+             merge vertex left and leave enough flat trunk (130 -> 220) for
+             the CS1010E label to sit above without touching either the
+             diagonals or the trunk line. -->
+        <div class="gallery-diagram" style="height: 180px;">
+          <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
+            <path d="M 40 30 L 70 30 L 130 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: square; stroke-linejoin: miter;" />
+            <path d="M 40 150 L 70 150 L 130 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: square; stroke-linejoin: miter;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: 5; stroke-linecap: square;" />
+            <circle cx="40" cy="30" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="40" cy="150" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="220" cy="90" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="400" cy="90" r="9" style="fill: var(--accent); stroke: var(--accent); stroke-width: 4;" />
+          </svg>
+          <div class="gallery-node-label" style="left: 10px; top: 4px;">EE1111A</div>
+          <div class="gallery-node-label" style="left: 10px; top: 124px;">EE2111A</div>
+          <div class="gallery-node-label" style="left: 140px; top: 64px;">CS1010E</div>
+          <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>8. Strict 90&deg; elbow</h4>
+        <p class="theme-picker-hint">Same convention, but with a right-angle elbow instead of a diagonal: straight stub, 90&deg; turn onto a shared vertical, then straight into the merge station. GALLERY-ONLY markup.</p>
+        <!-- GALLERY: pure right-angle variant. Both stubs turn onto the
+             SAME vertical line (x=100) before the merge, which is why this
+             reads more like two tracks joining a shared siding than a
+             branch — included alongside #7 since the user asked for either
+             a 90 or 45 degree version to compare. -->
+        <div class="gallery-diagram" style="height: 180px;">
+          <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
+            <path d="M 40 30 L 100 30 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: square; stroke-linejoin: miter;" />
+            <path d="M 40 150 L 100 150 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: square; stroke-linejoin: miter;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: 5; stroke-linecap: square;" />
+            <circle cx="40" cy="30" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="40" cy="150" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="220" cy="90" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="400" cy="90" r="9" style="fill: var(--accent); stroke: var(--accent); stroke-width: 4;" />
+          </svg>
+          <div class="gallery-node-label" style="left: 10px; top: 4px;">EE1111A</div>
+          <div class="gallery-node-label" style="left: 10px; top: 124px;">EE2111A</div>
+          <div class="gallery-node-label" style="left: 130px; top: 64px;">CS1010E</div>
+          <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>9. Eased elbow (#8, but rounded)</h4>
+        <p class="theme-picker-hint">Same shape as #8 — straight stub, turn onto a shared vertical, straight into the merge station — but each corner is eased with a small curve instead of a hard right angle, since real rail can't take a 90&deg; turn on a dime. GALLERY-ONLY markup.</p>
+        <!-- GALLERY: rounded-elbow variant. Each path has two corners, both
+             eased with the same "control point sits exactly on the
+             corner" quadratic-curve trick used elsewhere on this page
+             (see #6): a straight run stops radius px short of the
+             corner, "Q cornerX cornerY endX endY" curves through it, then
+             a straight run continues from radius px past it. Radius here
+             is 16px — small enough to still read as a corner (unlike #6's
+             full sweeping bend), just not a sharp one. -->
+        <div class="gallery-diagram" style="height: 180px;">
+          <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
+            <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 74 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
+            <circle cx="40" cy="30" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="40" cy="150" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="220" cy="90" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="400" cy="90" r="9" style="fill: var(--accent); stroke: var(--accent); stroke-width: 4;" />
+          </svg>
+          <div class="gallery-node-label" style="left: 10px; top: 4px;">EE1111A</div>
+          <div class="gallery-node-label" style="left: 10px; top: 124px;">EE2111A</div>
+          <div class="gallery-node-label" style="left: 130px; top: 64px;">CS1010E</div>
+          <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>10. One straight line, one branch (in the style of #9)</h4>
+        <p class="theme-picker-hint">EE1111A runs straight through with no bends at all — it's already the "trunk" line. EE2111A is the only one that actually branches, using the same eased-corner curve as #9 to merge into it. GALLERY-ONLY markup.</p>
+        <!-- GALLERY: asymmetric variant. Real rail: a track that doesn't
+             need to change alignment just runs straight — only the joining
+             spur actually bends. Reuses #9's exact corner geometry (radius
+             16, "control point on the corner" trick) for the one branch
+             that needs it. The branch's curve terminates at (116,90),
+             which is just a point ON the straight x1=40..x2=400 line at
+             y=90 — so it reads as a clean merge onto an already-existing
+             line rather than two lines each bending toward a shared point. -->
+        <div class="gallery-diagram" style="height: 180px;">
+          <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
+            <line x1="40" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
+            <circle cx="40" cy="90" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="40" cy="150" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="220" cy="90" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="400" cy="90" r="9" style="fill: var(--accent); stroke: var(--accent); stroke-width: 4;" />
+          </svg>
+          <div class="gallery-node-label" style="left: 10px; top: 64px;">EE1111A</div>
+          <div class="gallery-node-label" style="left: 10px; top: 124px;">EE2111A</div>
+          <div class="gallery-node-label" style="left: 190px; top: 64px;">CS1010E</div>
+          <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>11. Eased entry, sharp convergence (#9 variant)</h4>
+        <p class="theme-picker-hint">Same as #9's first corner — the stub easing onto the shared vertical — but the second bend, where the vertical actually meets the trunk, goes back to being a plain corner with no curve. GALLERY-ONLY markup.</p>
+        <!-- GALLERY: half-eased variant. Only the corner nobody needs to
+             "arrive" at cleanly (stub -> vertical) is curved, using the
+             same Q trick as #9. The convergence point itself (where the
+             vertical meets the trunk) is a sharp miter join, same as #8 —
+             this is #9 with just its second Q curve removed and replaced
+             with a straight run all the way to the corner. -->
+        <div class="gallery-diagram" style="height: 180px;">
+          <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
+            <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-linejoin: miter;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-linejoin: miter;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
+            <circle cx="40" cy="30" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="40" cy="150" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="220" cy="90" r="9" style="fill: var(--bg-card); stroke: var(--border); stroke-width: 4;" />
+            <circle cx="400" cy="90" r="9" style="fill: var(--accent); stroke: var(--accent); stroke-width: 4;" />
+          </svg>
+          <div class="gallery-node-label" style="left: 10px; top: 4px;">EE1111A</div>
+          <div class="gallery-node-label" style="left: 10px; top: 124px;">EE2111A</div>
+          <div class="gallery-node-label" style="left: 130px; top: 64px;">CS1010E</div>
+          <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
+        </div>
+      </div>
+    </div>
+    <footer class="theme-picker">
+      <h4>Subway Theme</h4>
+      <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system, just for fun.</p>
+      <div class="theme-swatches">
+        <button type="button" class="theme-swatch" data-city="sf" onclick="setCityTheme('sf')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-sf-1"></span>
+            <span class="swatch-dot dot-sf-2"></span>
+            <span class="swatch-dot dot-sf-3"></span>
+            <span class="swatch-dot dot-sf-4"></span>
+          </span>
+          <span class="swatch-label">San Francisco</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="nyc" onclick="setCityTheme('nyc')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-nyc-1"></span>
+            <span class="swatch-dot dot-nyc-2"></span>
+            <span class="swatch-dot dot-nyc-3"></span>
+            <span class="swatch-dot dot-nyc-4"></span>
+          </span>
+          <span class="swatch-label">New York</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="chicago" onclick="setCityTheme('chicago')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-chicago-1"></span>
+            <span class="swatch-dot dot-chicago-2"></span>
+            <span class="swatch-dot dot-chicago-3"></span>
+            <span class="swatch-dot dot-chicago-4"></span>
+          </span>
+          <span class="swatch-label">Chicago</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="tokyo" onclick="setCityTheme('tokyo')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-tokyo-1"></span>
+            <span class="swatch-dot dot-tokyo-2"></span>
+            <span class="swatch-dot dot-tokyo-3"></span>
+            <span class="swatch-dot dot-tokyo-4"></span>
+          </span>
+          <span class="swatch-label">Tokyo</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="seoul" onclick="setCityTheme('seoul')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-seoul-1"></span>
+            <span class="swatch-dot dot-seoul-2"></span>
+            <span class="swatch-dot dot-seoul-3"></span>
+            <span class="swatch-dot dot-seoul-4"></span>
+          </span>
+          <span class="swatch-label">Seoul</span>
+        </button>
+      </div>
+      <p class="theme-current" id="theme-current-label">Current: <strong>San Francisco</strong></p>
+    </footer>
+  </body>
+</html>

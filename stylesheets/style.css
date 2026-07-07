@@ -814,19 +814,9 @@ h3 {
   line-height: 1;
 }
 
-/* Highlighted course card — background tint + inset ring apply everywhere
-   with no specificity fight; border-left needs the extra
-   ".class-category"-scoped selector below to outrank the ".cat-*"
-   left-border rules in the category view (same specificity, wins on source
-   order since it's declared later). */
-.class-list li.is-highlight {
-  background: color-mix(in srgb, var(--highlight) 12%, var(--bg-card));
-  box-shadow: inset 0 0 0 1px var(--highlight);
-}
-.class-category .class-list li.is-highlight,
-.class-list-semester li.is-highlight {
-  border-left-color: var(--highlight);
-}
+/* Highlighted courses only get the star badge above — no card tint/ring/
+   border-color change, so the box still reads as whatever its normal
+   category color is. */
 
 /* "★ Highlights only" filter button (top of the Classes page) — toggles
    body.show-highlights-only, which hides every non-highlighted course in
@@ -851,7 +841,13 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
 /* Only CS2040 currently links out (to cs2040.html); this resets the
    anchor back to plain text styling so a linked course box looks
    identical to a plain (non-linked) one, just clickable. To link
-   another course, wrap its two <span>s in the same way in classes.html. */
+   another course, wrap its two <span>s in the same way in classes.html.
+   NOTE: no height:100% here (on purpose) — an earlier version forced the
+   anchor to fill the li's full height, which fought with the read-time
+   badge/tags row appended as a SIBLING after it: the li's grid-row height
+   got established from the anchor's own content, the anchor then claimed
+   100% of that, leaving zero room for the sibling row, which overflowed
+   below the box instead of the box growing to fit it. */
 .class-list li a {
   display: block;
   padding: 0;
@@ -861,7 +857,6 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
   letter-spacing: normal;
   border-bottom: none;
   text-decoration: none;
-  height: 100%;
 }
 /* Lift-on-hover, same language as .project-card/.theme-swatch, but only
    for boxes that actually link somewhere (:has(a)) — a plain, non-linked
@@ -907,30 +902,34 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
 }
 
 /* ============================================================
-   PREREQUISITE MAP — a literal subway-line diagram of a course's
-   prerequisite chain, read left-to-right like a transit line: each
-   "station" is one course, connected by a single continuous colored
-   line (var(--accent), so it's red on a Classes/course page, but
-   still tracks whichever page accent it's used on). The CURRENT
-   course's station is a filled solid dot (like a "you are here"
-   stop); prerequisite stations are hollow rings.
+   PREREQUISITE MAP — a literal subway-line diagram, read as three
+   zones left to right: Prerequisite(s) (grayed — already done/exempt,
+   de-emphasized) >>> Current (filled solid, "you are here") >>> Next
+   (hollow, normal theme color — a course THIS one unlocks; omit the
+   whole segment if there isn't one, don't leave it empty).
 
    Not just colors — the actual cartography changes per city theme too,
-   via --prereq-line-height/--prereq-dot-size/--prereq-dot-radius/
-   --prereq-dot-border-color/--prereq-dot-ring (defaults in :root, city
-   overrides live in the "CITY THEME" block near the top of this file):
-   SF/BART is bold-line-plain-circle, NYC is extra-bold-line with small
-   black-ringed circles (the line carries the color, not the station —
-   real Vignelli-diagram style), Chicago is thin and minimal, Tokyo uses
+   via --prereq-line-height/--prereq-dot-width/--prereq-dot-height/
+   --prereq-dot-radius/--prereq-dot-border-color/--prereq-dot-ring
+   (defaults in :root, city overrides live in the "CITY THEME" block
+   near the top of this file): SF/BART draws a plain black tick mark
+   crossing the line, NYC is an extra-bold line with small black-ringed
+   circles (the line carries the color, not the station — real
+   Vignelli-diagram style), Chicago is thin and minimal, Tokyo uses
    rounded-square badges, Seoul uses a white-gap double ring.
 
-   Markup — a station is just a <div class="prereq-station"> (add
-   "current" for the course this page is about); use <a href="...">
-   instead of <div> for any course that has its own page, so it's
-   clickable and gets a hover animation for free:
+   Markup — a station is just a <div class="prereq-station">:
+     - add "prereq" for anything required to take the current course
+       (grays out both the dot/tick AND the line segment leading out of
+       it — see --prereq-segment-color below)
+     - add "current" for the course this page is about
+     - anything else (no modifier) reads as "next"
+   Use <a href="..."> instead of <div> for any station that has its own
+   page, so it's clickable and gets a hover animation for free — grayed
+   "prereq" stations can still be links.
 
    <div class="prereq-map">
-     <div class="prereq-station">
+     <div class="prereq-station prereq">
        <span class="prereq-dot"></span>
        <span class="prereq-label">CS1010E</span>
      </div>
@@ -939,11 +938,30 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
        <span class="prereq-label">CS2040</span>
      </div>
    </div>
+
+   BRANCHES (OR-groups) — when two or more courses are alternatives
+   (either one satisfies the requirement), stack them in a
+   ".prereq-branch" instead of laying them side by side as separate
+   ".prereq-station"s (which would read as "both required", i.e. AND).
+   A branch merges its stations into one output line via two curved
+   "turnout" arms — station-diagram style, no text label needed, the
+   shape itself reads as "either of these". See the "PREREQUISITE
+   BRANCH" section further down for the full markup (2 stations + 4
+   connector spans) and the geometry this all derives from.
+
+   Two SEPARATE top-level items (two ".prereq-station"s, or a station
+   next to a branch) in the same .prereq-map read as AND — both feed
+   into whatever comes next.
    ============================================================ */
 .prereq-map {
   display: flex;
+  align-items: center;
   justify-content: center;
+  gap: 0;
   margin: 24px 0;
+}
+.prereq-map.is-hidden {
+  display: none;
 }
 /* Each station draws its OWN connector segment running from its dot's
    center to the next station's dot center, instead of one line spanning
@@ -963,8 +981,25 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
   text-decoration: none;
   color: var(--text);
   transition: transform 0.15s;
+  /* Indirection so the connector rule below can just always read this one
+     variable, instead of needing a separate override per role. Default =
+     the real line color (used by plain/"next" stations); ".prereq"
+     repoints it to a neutral gray. */
+  --prereq-segment-color: var(--accent);
 }
-.prereq-station:not(:last-child)::after {
+.prereq-station.prereq {
+  --prereq-segment-color: var(--border);
+}
+/* IMPORTANT: scoped to ".prereq-map >" direct children only. Without that,
+   this also matched the individual .prereq-station elements NESTED inside
+   a .prereq-branch (they're not literally the last child there either,
+   since the branch's own connector spans come after them) — each one drew
+   its OWN stray connector at full width, overflowing out of the branch
+   independently of the branch's single intended merge line, which is the
+   ".prereq-map > .prereq-branch:not(:last-child)::after" rule further
+   down. */
+.prereq-map > .prereq-station:not(:last-child)::after,
+.prereq-map > .prereq-branch:not(:last-child)::after {
   content: "";
   position: absolute;
   /* The dot's vertical CENTER is at half its own size (it's the station's
@@ -979,7 +1014,36 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
   left: 50%;
   width: 100%;
   height: var(--prereq-line-height);
-  background: var(--accent);
+  background: var(--prereq-segment-color);
+  z-index: 0;
+}
+/* First/last top-level segment gets a short cap extending a little past
+   its own dot's center — otherwise the connector (which only ever runs
+   dot-center to dot-center) touches just half of the outermost dots,
+   which reads as lopsided rather than as a normal line terminus,
+   especially on SF's thin tick mark. (".prereq-branch" already uses its
+   own "::before" for the internal OR merge bar, so a first-child branch
+   doesn't get this extra cap — a minor cosmetic gap only if a branch is
+   literally the very first thing in the map.) */
+.prereq-map > .prereq-station:first-child::before {
+  content: "";
+  position: absolute;
+  top: calc((var(--prereq-dot-height) / 2) - (var(--prereq-line-height) / 2));
+  left: calc(50% - 16px);
+  width: 16px;
+  height: var(--prereq-line-height);
+  background: var(--prereq-segment-color, var(--border));
+  z-index: 0;
+}
+.prereq-map > .prereq-station:last-child::after,
+.prereq-map > .prereq-branch:last-child::after {
+  content: "";
+  position: absolute;
+  top: calc((var(--prereq-dot-height) / 2) - (var(--prereq-line-height) / 2));
+  left: 50%;
+  width: 16px;
+  height: var(--prereq-line-height);
+  background: var(--prereq-segment-color, var(--border));
   z-index: 0;
 }
 .prereq-dot {
@@ -992,6 +1056,18 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
   border: var(--prereq-dot-border-width) solid var(--prereq-dot-border-color);
   box-shadow: var(--prereq-dot-ring);
 }
+/* Grayed prerequisite — solid muted fill regardless of theme (overrides
+   both the tick-mark themes, which carry color via background, and the
+   ring themes, which carry it via border-color), so "already done" reads
+   the same everywhere without needing a per-theme override. */
+.prereq-station.prereq .prereq-dot {
+  background: var(--border);
+  border-color: var(--border);
+  box-shadow: none;
+}
+.prereq-station.prereq .prereq-label {
+  opacity: 0.6;
+}
 /* The current course always fills solid with the real line color
    (var(--accent), not --prereq-dot-fill/border-color) so "you are here"
    reads clearly regardless of the active theme's normal station style —
@@ -1001,19 +1077,410 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
   border-color: var(--accent);
 }
 .prereq-label {
+  position: relative; /* so z-index below actually applies */
+  z-index: 1; /* sits above connector lines (z-index 0) that pass behind it in a .prereq-branch */
+  display: block;
+  line-height: 16px; /* fixed so .prereq-branch's merge-line math (below) can rely on a known station height */
   font-weight: 700;
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   text-align: center;
+  background: var(--bg-card); /* "knocks out" any branch connector line running behind it — see the note above */
+  padding: 0 2px;
 }
 /* Only clickable stations (real <a> tags) get the hover animation —
-   "current" and plain (no-page) prerequisites are inert. */
+   "current" and plain (no-page) prerequisites are inert. Grayed
+   prerequisites can still be links (e.g. a prereq that has its own
+   detail page) and keep the same lift, just without the color-shift,
+   since ".prereq-label" is already deliberately muted. */
 a.prereq-station:hover {
   transform: translateY(-4px);
 }
-a.prereq-station:hover .prereq-label {
+a.prereq-station:not(.prereq):hover .prereq-label {
   color: var(--accent);
+}
+
+/* ============================================================
+   >>> BRANCH CODE START <<<
+   PREREQUISITE BRANCH — an OR-group: two stations stacked vertically,
+   merged by two curved "turnout" arms into one output line, station-
+   diagram style (smooth 90° bends, not sharp T-junctions).
+
+   Geometry is derived, not eyeballed. Each .prereq-station's dot is
+   centered at half its own --prereq-dot-height (first child, flush with
+   the station's top); the label below it is a fixed 16px line plus the
+   station's 8px gap, i.e. 24px of "extra" content below every dot
+   center. With exactly 2 stacked stations of identical height S = D+24:
+     dot1 center (from branch top)    = D/2
+     dot2 center (from branch bottom) = D/2 + 24
+     merge Y (from branch top)        = D + 19
+       (the midpoint of dot1Y and dot2Y — NOT the branch's own 50%
+       mark, since the branch isn't vertically symmetric around its
+       center; using 50% here was the earlier bug that only stayed
+       hidden on SF's tall tick and showed up as a visible gap on
+       every circle-based theme.)
+   Markup needs 4 extra pieces alongside the two .prereq-station's,
+   since a single element only gets ::before/::after — not enough for
+   2 straight arms + 2 curves + 1 output line:
+
+   <div class="prereq-branch">
+     <div class="prereq-station prereq">...EE1111A...</div>
+     <div class="prereq-station prereq">...EE2111A...</div>
+     <span class="prereq-branch-arm prereq-branch-arm-top"></span>
+     <span class="prereq-branch-arm prereq-branch-arm-bottom"></span>
+     <span class="prereq-branch-curve prereq-branch-curve-top"></span>
+     <span class="prereq-branch-curve prereq-branch-curve-bottom"></span>
+   </div>
+   No "OR" text needed — the curve-into-one-line shape already reads as
+   "either of these", the way a real turnout does on a transit map.
+   ============================================================ */
+.prereq-branch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  width: 140px;
+  flex: none;
+  --prereq-curve-radius: 32px; /* generous on purpose — a small radius reads as a sharp corner from a normal viewing distance; this should be UNMISTAKABLY a rounded bend, not an L. See gallery variant 3 in prereq-styles.html. */
+  /* Branches are always an OR-group of prerequisites (there's no "current"
+     or "next" branch), so this is always gray — unlike ".prereq-station",
+     there's no ".prereq" modifier class needed to opt into it. */
+  --prereq-segment-color: var(--border);
+}
+.prereq-branch .prereq-station {
+  width: auto;
+}
+/* [LOCATION: the short vertical bar directly under the TOP station's dot,
+   e.g. under EE1111A] Straight arm from dot1's center down to just above
+   the curve. */
+.prereq-branch-arm-top {
+  position: absolute;
+  top: calc(var(--prereq-dot-height) / 2);
+  height: calc(var(--prereq-dot-height) / 2 + 19px - var(--prereq-curve-radius));
+  left: calc(50% - (var(--prereq-line-height) / 2));
+  width: var(--prereq-line-height);
+  background: var(--prereq-segment-color);
+}
+/* [LOCATION: the short vertical bar directly above the BOTTOM station's
+   dot, e.g. above EE2111A] Straight arm from just below the curve down to
+   dot2's center. */
+.prereq-branch-arm-bottom {
+  position: absolute;
+  top: calc(var(--prereq-dot-height) + 19px + var(--prereq-curve-radius));
+  bottom: calc(var(--prereq-dot-height) / 2 + 24px);
+  left: calc(50% - (var(--prereq-line-height) / 2));
+  width: var(--prereq-line-height);
+  background: var(--prereq-segment-color);
+}
+/* [LOCATION: both quarter-circle bends, in the middle of the branch, where
+   the two arms above bend and meet] Quarter-circle turnout curves — the
+   classic CSS trick: a square with border-radius on ONE corner and color
+   only on the two adjacent sides that should look like a line. Top curve
+   bends "coming down, turning right"; bottom curve bends "coming up,
+   turning right". Together these two curves are what makes this a smooth
+   bend instead of a sharp T — bigger --prereq-curve-radius (set on
+   .prereq-branch above) = a wider, gentler curve. */
+.prereq-branch-curve {
+  position: absolute;
+  left: calc(50% - (var(--prereq-line-height) / 2));
+  width: var(--prereq-curve-radius);
+  height: var(--prereq-curve-radius);
+  border: 0 solid var(--prereq-segment-color);
+}
+/* [LOCATION: the TOP curve specifically — the one EE1111A's arm bends
+   into] */
+.prereq-branch-curve-top {
+  top: calc(var(--prereq-dot-height) + 19px - var(--prereq-curve-radius));
+  border-left-width: var(--prereq-line-height);
+  border-bottom-width: var(--prereq-line-height);
+  border-radius: 0 0 0 999px;
+}
+/* [LOCATION: the BOTTOM curve specifically — the one EE2111A's arm bends
+   into] */
+.prereq-branch-curve-bottom {
+  top: calc(var(--prereq-dot-height) + 19px);
+  border-left-width: var(--prereq-line-height);
+  border-top-width: var(--prereq-line-height);
+  border-radius: 999px 0 0 0;
+}
+/* [LOCATION: the single horizontal line exiting the RIGHT side of the
+   branch, continuing on to whatever's next in the .prereq-map (e.g. into
+   CS1010E)] Output line continuing right to whatever comes after the
+   branch — sits at the true merge Y (see the geometry note above, NOT
+   50%), starting right where the curves end so it reads as one
+   continuous bend rather than overlapping them.
+   IMPORTANT: matches ".prereq-map > .prereq-branch:not(:last-child)::after"
+   exactly (same prefix) on purpose — the base rule above it is scoped
+   that way too, and needs EQUAL specificity for this override to actually
+   win (a bare ".prereq-branch:not(:last-child)::after" here would lose to
+   it and silently do nothing, which is exactly what happened before). */
+.prereq-map > .prereq-branch:not(:last-child)::after {
+  top: calc(var(--prereq-dot-height) + 19px - (var(--prereq-line-height) / 2));
+  left: calc(50% - (var(--prereq-line-height) / 2) + var(--prereq-curve-radius));
+  width: calc(100% + (var(--prereq-line-height) / 2) - var(--prereq-curve-radius));
+}
+/* >>> BRANCH CODE END <<< */
+
+/* ============================================================
+   PREREQUISITE TREE — a plain, non-subway-themed alternative to
+   .prereq-map, specifically for when there's real AND/OR logic to show.
+   Modeled on NUSMods' module prerequisite tree: rounded-rect nodes,
+   top-down layout (prerequisites above, the course you're viewing at
+   the bottom), plain right-angle connector lines (not the subway map's
+   curves), and OR-groups shown by converging lines into a small round
+   "OR" badge sitting on the trunk line. Not city-themed on purpose
+   (plain var(--border)/var(--bg-card)/var(--accent) only) — it's the
+   "read the fine print" view, not the "just for fun" one.
+
+   Pair it with a view-switcher (same widget classes.html uses) so both
+   pages using ".prereq-map" AND/OR logic can toggle between them:
+
+   <div class="view-switcher" role="tablist" aria-label="Prerequisite view">
+     <button type="button" class="view-switcher-btn is-active" data-prereq-view="map" aria-pressed="true">Subway map</button>
+     <button type="button" class="view-switcher-btn" data-prereq-view="tree" aria-pressed="false">Tree</button>
+   </div>
+   <div class="prereq-map">...</div>
+   <div class="prereq-tree is-hidden">
+     <!-- One ".tree-level" = one row of things that must ALL be true
+          (AND) to proceed down to whatever's below them. Each direct
+          child of a ".tree-level" is either a ".tree-node" (a single
+          required course) or a ".tree-fork" (an OR-group — see below).
+          Every child needs a fixed width (default 160px via CSS; add
+          "small" to go 120px, used inside forks) so the connector
+          lines, which each item draws pointing at the NEXT item's
+          center, land correctly — same trick as .prereq-map. -->
+     <div class="tree-level">
+       <div class="tree-node tree-node-prereq">CS1010E</div>
+       <div class="tree-fork">
+         <div class="tree-fork-row">
+           <div class="tree-node tree-node-prereq small">EE1111A</div>
+           <div class="tree-node tree-node-prereq small">EE2111A</div>
+         </div>
+         <span class="tree-fork-badge">OR</span>
+       </div>
+     </div>
+     <div class="tree-node tree-node-current">EE2028</div>
+   </div>
+
+   Wire the toggle up with scripts/theme.js's initPrereqViewSwitcher() —
+   see classes/ee2028.html for a real working example.
+   ============================================================ */
+.prereq-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 28px 0;
+}
+.prereq-tree.is-hidden {
+  display: none;
+}
+.tree-node {
+  position: relative;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  text-align: center;
+  transition: transform 0.15s, border-color 0.15s;
+}
+a.tree-node:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+.tree-node-current {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+.tree-node-prereq {
+  opacity: 0.6;
+}
+
+/* One row of AND-ed requirements. Every direct child is a fixed-width
+   "slot"; each non-last slot draws a right-angle connector — a stub
+   down from its own node, then a horizontal run to the next slot's
+   center — reaching a single shared trunk that continues down into
+   whatever node/tree-level comes after this one. Same "each item points
+   at the next item's center" technique as .prereq-map's connectors,
+   just orthogonal (stub + horizontal) instead of one straight segment. */
+.tree-level {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* NOT the default "stretch" — otherwise a plain
+    .tree-node next to a taller .tree-fork stretches to match it, leaving
+    empty space inside its own border instead of staying its natural size. */
+  position: relative;
+  margin-bottom: 28px;
+}
+.tree-level > * {
+  position: relative;
+  /* Wide enough to fit a 2-node .tree-fork (2 x 110px fork-row items)
+     without it overflowing into the neighboring slot — a plain
+     .tree-node just centers within the extra space, it doesn't need it.
+     Every slot MUST stay the same width, plain node or fork: the
+     connector lines below only work because each slot's own line
+     reaches exactly "one slot width" to the right, landing on the next
+     slot's center — a narrower slot for plain nodes would throw that
+     math off. */
+  width: 240px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tree-level > *::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 26px;
+  background: var(--border);
+}
+.tree-level > *:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: calc(100% + 13px);
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+}
+/* Trunk from the level's shared midpoint down into the next node —
+   .tree-level always sits directly above one .tree-node (never another
+   .tree-level), so this is just "the node right after a level". */
+.tree-level + .tree-node {
+  margin-top: 26px;
+}
+.tree-level + .tree-node::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 26px;
+  background: var(--border);
+}
+
+/* OR-fork — the exact same "level of fixed-width slots with right-angle
+   connectors" pattern as .tree-level, just smaller and nested inside a
+   single .tree-level slot, with a round badge marking the merge point
+   instead of continuing straight into another .tree-level. */
+.tree-fork {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tree-fork-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  margin-bottom: 22px;
+}
+.tree-fork-row > * {
+  position: relative;
+  width: 110px;
+  flex: none;
+}
+.tree-fork-row > *::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 22px;
+  background: var(--border);
+}
+.tree-fork-row > *:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: calc(100% + 11px);
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+}
+.tree-fork-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg-page);
+  color: var(--text);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+/* NOTE: no "width" here on purpose — inside a .tree-fork-row, the outer
+   ".tree-fork-row > *" rule already sets width:110px, and that fixed
+   width is what the row's connector lines rely on to land on the right
+   center point. Overriding it here (even to "auto") would win on
+   specificity and silently break that math. */
+.tree-node.small {
+  padding: 6px 10px;
+  font-size: 0.72rem;
+}
+
+/* ============================================================
+   GALLERY DIAGRAM — one-off styles for prereq-styles.html only (the
+   "which branch style looks best" comparison page). NOT part of the
+   real .prereq-branch component and not used anywhere else — fixed
+   pixel coordinates via inline SVG, not derived from --prereq-* theme
+   variables, since this is just a side-by-side comparison, not a
+   themed production component. Safe to delete this whole block (and
+   prereq-styles.html) once a winner is picked and the real component
+   is updated to match. */
+.gallery-diagram {
+  position: relative;
+  height: 140px;
+  margin: 20px 0;
+}
+.gallery-diagram-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.gallery-node {
+  position: absolute;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 6px 10px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.gallery-node-current {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+/* Plain text label (no box) for the "real subway map" variant — labels
+   sit next to a proper circle station marker drawn in the SVG itself,
+   not inside a bordered box like the other gallery variants. */
+.gallery-node-label {
+  position: absolute;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 /* ============================================================
