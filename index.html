@@ -62,6 +62,11 @@
           <li>Fill in the rest of the website</li>
           <li>Make the website more interactive</li>
           <li>Make the website more visually appealing</li>
+          <li>Fix the About/Contact nav links — nothing has <code>id="about"</code>, and Contact uses <code>id="Contact"</code> (capital) while every link points to lowercase <code>#contact</code>, so both currently go nowhere</li>
+          <li>Add a real favicon at the site root — every page requests <code>/favicon.ico</code> but only <code>public/favicon.ico</code> exists, which isn't actually served since the site isn't built/deployed via Vite</li>
+          <li>Swap the placeholder Instagram/LinkedIn links in Contact for real profile URLs</li>
+          <li>Decide whether to keep or delete the leftover Vue/Vite scaffolding (<code>src/</code>, <code>public/</code>, <code>vite.config.js</code>, <code>package.json</code>) — it isn't wired into the actual site</li>
+          <li>Give each page its own <code>&lt;title&gt;</code> and a <code>&lt;meta name="description"&gt;</code> — right now every page shares the exact same title</li>
         </ol>
       </div>
 

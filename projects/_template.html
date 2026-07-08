@@ -1,12 +1,27 @@
 <!DOCTYPE html>
+<!-- TEMPLATE for a single project's detail page.
+
+     HOW TO USE: copy this file, rename it to something short (e.g.
+     weather-app.html), then:
+       1. Replace "Project Name" / tech tags / summary below.
+       2. Delete the placeholder-note <span> once the content is real.
+       3. Write the write-up in the "Details" section — plain <p>,
+          <ul>/<ol>, <strong>/<em>, <code>, <blockquote> all just work, no
+          markdown parser needed (same as classes/_template.html).
+       4. Replace the GitHub/Demo hrefs near the bottom.
+       5. Delete this HTML comment block, it's instructions, not content.
+       6. Link it from projects.html: wrap that project's <h4> text in
+          <a href="projects/yourproject.html">...</a> (see Project One in
+          projects.html — projects/project-one.html is this template
+          already wired up, copy that pattern). -->
 <html lang="">
   <head>
-    <script src="./scripts/theme.js"></script>
+    <script src="../scripts/theme.js"></script>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kenneth Lee Profile</title>
-    <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
   </head>
   <!-- "page-projects" sets this page's accent color (see stylesheets/style.css) -->
   <body class="page-projects">
@@ -20,69 +35,47 @@
         <details>
           <summary>Home &#9662;</summary>
           <ul class="dropdown-content">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#about">About</a></li>
-            <li><a href="index.html#contact">Contact</a></li>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
           </ul>
         </details>
       </li>
-      <li><a href="pages.html">Pages</a></li>
-      <li><a href="projects.html" class="active">Projects</a></li>
-      <li><a href="classes.html">Classes</a></li>
+      <li><a href="../pages.html">Pages</a></li>
+      <li><a href="../projects.html" class="active">Projects</a></li>
+      <li><a href="../classes.html">Classes</a></li>
     </ul>
     <div>
       <div class="walloftext">
-        <h3>Projects</h3>
-        <p>A few things I've built. <span class="placeholder-note">Placeholder content — swap in your real projects</span></p>
-
-        <!-- MANUAL EDIT: each .project-card below is one project. Copy/paste
-             a whole <div class="project-card">...</div> block to add another,
-             or delete one to remove a project. Replace the "#" hrefs with your
-             real GitHub/demo links, and delete the placeholder-note <span>
-             in the <p> above once all three are real. To give a project its
-             own detail page like Project One does, wrap its <h4> text in
-             <a href="projects/yourproject.html">...</a> (copy
-             projects/_template.html as the starting point for the new page —
-             projects/project-one.html is that same template already wired up). -->
-        <div class="card-grid">
-          <div class="project-card">
-            <h4><a href="projects/project-one.html">Project One</a></h4>
-            <p>One or two sentences describing what this project does and why you built it.</p>
-            <div class="tech-tags">
-              <span class="tech-tag">Python</span>
-              <span class="tech-tag">Flask</span>
-            </div>
-            <div class="project-links">
-              <a href="#" target="_blank">GitHub</a>
-              <a href="#" target="_blank">Demo</a>
-            </div>
-          </div>
-
-          <div class="project-card">
-            <h4>Project Two</h4>
-            <p>One or two sentences describing what this project does and why you built it.</p>
-            <div class="tech-tags">
-              <span class="tech-tag">C++</span>
-              <span class="tech-tag">Embedded</span>
-            </div>
-            <div class="project-links">
-              <a href="#" target="_blank">GitHub</a>
-            </div>
-          </div>
-
-          <div class="project-card">
-            <h4>Project Three</h4>
-            <p>One or two sentences describing what this project does and why you built it.</p>
-            <div class="tech-tags">
-              <span class="tech-tag">Vue</span>
-              <span class="tech-tag">JavaScript</span>
-            </div>
-            <div class="project-links">
-              <a href="#" target="_blank">GitHub</a>
-              <a href="#" target="_blank">Write-up</a>
-            </div>
-          </div>
+        <h3>Project Name</h3>
+        <div class="tech-tags">
+          <span class="tech-tag">Tech One</span>
+          <span class="tech-tag">Tech Two</span>
         </div>
+        <p><span class="placeholder-note">Placeholder content — swap in your real write-up</span></p>
+        <p>
+          One or two sentences describing what this project does and why you built
+          it — same summary as the card on projects.html, just expanded into the
+          full story here.
+        </p>
+      </div>
+
+      <!-- Demo of plain-HTML "markdown" content — delete this whole
+           walloftext once you've copied whichever bits you actually need. -->
+      <div class="walloftext">
+        <h4>Details</h4>
+        <p>A normal paragraph. <strong>Bold</strong>, <em>italic</em>, and <code>inline code</code> all work as you'd expect.</p>
+        <ul>
+          <li>What problem it solves</li>
+          <li>Key technical decisions and why you made them</li>
+          <li>What you'd do differently next time</li>
+        </ul>
+        <blockquote>A pull quote, e.g. a favorite bit of feedback or a tricky bug you're proud of fixing.</blockquote>
+        <div class="project-links">
+          <a href="#" target="_blank">GitHub</a>
+          <a href="#" target="_blank">Demo</a>
+        </div>
+        <a class="back-link" href="../projects.html">&larr; Back to Projects</a>
       </div>
     </div>
     <footer class="theme-picker">

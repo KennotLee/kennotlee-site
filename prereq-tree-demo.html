@@ -8,8 +8,10 @@
     <title>Kenneth Lee Profile</title>
     <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
   </head>
-  <!-- "page-projects" sets this page's accent color (see stylesheets/style.css) -->
-  <body class="page-projects">
+  <!-- "page-pages" sets this page's accent color (see stylesheets/style.css) —
+       matches the "Pages" nav tab this is reached from, same as
+       prereq-styles.html. -->
+  <body class="page-pages">
     <div class="header">
       <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
       <h1>kennotlee</h1>
@@ -26,63 +28,72 @@
           </ul>
         </details>
       </li>
-      <li><a href="pages.html">Pages</a></li>
-      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="pages.html" class="active">Pages</a></li>
+      <li><a href="projects.html">Projects</a></li>
       <li><a href="classes.html">Classes</a></li>
     </ul>
     <div>
       <div class="walloftext">
-        <h3>Projects</h3>
-        <p>A few things I've built. <span class="placeholder-note">Placeholder content — swap in your real projects</span></p>
+        <h3>Prerequisite Tree Demo</h3>
+        <p><span class="placeholder-note">Test page — not linked from Classes</span></p>
+        <p>
+          A standalone look at <code>.prereq-tree</code> — the plain, NUSMods-style
+          AND/OR box diagram (see "PREREQUISITE TREE" in stylesheets/style.css),
+          shown here paired with its <code>.prereq-map</code> subway-diagram
+          equivalent via the same Subway map / Tree toggle real course pages use
+          (see classes/ee2028.html). "COURSE X" below is a stand-in for whichever
+          real course actually has this AND/OR shape — copy the markup from
+          <a href="classes/ee2028.html">classes/ee2028.html</a> and swap in real
+          course codes when you have one.
+        </p>
+      </div>
 
-        <!-- MANUAL EDIT: each .project-card below is one project. Copy/paste
-             a whole <div class="project-card">...</div> block to add another,
-             or delete one to remove a project. Replace the "#" hrefs with your
-             real GitHub/demo links, and delete the placeholder-note <span>
-             in the <p> above once all three are real. To give a project its
-             own detail page like Project One does, wrap its <h4> text in
-             <a href="projects/yourproject.html">...</a> (copy
-             projects/_template.html as the starting point for the new page —
-             projects/project-one.html is that same template already wired up). -->
-        <div class="card-grid">
-          <div class="project-card">
-            <h4><a href="projects/project-one.html">Project One</a></h4>
-            <p>One or two sentences describing what this project does and why you built it.</p>
-            <div class="tech-tags">
-              <span class="tech-tag">Python</span>
-              <span class="tech-tag">Flask</span>
+      <div class="walloftext">
+        <h4>Prerequisites</h4>
+        <div class="view-switcher" role="tablist" aria-label="Prerequisite view selector">
+          <button type="button" class="view-switcher-btn is-active" data-prereq-view="map" aria-pressed="true">Subway map</button>
+          <button type="button" class="view-switcher-btn" data-prereq-view="tree" aria-pressed="false">Tree</button>
+        </div>
+        <div class="prereq-map">
+          <!-- >>> BRANCH CODE START <<< (markup) -->
+          <div class="prereq-branch">
+            <div class="prereq-station prereq">
+              <span class="prereq-dot"></span>
+              <span class="prereq-label">EE1111A</span>
             </div>
-            <div class="project-links">
-              <a href="#" target="_blank">GitHub</a>
-              <a href="#" target="_blank">Demo</a>
+            <div class="prereq-station prereq">
+              <span class="prereq-dot"></span>
+              <span class="prereq-label">EE2111A</span>
             </div>
+            <span class="prereq-branch-arm prereq-branch-arm-top"></span>
+            <span class="prereq-branch-arm prereq-branch-arm-bottom"></span>
+            <span class="prereq-branch-curve prereq-branch-curve-top"></span>
+            <span class="prereq-branch-curve prereq-branch-curve-bottom"></span>
           </div>
-
-          <div class="project-card">
-            <h4>Project Two</h4>
-            <p>One or two sentences describing what this project does and why you built it.</p>
-            <div class="tech-tags">
-              <span class="tech-tag">C++</span>
-              <span class="tech-tag">Embedded</span>
-            </div>
-            <div class="project-links">
-              <a href="#" target="_blank">GitHub</a>
-            </div>
+          <!-- >>> BRANCH CODE END <<< (markup) -->
+          <div class="prereq-station prereq">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">CS1010E</span>
           </div>
-
-          <div class="project-card">
-            <h4>Project Three</h4>
-            <p>One or two sentences describing what this project does and why you built it.</p>
-            <div class="tech-tags">
-              <span class="tech-tag">Vue</span>
-              <span class="tech-tag">JavaScript</span>
-            </div>
-            <div class="project-links">
-              <a href="#" target="_blank">GitHub</a>
-              <a href="#" target="_blank">Write-up</a>
-            </div>
+          <div class="prereq-station current">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">COURSE X</span>
           </div>
         </div>
+        <div class="prereq-tree is-hidden">
+          <div class="tree-level">
+            <div class="tree-node tree-node-prereq">CS1010E</div>
+            <div class="tree-fork">
+              <div class="tree-fork-row">
+                <div class="tree-node tree-node-prereq small">EE1111A</div>
+                <div class="tree-node tree-node-prereq small">EE2111A</div>
+              </div>
+              <span class="tree-fork-badge">OR</span>
+            </div>
+          </div>
+          <div class="tree-node tree-node-current">COURSE X</div>
+        </div>
+        <a class="back-link" href="pages.html">&larr; Back to Pages</a>
       </div>
     </div>
     <footer class="theme-picker">

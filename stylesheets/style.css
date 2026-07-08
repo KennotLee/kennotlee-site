@@ -729,6 +729,17 @@ h3 {
   color: var(--heading);
   font-size: 1.1rem;
 }
+/* Only the title links to the project's own detail page (not the whole
+   card, unlike ".class-list li") — the card already has separate GitHub/
+   Demo links below, and a `<a>` can't nest inside another `<a>`. */
+.project-card h4 a {
+  color: inherit;
+  text-decoration: none;
+}
+.project-card h4 a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
 
 .project-card p {
   margin: 0 0 14px 0;
@@ -980,7 +991,6 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
   flex: none;
   text-decoration: none;
   color: var(--text);
-  transition: transform 0.15s;
   /* Indirection so the connector rule below can just always read this one
      variable, instead of needing a separate override per role. Default =
      the real line color (used by plain/"next" stations); ".prereq"
@@ -1055,6 +1065,7 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
   background: var(--prereq-dot-fill);
   border: var(--prereq-dot-border-width) solid var(--prereq-dot-border-color);
   box-shadow: var(--prereq-dot-ring);
+  transition: transform 0.15s;
 }
 /* Grayed prerequisite — solid muted fill regardless of theme (overrides
    both the tick-mark themes, which carry color via background, and the
@@ -1093,8 +1104,15 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
    "current" and plain (no-page) prerequisites are inert. Grayed
    prerequisites can still be links (e.g. a prereq that has its own
    detail page) and keep the same lift, just without the color-shift,
-   since ".prereq-label" is already deliberately muted. */
-a.prereq-station:hover {
+   since ".prereq-label" is already deliberately muted.
+   IMPORTANT: the lift transform goes on ".prereq-dot" only, NOT on
+   ".prereq-station" itself. The station's own connector line (the
+   ::before/::after in the "PREREQUISITE MAP" rules above) is a
+   pseudo-element OF that same station element — transforming the
+   station would drag its connector along with it, kinking the line at
+   exactly the station you're hovering. Transforming just the dot lifts
+   the "you are here" marker while the line stays put. */
+a.prereq-station:hover .prereq-dot {
   transform: translateY(-4px);
 }
 a.prereq-station:not(.prereq):hover .prereq-label {
@@ -1442,11 +1460,33 @@ a.tree-node:hover {
    variables, since this is just a side-by-side comparison, not a
    themed production component. Safe to delete this whole block (and
    prereq-styles.html) once a winner is picked and the real component
-   is updated to match. */
+   is updated to match.
+
+   >>> FINE-TUNING: IF LINES AND BOXES DON'T LINE UP <<<
+   Every diagram here draws its CONNECTOR LINES in one coordinate space
+   (the inline <svg viewBox="0 0 W H">) but positions its NODE BOXES/LABELS
+   in a totally different one (plain CSS "left"/"top" on ".gallery-node" /
+   ".gallery-tree-node" / etc., relative to this ".gallery-diagram" div).
+   Those two only line up if this div's RENDERED pixel size is EXACTLY
+   W x H — otherwise the SVG's default "preserveAspectRatio" scales AND
+   re-centers its whole coordinate space to fit whatever size this div
+   actually is, independently of the plain-CSS boxes, which never scale or
+   re-center. Left alone (no explicit width), this div just fills its
+   parent card (~644px on this site) — so unless your viewBox width also
+   happens to be 644, the lines silently drift away from the boxes, worse
+   the wider the diagram is.
+   FIX: always set BOTH width and height inline on ".gallery-diagram" to
+   match the <svg>'s viewBox numbers EXACTLY (see any entry below for the
+   pattern: style="width: Wpx; height: Hpx;"). "overflow-x: auto" below is
+   the safety net for when that W is wider than the card — you get a
+   scrollbar instead of the whole thing squishing back down and
+   re-triggering this same drift. */
 .gallery-diagram {
   position: relative;
   height: 140px;
   margin: 20px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 .gallery-diagram-svg {
   position: absolute;
@@ -1480,6 +1520,106 @@ a.tree-node:hover {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   GALLERY TREE DIAGRAM — one-off styles for prereq-tree-styles.html
+   ONLY (the "which prerequisite TREE style looks best" comparison page —
+   sister page to prereq-styles.html above, which compares LINE-MAP branch
+   shapes instead). Reuses ".gallery-diagram"/".gallery-diagram-svg" from
+   above for the wrapper/SVG layer.
+
+   Recreates a NUSMods-style dependency graph: reverse dependents ("needs"
+   this course) in --line-4 (red), prerequisites (what this needs) in
+   --line-2 (green/teal), the course itself in --line-3 (orange) — same
+   three --line-* variables the rest of the site uses (city-theme swap
+   recolors these same as everywhere else), connected by plain right-angle
+   "brace" connectors (a shared vertical spine collecting several
+   horizontal stubs, then one output line) with the relationship ("needs" /
+   "all of" / "one of") labeled directly on the connecting line. Pixel
+   COORDINATES are still fixed (not derived from theme variables), same
+   reasoning as the GALLERY DIAGRAM block above — only the colors follow
+   the theme.
+
+   Only nodes that are real links (an <a>, because that course has its own
+   page) get the hover lift — see "a.gallery-tree-node:hover" below, same
+   "hover iff there's a link" rule as ".class-list li:has(a):hover" and
+   "a.prereq-station:hover" elsewhere in this file. Plain (non-link) nodes
+   use a <div> instead and stay inert. */
+.gallery-tree-node {
+  position: absolute;
+  display: block;
+  width: 100px;
+  padding: 6px 8px;
+  border-radius: 3px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+a.gallery-tree-node:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 0 var(--border);
+}
+/* All three roles fill solid (matching the reference screenshots) using
+   the *raw* (undimmed) --line-N-raw variables, NOT the plain --line-N
+   dark-mode-brightened ones — the brightened versions go pastel-light in
+   dark mode (see the dark-mode --line-* overrides near the top of this
+   file) and stop reading against white text. Raw stays fully saturated in
+   both themes, so white text is always safe, while still tracking
+   city-theme swaps (just not the light/dark toggle). Same reasoning
+   ".tree-node-current"/".prereq-station.current .prereq-dot" use for
+   filling with var(--accent) instead of a possibly-brightened line color. */
+.gallery-tree-node-dependent {
+  background: var(--line-4-raw);
+  border: 2px solid var(--line-4-raw);
+  color: #fff;
+}
+.gallery-tree-node-prereq {
+  background: var(--line-2-raw);
+  border: 2px solid var(--line-2-raw);
+  color: #fff;
+}
+.gallery-tree-node-current {
+  background: var(--line-3-raw);
+  border: 2px solid var(--line-3-raw);
+  color: #fff;
+}
+/* Plain text "node" (no box) — used for items one hop further out than
+   the rest (e.g. EE4604/EE4605, or the fork-only EE2012A), same idea as
+   ".gallery-node-label" above but centered on its own row like a real
+   node instead of sitting beside an SVG-drawn circle. */
+.gallery-tree-label {
+  position: absolute;
+  width: 100px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  text-align: center;
+  color: var(--text);
+  opacity: 0.7;
+}
+/* Relationship label sitting directly on a connector line — positioned by
+   its OWN horizontal-center point via "left" + "transform: translateX(
+   -50%)" rather than a fixed width, since unlike the nodes above these
+   aren't slot-aligned to the stub-line math, just centered on whatever
+   segment they annotate. */
+.gallery-tree-relation {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+  opacity: 0.75;
+  background: var(--bg-card);
+  padding: 0 4px;
   white-space: nowrap;
 }
 
