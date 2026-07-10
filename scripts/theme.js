@@ -71,6 +71,24 @@ function initPrereqViewSwitcher() {
   });
 }
 
+// Zoom control for one ".gallery-diagram" (see the ".gallery-zoom-
+// controls" comment in stylesheets/style.css) — delta 0 resets to 100%,
+// otherwise nudges by that amount, clamped to 40%-200% so it can't be
+// zoomed into nothing or off to some absurd size. Reads the current scale
+// back off the element's own style rather than tracking it separately, so
+// this stays correct even if the page re-renders the diagram.
+function zoomGalleryDiagram(button, delta) {
+  var wrap = button.closest('.gallery-diagram-wrap');
+  if (!wrap) return;
+  var diagram = wrap.querySelector('.gallery-diagram');
+  if (!diagram) return;
+
+  var current = parseFloat(diagram.dataset.zoom || '1');
+  var next = delta === 0 ? 1 : Math.max(0.4, Math.min(2, current + delta));
+  diagram.dataset.zoom = String(next);
+  diagram.style.transform = 'scale(' + next + ')';
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   updateToggleLabel();
   updateCityThemeUI();

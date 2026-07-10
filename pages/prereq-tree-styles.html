@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="">
   <head>
-    <script src="./scripts/theme.js"></script>
+    <script src="../scripts/theme.js"></script>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kenneth Lee Profile</title>
-    <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
   </head>
   <!-- "page-pages" sets this page's accent color (see stylesheets/style.css) —
        matches the "Pages" nav tab this is reached from, same as
@@ -22,15 +22,15 @@
         <details>
           <summary>Home &#9662;</summary>
           <ul class="dropdown-content">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#about">About</a></li>
-            <li><a href="index.html#contact">Contact</a></li>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
           </ul>
         </details>
       </li>
-      <li><a href="pages.html" class="active">Pages</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="classes.html">Classes</a></li>
+      <li><a href="../pages.html" class="active">Pages</a></li>
+      <li><a href="../projects.html">Projects</a></li>
+      <li><a href="../classes.html">Classes</a></li>
     </ul>
     <div>
       <div class="walloftext">
@@ -67,6 +67,7 @@
         <h4>2. NUSMods-style dependency graph (brace connectors, colored nodes)</h4>
         <p class="theme-picker-hint">Recreated from a screenshot, now following the site's own line colors (--line-4 red for reverse dependents, --line-2 green for prerequisites, --line-3 orange for the course itself — swap city theme in the footer and these recolor too) instead of fixed hex. Connected by plain right-angle brace connectors, relationship spelled out directly on the line ("needs" / "all of" / "one of"). Shows BOTH directions at once: what EE3731C needs (right side) and what needs EE3731C back (left side).</p>
         <p class="theme-picker-hint">Boxed nodes are real links here (<code>href="#"</code> placeholders — wire real hrefs once this is real data) and lift on hover; the three plain-text nodes (EE4604, EE4605, EE2012A) have no page to link to, so they're inert <code>&lt;div&gt;</code>s with no hover — same "hover only if there's a link" rule as the rest of the site. GALLERY-ONLY markup.</p>
+        <div class="gallery-diagram-scroll">
         <div class="gallery-diagram" style="width: 700px; height: 210px;">
           <svg viewBox="0 0 700 210" class="gallery-diagram-svg">
             <!-- left ("needs") brace: 5 dependents merging into one line into EE3731C -->
@@ -108,11 +109,19 @@
           <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 540px; top: 110px;">EE2023</a>
           <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 540px; top: 152px;">CG2023</a>
         </div>
+        </div>
       </div>
 
       <div class="walloftext">
         <h4>3. NUSMods dependency graph, large example (5 "one of" groups + a nested "at least 2 of")</h4>
         <p class="theme-picker-hint">Recreated from a second screenshot: CS4243 is the course being viewed (orange, "current"), CS6240 is a single reverse dependent that needs it ("needs", red), and CS4243 itself needs "all of" 5 breadth requirement groups (each "one of", teal) — 35 leaf modules total. MA1507 (bottom-right, plain text — no page of its own) has its own further requirement one level deeper: "at least 2 of" MA1512/MA1511. Every coordinate here (all ~50 stub lines, 5 local brackets, the shared "all of" spine, and the nested branch) came out of one small arithmetic pass over a fixed row height, so line endpoints and box positions can't drift out of sync with each other the way hand-eyeballed numbers can — see the comment on ".gallery-diagram" in stylesheets/style.css for the OTHER half of that (matching this div's inline width/height to the viewBox below). GALLERY-ONLY markup.</p>
+        <div class="gallery-diagram-wrap">
+        <div class="gallery-zoom-controls">
+          <button type="button" onclick="zoomGalleryDiagram(this, -0.15)">&minus;</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0)">Reset</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0.15)">+</button>
+        </div>
+        <div class="gallery-diagram-scroll">
         <div class="gallery-diagram" style="width: 960px; height: 890px;">
           <svg viewBox="0 0 960 890" class="gallery-diagram-svg">
             <line x1="320" y1="431" x2="380" y2="431" style="stroke: var(--border); stroke-width: 2;" />
@@ -215,6 +224,8 @@
           <div class="gallery-tree-relation" style="left: 710px; top: 824px;">at least 2 of</div>
           <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 820px; top: 795px;">MA1512</a>
           <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 820px; top: 839px;">MA1511</a>
+        </div>
+        </div>
         </div>
       </div>
     </div>

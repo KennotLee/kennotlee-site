@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="">
   <head>
-    <script src="./scripts/theme.js"></script>
+    <script src="../scripts/theme.js"></script>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kenneth Lee Profile</title>
-    <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
   </head>
   <!-- "page-pages" sets this page's accent color (see stylesheets/style.css) —
        matches the "Pages" nav tab this is reached from. -->
@@ -21,15 +21,15 @@
         <details>
           <summary>Home &#9662;</summary>
           <ul class="dropdown-content">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#about">About</a></li>
-            <li><a href="index.html#contact">Contact</a></li>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
           </ul>
         </details>
       </li>
-      <li><a href="pages.html" class="active">Pages</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="classes.html">Classes</a></li>
+      <li><a href="../pages.html" class="active">Pages</a></li>
+      <li><a href="../projects.html">Projects</a></li>
+      <li><a href="../classes.html">Classes</a></li>
     </ul>
     <div>
       <div class="walloftext">
@@ -148,7 +148,8 @@
              component) since this is just a one-off comparison. Third
              prong added on request — straight/flat since it's already at
              trunk height, no diagonal needed for that one. -->
-        <div class="gallery-diagram">
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 420px; height: 140px;">
           <svg viewBox="0 0 420 140" class="gallery-diagram-svg">
             <line x1="30" y1="20" x2="150" y2="70" style="stroke: var(--border); stroke-width: 3;" />
             <line x1="30" y1="70" x2="150" y2="70" style="stroke: var(--border); stroke-width: 3;" />
@@ -161,13 +162,15 @@
           <div class="gallery-node" style="left: 205px; top: 58px;">CS1010E</div>
           <div class="gallery-node gallery-node-current" style="left: 355px; top: 58px;">EE2028</div>
         </div>
+        </div>
       </div>
 
       <div class="walloftext">
         <h4>5. Junction dot</h4>
         <p class="theme-picker-hint">Right-angle lines like #2, but the merge point is marked with an explicit dot instead of left as a bare corner. GALLERY-ONLY markup.</p>
         <!-- GALLERY: junction-dot variant. Also fixed-pixel SVG. -->
-        <div class="gallery-diagram">
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 420px; height: 140px;">
           <svg viewBox="0 0 420 140" class="gallery-diagram-svg">
             <line x1="30" y1="24" x2="30" y2="116" style="stroke: var(--border); stroke-width: 3;" />
             <line x1="30" y1="70" x2="150" y2="70" style="stroke: var(--border); stroke-width: 3;" />
@@ -179,6 +182,7 @@
           <div class="gallery-node" style="left: 205px; top: 58px;">CS1010E</div>
           <div class="gallery-node gallery-node-current" style="left: 355px; top: 58px;">EE2028</div>
         </div>
+        </div>
       </div>
 
       <div class="walloftext">
@@ -188,7 +192,8 @@
              SVG (not HTML .gallery-node boxes) so they can sit precisely
              on the line the way real subway maps draw stations — a plain
              text .gallery-node-label sits next to each one instead. -->
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 460px; height: 180px;">
           <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
             <path d="M 40 30 L 110 30 Q 170 30 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
             <path d="M 40 150 L 110 150 Q 170 150 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
@@ -203,6 +208,7 @@
           <div class="gallery-node-label" style="left: 190px; top: 64px;">CS1010E</div>
           <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
         </div>
+        </div>
       </div>
 
       <div class="walloftext">
@@ -214,7 +220,8 @@
              merge vertex left and leave enough flat trunk (130 -> 220) for
              the CS1010E label to sit above without touching either the
              diagonals or the trunk line. -->
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 460px; height: 180px;">
           <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
             <path d="M 40 30 L 70 30 L 130 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: square; stroke-linejoin: miter;" />
             <path d="M 40 150 L 70 150 L 130 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: square; stroke-linejoin: miter;" />
@@ -229,6 +236,7 @@
           <div class="gallery-node-label" style="left: 140px; top: 64px;">CS1010E</div>
           <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
         </div>
+        </div>
       </div>
 
       <div class="walloftext">
@@ -239,7 +247,8 @@
              reads more like two tracks joining a shared siding than a
              branch — included alongside #7 since the user asked for either
              a 90 or 45 degree version to compare. -->
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 460px; height: 180px;">
           <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
             <path d="M 40 30 L 100 30 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: square; stroke-linejoin: miter;" />
             <path d="M 40 150 L 100 150 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: square; stroke-linejoin: miter;" />
@@ -254,6 +263,7 @@
           <div class="gallery-node-label" style="left: 130px; top: 64px;">CS1010E</div>
           <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
         </div>
+        </div>
       </div>
 
       <div class="walloftext">
@@ -267,7 +277,8 @@
              a straight run continues from radius px past it. Radius here
              is 16px — small enough to still read as a corner (unlike #6's
              full sweeping bend), just not a sharp one. -->
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 460px; height: 180px;">
           <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
             <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 74 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
             <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
@@ -282,6 +293,7 @@
           <div class="gallery-node-label" style="left: 130px; top: 64px;">CS1010E</div>
           <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
         </div>
+        </div>
       </div>
 
       <div class="walloftext">
@@ -295,7 +307,8 @@
              which is just a point ON the straight x1=40..x2=400 line at
              y=90 — so it reads as a clean merge onto an already-existing
              line rather than two lines each bending toward a shared point. -->
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 460px; height: 180px;">
           <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
             <line x1="40" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
             <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
@@ -309,6 +322,7 @@
           <div class="gallery-node-label" style="left: 190px; top: 64px;">CS1010E</div>
           <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
         </div>
+        </div>
       </div>
 
       <div class="walloftext">
@@ -320,7 +334,8 @@
              vertical meets the trunk) is a sharp miter join, same as #8 —
              this is #9 with just its second Q curve removed and replaced
              with a straight run all the way to the corner. -->
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 460px; height: 180px;">
           <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
             <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-linejoin: miter;" />
             <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-linejoin: miter;" />
@@ -335,12 +350,20 @@
           <div class="gallery-node-label" style="left: 130px; top: 64px;">CS1010E</div>
           <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
         </div>
+        </div>
       </div>
 
       <div class="walloftext">
         <h4>12. Eased elbow (#9), mirrored &mdash; branches on both sides</h4>
         <p class="theme-picker-hint">Same #9 shape on the left (EE1111A OR EE2111A merging into CS1010E, into EE2028), reflected onto the right: EE2028 feeds EE5111A, which branches into either EE6111A or EE7111A. Every coordinate right of EE2028 is #9's own left-side geometry mirrored around EE2028's x-position, not eyeballed separately. GALLERY-ONLY markup.</p>
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-wrap">
+        <div class="gallery-zoom-controls">
+          <button type="button" onclick="zoomGalleryDiagram(this, -0.15)">&minus;</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0)">Reset</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0.15)">+</button>
+        </div>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 840px; height: 180px;">
           <svg viewBox="0 0 840 180" class="gallery-diagram-svg">
             <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 74 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
             <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
@@ -364,12 +387,21 @@
           <div class="gallery-node-label" style="left: 730px; top: 4px;">EE6111A</div>
           <div class="gallery-node-label" style="left: 730px; top: 124px;">EE7111A</div>
         </div>
+        </div>
+        </div>
       </div>
 
       <div class="walloftext">
         <h4>13. One straight, one branch (#10), mirrored &mdash; branches on both sides</h4>
         <p class="theme-picker-hint">Same #10 shape: EE1111A/EE6111A run straight through as one continuous line, EE2111A and EE7111A are the only two that actually bend to merge onto it (left and right respectively). GALLERY-ONLY markup.</p>
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-wrap">
+        <div class="gallery-zoom-controls">
+          <button type="button" onclick="zoomGalleryDiagram(this, -0.15)">&minus;</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0)">Reset</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0.15)">+</button>
+        </div>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 840px; height: 180px;">
           <svg viewBox="0 0 840 180" class="gallery-diagram-svg">
             <line x1="40" y1="90" x2="760" y2="90" style="stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
             <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
@@ -388,12 +420,21 @@
           <div class="gallery-node-label" style="left: 730px; top: 64px;">EE6111A</div>
           <div class="gallery-node-label" style="left: 730px; top: 124px;">EE7111A</div>
         </div>
+        </div>
+        </div>
       </div>
 
       <div class="walloftext">
         <h4>14. Eased entry, sharp convergence (#11), mirrored &mdash; branches on both sides</h4>
         <p class="theme-picker-hint">Same #11 shape reflected onto the output side, same as #12 but with #11's sharp (non-curved) convergence onto the shared vertical. GALLERY-ONLY markup.</p>
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-wrap">
+        <div class="gallery-zoom-controls">
+          <button type="button" onclick="zoomGalleryDiagram(this, -0.15)">&minus;</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0)">Reset</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0.15)">+</button>
+        </div>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 840px; height: 180px;">
           <svg viewBox="0 0 840 180" class="gallery-diagram-svg">
             <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-linejoin: miter;" />
             <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-linejoin: miter;" />
@@ -417,12 +458,15 @@
           <div class="gallery-node-label" style="left: 730px; top: 4px;">EE6111A</div>
           <div class="gallery-node-label" style="left: 730px; top: 124px;">EE7111A</div>
         </div>
+        </div>
+        </div>
       </div>
 
       <div class="walloftext">
         <h4>15. Eased elbow (#9), grayed &mdash; everything but the last</h4>
         <p class="theme-picker-hint">Same #9 geometry, recolored: EE1111A/EE2111A/CS1010E and the line between them use the real component's solid-gray "already done" treatment (.prereq-station.prereq); only the final EE2028 course and the segment leading into it keep the line's real color. GALLERY-ONLY markup.</p>
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 460px; height: 180px;">
           <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
             <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 74 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--border); stroke-width: 5; stroke-linecap: round;" />
             <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--border); stroke-width: 5; stroke-linecap: round;" />
@@ -437,12 +481,14 @@
           <div class="gallery-node-label" style="left: 130px; top: 64px; opacity: 0.6;">CS1010E</div>
           <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
         </div>
+        </div>
       </div>
 
       <div class="walloftext">
         <h4>16. One straight, one branch (#10), grayed &mdash; everything but the last</h4>
         <p class="theme-picker-hint">Same #10 geometry, recolored the same way as #15 &mdash; the straight EE1111A run and the EE2111A branch are both grayed up to CS1010E; only the CS1010E&rarr;EE2028 segment keeps color. GALLERY-ONLY markup.</p>
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 460px; height: 180px;">
           <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
             <line x1="40" y1="90" x2="220" y2="90" style="stroke: var(--border); stroke-width: 5; stroke-linecap: round;" />
             <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: 5; stroke-linecap: round;" />
@@ -457,12 +503,14 @@
           <div class="gallery-node-label" style="left: 190px; top: 64px; opacity: 0.6;">CS1010E</div>
           <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
         </div>
+        </div>
       </div>
 
       <div class="walloftext">
         <h4>17. Eased entry, sharp convergence (#11), grayed &mdash; everything but the last</h4>
         <p class="theme-picker-hint">Same #11 geometry, recolored the same way as #15/#16. GALLERY-ONLY markup.</p>
-        <div class="gallery-diagram" style="height: 180px;">
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 460px; height: 180px;">
           <svg viewBox="0 0 460 180" class="gallery-diagram-svg">
             <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 90 L 220 90" style="fill: none; stroke: var(--border); stroke-width: 5; stroke-linecap: round; stroke-linejoin: miter;" />
             <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 90 L 220 90" style="fill: none; stroke: var(--border); stroke-width: 5; stroke-linecap: round; stroke-linejoin: miter;" />
@@ -476,6 +524,7 @@
           <div class="gallery-node-label" style="left: 10px; top: 124px; opacity: 0.6;">EE2111A</div>
           <div class="gallery-node-label" style="left: 130px; top: 64px; opacity: 0.6;">CS1010E</div>
           <div class="gallery-node-label" style="left: 370px; top: 64px;">EE2028</div>
+        </div>
         </div>
       </div>
     </div>

@@ -1122,8 +1122,10 @@ a.prereq-station:not(.prereq):hover .prereq-label {
 /* ============================================================
    >>> BRANCH CODE START <<<
    PREREQUISITE BRANCH — an OR-group: two stations stacked vertically,
-   merged by two curved "turnout" arms into one output line, station-
-   diagram style (smooth 90° bends, not sharp T-junctions).
+   merged by two straight "turnout" arms into one output line, each
+   meeting the merge line at a crisp right-angle corner (style #11,
+   "eased entry, sharp convergence", from pages/prereq-styles.html —
+   NOT a rounded bend; that was the earlier style #9 this replaced).
 
    Geometry is derived, not eyeballed. Each .prereq-station's dot is
    centered at half its own --prereq-dot-height (first child, flush with
@@ -1161,7 +1163,7 @@ a.prereq-station:not(.prereq):hover .prereq-label {
   gap: 14px;
   width: 140px;
   flex: none;
-  --prereq-curve-radius: 32px; /* generous on purpose — a small radius reads as a sharp corner from a normal viewing distance; this should be UNMISTAKABLY a rounded bend, not an L. See gallery variant 3 in prereq-styles.html. */
+  --prereq-branch-corner: var(--prereq-line-height); /* style #11 ("eased entry, sharp convergence") from pages/prereq-styles.html: both stations already sit vertically centered over the merge X here, so there's no horizontal offset to ease out of — the only thing #11 actually changes for THIS layout is that the arms run straight to the merge Y and meet the output line at a sharp corner instead of blending through a wide rounded bend. Sizing the corner box to exactly one line-thickness (instead of the old 32px) is what makes it read as a crisp joint rather than a curve. */
   /* Branches are always an OR-group of prerequisites (there's no "current"
      or "next" branch), so this is always gray — unlike ".prereq-station",
      there's no ".prereq" modifier class needed to opt into it. */
@@ -1170,65 +1172,59 @@ a.prereq-station:not(.prereq):hover .prereq-label {
 .prereq-branch .prereq-station {
   width: auto;
 }
-/* [LOCATION: the short vertical bar directly under the TOP station's dot,
-   e.g. under EE1111A] Straight arm from dot1's center down to just above
-   the curve. */
+/* [LOCATION: the vertical bar directly under the TOP station's dot, e.g.
+   under EE1111A] Straight arm from dot1's center down to the merge Y. */
 .prereq-branch-arm-top {
   position: absolute;
   top: calc(var(--prereq-dot-height) / 2);
-  height: calc(var(--prereq-dot-height) / 2 + 19px - var(--prereq-curve-radius));
+  height: calc(var(--prereq-dot-height) / 2 + 19px - var(--prereq-branch-corner));
   left: calc(50% - (var(--prereq-line-height) / 2));
   width: var(--prereq-line-height);
   background: var(--prereq-segment-color);
 }
-/* [LOCATION: the short vertical bar directly above the BOTTOM station's
-   dot, e.g. above EE2111A] Straight arm from just below the curve down to
-   dot2's center. */
+/* [LOCATION: the vertical bar directly above the BOTTOM station's dot,
+   e.g. above EE2111A] Straight arm from the merge Y up to dot2's center. */
 .prereq-branch-arm-bottom {
   position: absolute;
-  top: calc(var(--prereq-dot-height) + 19px + var(--prereq-curve-radius));
+  top: calc(var(--prereq-dot-height) + 19px + var(--prereq-branch-corner));
   bottom: calc(var(--prereq-dot-height) / 2 + 24px);
   left: calc(50% - (var(--prereq-line-height) / 2));
   width: var(--prereq-line-height);
   background: var(--prereq-segment-color);
 }
-/* [LOCATION: both quarter-circle bends, in the middle of the branch, where
-   the two arms above bend and meet] Quarter-circle turnout curves — the
-   classic CSS trick: a square with border-radius on ONE corner and color
-   only on the two adjacent sides that should look like a line. Top curve
-   bends "coming down, turning right"; bottom curve bends "coming up,
-   turning right". Together these two curves are what makes this a smooth
-   bend instead of a sharp T — bigger --prereq-curve-radius (set on
-   .prereq-branch above) = a wider, gentler curve. */
+/* [LOCATION: the two small corner joints, in the middle of the branch,
+   where each arm above turns into the merge line] Sharp-convergence
+   corners — style #11: an L-shaped border box (color on only the two
+   adjacent sides that should look like a line) with border-radius left
+   at 0, so the vertical arm and the horizontal merge line meet at a
+   crisp right angle instead of blending through a rounded bend. */
 .prereq-branch-curve {
   position: absolute;
   left: calc(50% - (var(--prereq-line-height) / 2));
-  width: var(--prereq-curve-radius);
-  height: var(--prereq-curve-radius);
+  width: var(--prereq-branch-corner);
+  height: var(--prereq-branch-corner);
   border: 0 solid var(--prereq-segment-color);
 }
-/* [LOCATION: the TOP curve specifically — the one EE1111A's arm bends
+/* [LOCATION: the TOP corner specifically — the one EE1111A's arm turns
    into] */
 .prereq-branch-curve-top {
-  top: calc(var(--prereq-dot-height) + 19px - var(--prereq-curve-radius));
+  top: calc(var(--prereq-dot-height) + 19px - var(--prereq-branch-corner));
   border-left-width: var(--prereq-line-height);
   border-bottom-width: var(--prereq-line-height);
-  border-radius: 0 0 0 999px;
 }
-/* [LOCATION: the BOTTOM curve specifically — the one EE2111A's arm bends
+/* [LOCATION: the BOTTOM corner specifically — the one EE2111A's arm turns
    into] */
 .prereq-branch-curve-bottom {
   top: calc(var(--prereq-dot-height) + 19px);
   border-left-width: var(--prereq-line-height);
   border-top-width: var(--prereq-line-height);
-  border-radius: 999px 0 0 0;
 }
 /* [LOCATION: the single horizontal line exiting the RIGHT side of the
    branch, continuing on to whatever's next in the .prereq-map (e.g. into
    CS1010E)] Output line continuing right to whatever comes after the
    branch — sits at the true merge Y (see the geometry note above, NOT
-   50%), starting right where the curves end so it reads as one
-   continuous bend rather than overlapping them.
+   50%), starting right where the corner joints end so it reads as one
+   continuous straight run rather than overlapping them.
    IMPORTANT: matches ".prereq-map > .prereq-branch:not(:last-child)::after"
    exactly (same prefix) on purpose — the base rule above it is scoped
    that way too, and needs EQUAL specificity for this override to actually
@@ -1236,8 +1232,8 @@ a.prereq-station:not(.prereq):hover .prereq-label {
    it and silently do nothing, which is exactly what happened before). */
 .prereq-map > .prereq-branch:not(:last-child)::after {
   top: calc(var(--prereq-dot-height) + 19px - (var(--prereq-line-height) / 2));
-  left: calc(50% - (var(--prereq-line-height) / 2) + var(--prereq-curve-radius));
-  width: calc(100% + (var(--prereq-line-height) / 2) - var(--prereq-curve-radius));
+  left: calc(50% - (var(--prereq-line-height) / 2) + var(--prereq-branch-corner));
+  width: calc(100% + (var(--prereq-line-height) / 2) - var(--prereq-branch-corner));
 }
 /* >>> BRANCH CODE END <<< */
 
@@ -1453,13 +1449,13 @@ a.tree-node:hover {
 }
 
 /* ============================================================
-   GALLERY DIAGRAM — one-off styles for prereq-styles.html only (the
+   GALLERY DIAGRAM — one-off styles for pages/prereq-styles.html only (the
    "which branch style looks best" comparison page). NOT part of the
    real .prereq-branch component and not used anywhere else — fixed
    pixel coordinates via inline SVG, not derived from --prereq-* theme
    variables, since this is just a side-by-side comparison, not a
    themed production component. Safe to delete this whole block (and
-   prereq-styles.html) once a winner is picked and the real component
+   pages/prereq-styles.html) once a winner is picked and the real component
    is updated to match.
 
    >>> FINE-TUNING: IF LINES AND BOXES DON'T LINE UP <<<
@@ -1477,16 +1473,70 @@ a.tree-node:hover {
    the wider the diagram is.
    FIX: always set BOTH width and height inline on ".gallery-diagram" to
    match the <svg>'s viewBox numbers EXACTLY (see any entry below for the
-   pattern: style="width: Wpx; height: Hpx;"). "overflow-x: auto" below is
-   the safety net for when that W is wider than the card — you get a
-   scrollbar instead of the whole thing squishing back down and
-   re-triggering this same drift. */
+   pattern: style="width: Wpx; height: Hpx;").
+
+   THAT WIDTH MUST STAY EXACT, UNCONSTRAINED — so the scrollbar for when W
+   is wider than the card can't live on ".gallery-diagram" itself (capping
+   ITS width with e.g. max-width:100% would just re-trigger the exact
+   scale-drift this fix exists to avoid). It lives one level up instead, on
+   the WRAPPING ".gallery-diagram-scroll" div every diagram needs around
+   it:
+     <div class="gallery-diagram-scroll">
+       <div class="gallery-diagram" style="width: Wpx; height: Hpx;">...</div>
+     </div>
+   ".gallery-diagram-scroll" is the one capped to the card's real width
+   (max-width: 100%) and given "overflow-x: auto" — so a too-wide diagram
+   scrolls WITHIN its own card instead of spilling out past it. */
+.gallery-diagram-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 .gallery-diagram {
   position: relative;
   height: 140px;
   margin: 20px 0;
-  overflow-x: auto;
-  overflow-y: hidden;
+  transform-origin: top left;
+  transition: transform 0.15s;
+}
+/* Optional per-diagram zoom (see ".gallery-zoom-controls" below) — wrap
+   BOTH the controls and the scroll box in one ".gallery-diagram-wrap" so
+   zoomGalleryDiagram() (scripts/theme.js) can find the right diagram from
+   whichever button was clicked, and so the controls stay visible even
+   once the diagram itself is scrolled sideways:
+     <div class="gallery-diagram-wrap">
+       <div class="gallery-zoom-controls">
+         <button type="button" onclick="zoomGalleryDiagram(this, -0.15)">&minus;</button>
+         <button type="button" onclick="zoomGalleryDiagram(this, 0)">Reset</button>
+         <button type="button" onclick="zoomGalleryDiagram(this, 0.15)">+</button>
+       </div>
+       <div class="gallery-diagram-scroll">
+         <div class="gallery-diagram" style="width: Wpx; height: Hpx;">...</div>
+       </div>
+     </div>
+   Only worth adding to diagrams actually wider than the card (roughly
+   >700px) — a diagram that already fits doesn't need zooming out, and
+   zooming in just re-creates the same scroll a plain wide diagram has. */
+.gallery-zoom-controls {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.gallery-zoom-controls button {
+  appearance: none;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.gallery-zoom-controls button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .gallery-diagram-svg {
   position: absolute;
@@ -1524,9 +1574,9 @@ a.tree-node:hover {
 }
 
 /* ============================================================
-   GALLERY TREE DIAGRAM — one-off styles for prereq-tree-styles.html
+   GALLERY TREE DIAGRAM — one-off styles for pages/prereq-tree-styles.html
    ONLY (the "which prerequisite TREE style looks best" comparison page —
-   sister page to prereq-styles.html above, which compares LINE-MAP branch
+   sister page to pages/prereq-styles.html above, which compares LINE-MAP branch
    shapes instead). Reuses ".gallery-diagram"/".gallery-diagram-svg" from
    above for the wrapper/SVG layer.
 
@@ -1621,6 +1671,87 @@ a.gallery-tree-node:hover {
   background: var(--bg-card);
   padding: 0 4px;
   white-space: nowrap;
+}
+
+/* ============================================================
+   GALLERY DIAGRAM, THEMED — for pages/prereq-branch-themed.html only
+   (live-themed remakes of gallery entries 9-17). UNLIKE the two GALLERY
+   blocks above, these reuse the REAL ".prereq-station"/".prereq-dot"/
+   ".prereq-label" component for every node — meaning dot shape/size
+   (tick/ring/square per city), line color (--accent/--border), and hover-
+   only-if-linked all come from the SAME theme system the real course pages
+   use, for free. Only the curved CONNECTOR shapes are still one-off SVG
+   <path>s (this geometry has no CSS equivalent yet), but even those use
+   "stroke-width: var(--prereq-line-height)" so thickness themes too.
+
+   ".prereq-station" is normally positioned by its parent ".prereq-map"
+   (position: relative, laid out in a flex row). Here each one is instead
+   placed by hand at an exact (x, y) target — this is the ONLY override
+   these diagrams need: */
+.gallery-diagram .prereq-station {
+  position: absolute;
+}
+/* Every station's "top" is written as "calc(TARGET_Y - (var(--prereq-dot-
+   height) / 2))" rather than a bare pixel value — the dot sits flush at
+   the station's own top edge, so this keeps the dot's CENTER pinned at
+   TARGET_Y (matching the SVG line endpoints) no matter how tall that
+   theme's dot happens to be (5px BART tick vs 20px Tokyo badge). "left" is
+   plain "TARGET_X - 70" (half of ".prereq-station"'s fixed 140px width,
+   since it centers its dot+label within that box) — the SVG viewBox
+   itself is deliberately widened on the left (e.g. "viewBox='-60 0 520
+   180'" instead of "0 0 460 180") so that offset never goes negative for
+   the leftmost stations; see the comment on any entry below for the exact
+   numbers. */
+
+/* ============================================================
+   PREREQUISITE MAP, D3-DRIVEN — for pages/prereq-d3-demo.html only.
+   The ".prereq-map"/".prereq-station"/".prereq-branch" elements here are
+   the same real components above, just built by scripts/d3 instead of
+   hand-typed HTML — no new node/line styling needed. This block is only
+   the small chrome around the map: the module picker, the back button,
+   and the breadcrumb of previously-viewed modules.
+   ============================================================ */
+.prereq-d3-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.prereq-d3-controls select {
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+}
+.prereq-d3-controls button {
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+.prereq-d3-breadcrumb {
+  text-align: center;
+  font-size: 0.85rem;
+  min-height: 1.2em;
+  margin-bottom: 12px;
+  opacity: 0.85;
+}
+.prereq-d3-breadcrumb-item {
+  color: var(--text);
+}
+a.prereq-d3-breadcrumb-item {
+  color: var(--accent);
+  text-decoration: none;
+}
+a.prereq-d3-breadcrumb-item:hover {
+  text-decoration: underline;
+}
+.prereq-d3-info {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  opacity: 0.8;
 }
 
 /* ============================================================

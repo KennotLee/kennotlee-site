@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <script src="../scripts/theme.js"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Lee Profile</title>
+    <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+  </head>
+  <!-- "page-pages" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-pages">
+    <div class="header">
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+      <h1>kennotlee</h1>
+      <div class="subtitle">Personal Profile & Portfolio</div>
+    </div>
+    <ul class="navbar">
+      <li class="dropdown">
+        <details>
+          <summary>Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
+      <li><a href="../pages.html" class="active">Pages</a></li>
+      <li><a href="../projects.html">Projects</a></li>
+      <li><a href="../classes.html">Classes</a></li>
+    </ul>
+    <div>
+      <div class="walloftext">
+        <h3>Prerequisite map, D3-driven</h3>
+        <p><span class="placeholder-note">Test page — not linked from Classes</span></p>
+        <p>
+          Every course page's <code>.prereq-map</code> so far has been
+          hand-typed HTML per course. This page instead keeps prerequisite
+          data in a plain JS object (see <code>moduleData</code> in this
+          page's source) and has D3 walk it and build the exact same
+          <code>.prereq-station</code>/<code>.prereq-dot</code>/<code>.prereq-label</code>/<code>.prereq-branch</code>
+          markup from <a href="prereq-branch-themed.html">prereq-branch-themed.html</a>
+          — so city theme and dark mode keep working for free, same CSS,
+          zero duplication. The map is also click-through: any grayed
+          station is a real prerequisite of the one currently shown, click
+          it to re-center the map on that module and see <em>its</em> chain.
+        </p>
+      </div>
+
+      <div class="walloftext">
+        <div class="prereq-d3-controls">
+          <label for="target-select">Jump to a module:</label>
+          <select id="target-select"></select>
+          <button type="button" id="back-btn" onclick="goBackPrereq()">&larr; Back</button>
+        </div>
+        <div class="prereq-d3-breadcrumb" id="prereq-breadcrumb"></div>
+        <div class="prereq-map" id="prereq-map"></div>
+        <div class="prereq-d3-info" id="prereq-info"></div>
+      </div>
+    </div>
+    <footer class="theme-picker">
+      <h4>Subway Theme</h4>
+      <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system — the map above redraws with the same live theme, try it.</p>
+      <div class="theme-swatches">
+        <button type="button" class="theme-swatch" data-city="sf" onclick="setCityTheme('sf')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-sf-1"></span>
+            <span class="swatch-dot dot-sf-2"></span>
+            <span class="swatch-dot dot-sf-3"></span>
+            <span class="swatch-dot dot-sf-4"></span>
+          </span>
+          <span class="swatch-label">San Francisco</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="nyc" onclick="setCityTheme('nyc')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-nyc-1"></span>
+            <span class="swatch-dot dot-nyc-2"></span>
+            <span class="swatch-dot dot-nyc-3"></span>
+            <span class="swatch-dot dot-nyc-4"></span>
+          </span>
+          <span class="swatch-label">New York</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="chicago" onclick="setCityTheme('chicago')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-chicago-1"></span>
+            <span class="swatch-dot dot-chicago-2"></span>
+            <span class="swatch-dot dot-chicago-3"></span>
+            <span class="swatch-dot dot-chicago-4"></span>
+          </span>
+          <span class="swatch-label">Chicago</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="tokyo" onclick="setCityTheme('tokyo')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-tokyo-1"></span>
+            <span class="swatch-dot dot-tokyo-2"></span>
+            <span class="swatch-dot dot-tokyo-3"></span>
+            <span class="swatch-dot dot-tokyo-4"></span>
+          </span>
+          <span class="swatch-label">Tokyo</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="seoul" onclick="setCityTheme('seoul')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-seoul-1"></span>
+            <span class="swatch-dot dot-seoul-2"></span>
+            <span class="swatch-dot dot-seoul-3"></span>
+            <span class="swatch-dot dot-seoul-4"></span>
+          </span>
+          <span class="swatch-label">Seoul</span>
+        </button>
+      </div>
+      <p class="theme-current" id="theme-current-label">Current: <strong>San Francisco</strong></p>
+    </footer>
+
+    <script>
+      // DATA — one entry per module: its display name, plus its prerequisite
+      // chain in display order (NOT including itself). A chain entry is
+      // either {type:"station", code} for a single prior module, or
+      // {type:"branch", alts:[codeA, codeB]} for "either of these two",
+      // rendered with the site's existing .prereq-branch component.
+      const moduleData = {
+        CS1010E: { name: "Programming Methodology", chain: [] },
+        CS2040: { name: "Data Structures and Algorithms", chain: [
+          { type: "station", code: "CS1010E" },
+        ] },
+        CS2030: { name: "Programming Methodology II", chain: [
+          { type: "station", code: "CS1010E" },
+        ] },
+        CS3230: { name: "Design and Analysis of Algorithms", chain: [
+          { type: "station", code: "CS1010E" },
+          { type: "station", code: "CS2040" },
+        ] },
+        MA1512: { name: "Differential Equations for Engineering", chain: [] },
+        EE2023: { name: "Signals and Systems", chain: [
+          { type: "station", code: "MA1512" },
+        ] },
+        EE3131C: { name: "Fundamentals of VLSI Design", chain: [
+          { type: "station", code: "MA1512" },
+          { type: "station", code: "EE2023" },
+        ] },
+        EE1111A: { name: "Electrical Engineering Principles I", chain: [] },
+        EE2111A: { name: "Electrical Engineering Principles II", chain: [] },
+        EE2028: { name: "Engineering Design & Innovation Project", chain: [
+          { type: "branch", alts: ["EE1111A", "EE2111A"] },
+          { type: "station", code: "CS1010E" },
+        ] },
+      };
+
+      let prereqHistory = [];
+
+      function appendStation(parent, code, { prereq = false, current = false } = {}) {
+        const mod = moduleData[code];
+        const clickable = !current;
+        const classes = ["prereq-station"];
+        if (prereq) classes.push("prereq");
+        if (current) classes.push("current");
+
+        const el = parent.append(clickable ? "a" : "div").attr("class", classes.join(" "));
+        if (clickable) {
+          el.attr("href", "#").on("click", (event) => {
+            event.preventDefault();
+            if (moduleData[code]) renderPrereqMap(code);
+          });
+        }
+        if (mod) el.attr("title", mod.name);
+        el.append("span").attr("class", "prereq-dot");
+        el.append("span").attr("class", "prereq-label").text(code);
+      }
+
+      function renderPrereqMap(code, opts = {}) {
+        const mod = moduleData[code];
+        if (!mod) return;
+
+        if (opts.pushHistory !== false && prereqHistory[prereqHistory.length - 1] !== code) {
+          prereqHistory.push(code);
+        }
+
+        const map = d3.select("#prereq-map");
+        map.selectAll("*").remove();
+
+        const steps = mod.chain.concat([{ type: "station", code, current: true }]);
+        steps.forEach((step) => {
+          if (step.type === "branch") {
+            const branch = map.append("div").attr("class", "prereq-branch");
+            step.alts.forEach((altCode) => appendStation(branch, altCode, { prereq: true }));
+            branch.append("span").attr("class", "prereq-branch-arm prereq-branch-arm-top");
+            branch.append("span").attr("class", "prereq-branch-arm prereq-branch-arm-bottom");
+            branch.append("span").attr("class", "prereq-branch-curve prereq-branch-curve-top");
+            branch.append("span").attr("class", "prereq-branch-curve prereq-branch-curve-bottom");
+          } else {
+            appendStation(map, step.code, { prereq: !step.current, current: !!step.current });
+          }
+        });
+
+        map.selectAll(".prereq-station, .prereq-branch")
+          .style("opacity", 0)
+          .transition().duration(250).ease(d3.easeCubicOut)
+          .style("opacity", 1);
+
+        d3.select("#target-select").property("value", code);
+        d3.select("#prereq-info").text(`${code} — ${mod.name}`);
+        renderBreadcrumb();
+      }
+
+      function renderBreadcrumb() {
+        const crumb = d3.select("#prereq-breadcrumb");
+        crumb.selectAll("*").remove();
+        prereqHistory.forEach((code, i) => {
+          if (i > 0) crumb.append("span").attr("class", "prereq-d3-breadcrumb-sep").text(" › ");
+          const isLast = i === prereqHistory.length - 1;
+          const item = crumb.append(isLast ? "span" : "a")
+            .attr("class", "prereq-d3-breadcrumb-item")
+            .text(code);
+          if (!isLast) {
+            item.attr("href", "#").on("click", (event) => {
+              event.preventDefault();
+              prereqHistory = prereqHistory.slice(0, i + 1);
+              renderPrereqMap(code, { pushHistory: false });
+            });
+          }
+        });
+      }
+
+      function goBackPrereq() {
+        if (prereqHistory.length <= 1) return;
+        prereqHistory.pop();
+        renderPrereqMap(prereqHistory[prereqHistory.length - 1], { pushHistory: false });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const select = d3.select("#target-select");
+        select.selectAll("option")
+          .data(Object.keys(moduleData).sort())
+          .join("option")
+          .attr("value", (d) => d)
+          .text((d) => `${d} — ${moduleData[d].name}`);
+        select.on("change", function () { renderPrereqMap(this.value); });
+
+        renderPrereqMap("EE2028");
+      });
+    </script>
+  </body>
+</html>
