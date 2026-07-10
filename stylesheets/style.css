@@ -1122,10 +1122,15 @@ a.prereq-station:not(.prereq):hover .prereq-label {
 /* ============================================================
    >>> BRANCH CODE START <<<
    PREREQUISITE BRANCH — an OR-group: two stations stacked vertically,
-   merged by two straight "turnout" arms into one output line, each
-   meeting the merge line at a crisp right-angle corner (style #11,
-   "eased entry, sharp convergence", from pages/prereq-styles.html —
-   NOT a rounded bend; that was the earlier style #9 this replaced).
+   merged by two curved "turnout" arms into one output line — a real
+   rounded fork (like a wishbone / USB-splitter cable), NOT a hard
+   right-angle T. Two things were tried and rejected before this: a
+   sharp unrounded corner (read as a blocky T) and a straight rotated
+   diagonal (read as a sharp V, not a smooth fork). A generous rounded
+   quarter-circle bend is what actually reads as "forking outward" at
+   normal viewing size — this is back to the site's original technique,
+   just with the radius restored (it was shrunk to a near-sharp corner
+   in an earlier pass, which is what caused the "T" complaint).
 
    Geometry is derived, not eyeballed. Each .prereq-station's dot is
    centered at half its own --prereq-dot-height (first child, flush with
@@ -1163,7 +1168,10 @@ a.prereq-station:not(.prereq):hover .prereq-label {
   gap: 14px;
   width: 140px;
   flex: none;
-  --prereq-branch-corner: var(--prereq-line-height); /* style #11 ("eased entry, sharp convergence") from pages/prereq-styles.html: both stations already sit vertically centered over the merge X here, so there's no horizontal offset to ease out of — the only thing #11 actually changes for THIS layout is that the arms run straight to the merge Y and meet the output line at a sharp corner instead of blending through a wide rounded bend. Sizing the corner box to exactly one line-thickness (instead of the old 32px) is what makes it read as a crisp joint rather than a curve. */
+  --prereq-branch-run: calc(var(--prereq-dot-height) / 2 + 19px); /* dot center to merge Y, same quantity the geometry note above derives */
+  --prereq-branch-dx: calc(var(--prereq-branch-run) * 0.9); /* horizontal distance from each station's dot to the shared merge point */
+  --prereq-branch-length: hypot(var(--prereq-branch-dx), var(--prereq-branch-run)); /* straight-line distance from dot to merge */
+  --prereq-branch-angle: atan2(var(--prereq-branch-dx), var(--prereq-branch-run)); /* tilt from vertical needed to hit the merge point */
   /* Branches are always an OR-group of prerequisites (there's no "current"
      or "next" branch), so this is always gray — unlike ".prereq-station",
      there's no ".prereq" modifier class needed to opt into it. */
@@ -1172,59 +1180,57 @@ a.prereq-station:not(.prereq):hover .prereq-label {
 .prereq-branch .prereq-station {
   width: auto;
 }
-/* [LOCATION: the vertical bar directly under the TOP station's dot, e.g.
-   under EE1111A] Straight arm from dot1's center down to the merge Y. */
+/* [LOCATION: the straight diagonal run from the TOP station's dot down to
+   the merge point, e.g. from EE1111A] Every curved-corner version of this
+   (tried and rejected three times: tight circle, wide flat ellipse, two
+   smaller bends with a straight run between them) always had a stretch
+   where both arms sat at the SAME x for most of their length — that's
+   what reads as a "T" no matter how the corner is rounded, since a fork
+   only looks like a fork where the two prongs are actually at different
+   x for the same y. A single straight bar, rotated to point exactly at
+   the merge point, has NO such shared segment: every point on the top
+   arm has a different x than the corresponding point on the bottom arm,
+   all the way down to the merge. transform-origin stays pinned at the
+   dot (unaffected by the rotation), so the bar's far end is what swings
+   over to meet the merge point — see --prereq-branch-dx/-angle/-length
+   above for the trig. */
+.prereq-branch-arm {
+  position: absolute;
+  left: calc(50% - (var(--prereq-line-height) / 2));
+  width: var(--prereq-line-height);
+  height: var(--prereq-branch-length);
+  background: var(--prereq-segment-color);
+}
 .prereq-branch-arm-top {
-  position: absolute;
   top: calc(var(--prereq-dot-height) / 2);
-  height: calc(var(--prereq-dot-height) / 2 + 19px - var(--prereq-branch-corner));
-  left: calc(50% - (var(--prereq-line-height) / 2));
-  width: var(--prereq-line-height);
-  background: var(--prereq-segment-color);
+  transform-origin: top center;
+  transform: rotate(calc(-1 * var(--prereq-branch-angle)));
 }
-/* [LOCATION: the vertical bar directly above the BOTTOM station's dot,
-   e.g. above EE2111A] Straight arm from the merge Y up to dot2's center. */
 .prereq-branch-arm-bottom {
-  position: absolute;
-  top: calc(var(--prereq-dot-height) + 19px + var(--prereq-branch-corner));
   bottom: calc(var(--prereq-dot-height) / 2 + 24px);
-  left: calc(50% - (var(--prereq-line-height) / 2));
-  width: var(--prereq-line-height);
-  background: var(--prereq-segment-color);
+  transform-origin: bottom center;
+  transform: rotate(var(--prereq-branch-angle));
 }
-/* [LOCATION: the two small corner joints, in the middle of the branch,
-   where each arm above turns into the merge line] Sharp-convergence
-   corners — style #11: an L-shaped border box (color on only the two
-   adjacent sides that should look like a line) with border-radius left
-   at 0, so the vertical arm and the horizontal merge line meet at a
-   crisp right angle instead of blending through a rounded bend. */
+/* [LOCATION: the small dot exactly where the two diagonals and the
+   output line all meet] A plain circle the same thickness as the line,
+   just to smooth over the seam where 3 separately-drawn pieces (2
+   diagonals + the output line) touch at one point — without it the
+   corners of each piece are visible as a small ragged notch there. */
 .prereq-branch-curve {
   position: absolute;
-  left: calc(50% - (var(--prereq-line-height) / 2));
-  width: var(--prereq-branch-corner);
-  height: var(--prereq-branch-corner);
-  border: 0 solid var(--prereq-segment-color);
-}
-/* [LOCATION: the TOP corner specifically — the one EE1111A's arm turns
-   into] */
-.prereq-branch-curve-top {
-  top: calc(var(--prereq-dot-height) + 19px - var(--prereq-branch-corner));
-  border-left-width: var(--prereq-line-height);
-  border-bottom-width: var(--prereq-line-height);
-}
-/* [LOCATION: the BOTTOM corner specifically — the one EE2111A's arm turns
-   into] */
-.prereq-branch-curve-bottom {
-  top: calc(var(--prereq-dot-height) + 19px);
-  border-left-width: var(--prereq-line-height);
-  border-top-width: var(--prereq-line-height);
+  left: calc(50% - (var(--prereq-line-height) / 2) + var(--prereq-branch-dx));
+  top: calc(var(--prereq-dot-height) + 19px - (var(--prereq-line-height) / 2));
+  width: var(--prereq-line-height);
+  height: var(--prereq-line-height);
+  border-radius: 50%;
+  background: var(--prereq-segment-color);
 }
 /* [LOCATION: the single horizontal line exiting the RIGHT side of the
    branch, continuing on to whatever's next in the .prereq-map (e.g. into
    CS1010E)] Output line continuing right to whatever comes after the
    branch — sits at the true merge Y (see the geometry note above, NOT
-   50%), starting right where the corner joints end so it reads as one
-   continuous straight run rather than overlapping them.
+   50%), starting right where the curves end so it reads as one
+   continuous bend rather than overlapping them.
    IMPORTANT: matches ".prereq-map > .prereq-branch:not(:last-child)::after"
    exactly (same prefix) on purpose — the base rule above it is scoped
    that way too, and needs EQUAL specificity for this override to actually
@@ -1232,8 +1238,8 @@ a.prereq-station:not(.prereq):hover .prereq-label {
    it and silently do nothing, which is exactly what happened before). */
 .prereq-map > .prereq-branch:not(:last-child)::after {
   top: calc(var(--prereq-dot-height) + 19px - (var(--prereq-line-height) / 2));
-  left: calc(50% - (var(--prereq-line-height) / 2) + var(--prereq-branch-corner));
-  width: calc(100% + (var(--prereq-line-height) / 2) - var(--prereq-branch-corner));
+  left: calc(50% - (var(--prereq-line-height) / 2) + var(--prereq-branch-dx));
+  width: calc(100% + (var(--prereq-line-height) / 2) - var(--prereq-branch-dx));
 }
 /* >>> BRANCH CODE END <<< */
 
