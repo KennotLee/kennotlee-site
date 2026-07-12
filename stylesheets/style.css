@@ -21,6 +21,7 @@
   --highlight-text: #1a1a1a;/* text color used on top of --highlight */
   --tag-bg: #262626;        /* project tech-tag pill background */
   --tag-text: #f5f4f2;      /* project tech-tag pill text */
+  --prereq-grayed-color: #b8b8b8; /* "already done" prerequisite dots/lines — a real light gray, not var(--border) (#262626, near-black) and not opacity-faded (a solid color reads more deliberate than translucency). */
   --theme-font: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* SF/BART default — real subway signage face */
   /* Text color to use ON TOP OF --accent. Light mode's --accent is a dark
      saturated hue (needs light text); dark mode's --accent is auto-
@@ -65,7 +66,7 @@
   --prereq-dot-border-width: 0px;
   --prereq-dot-border-color: transparent;
   --prereq-dot-ring: none;
-  --prereq-line-height: 6px;
+  --prereq-line-height: 9px;
 }
 
 /* Dark mode palette — applied when <html data-theme="dark">.
@@ -85,6 +86,7 @@
   --tag-bg: #333333;
   --tag-text: #f5f4f2;
   --accent-text: var(--highlight-text);
+  --prereq-grayed-color: #8a8a8a; /* lighter than dark mode's --border (#4a4a4a) so "already done" still reads as a deliberately lighter gray against a dark card, not just inherit whatever the ambient border color happens to be. */
 
   /* Auto-brighten whichever city theme is active (mixed toward white) so it
      still reads on dark cards, instead of hand-tuning a dark hex per city. */
@@ -124,9 +126,15 @@ html[data-city-theme="nyc"] {
   --prereq-dot-width: 16px;
   --prereq-dot-height: 16px;
   --prereq-dot-radius: 50%;
-  --prereq-dot-fill: var(--bg-card);
+  --prereq-dot-fill: #ffffff; /* true white — the classic "white dot, black ring" look. var(--bg-card) is an off-white cream (#f5f4f2), close but not quite it; see the dark-mode override below for why this can't just always be white. */
   --prereq-dot-border-width: 4px;
   --prereq-dot-border-color: var(--nav-bg);
+}
+/* A hardcoded white dot fill would look like a glaring hole punched in
+   the page once the surrounding card goes dark — fall back to the normal
+   adaptive card color in dark mode instead of forcing white there too. */
+html[data-theme="dark"][data-city-theme="nyc"] {
+  --prereq-dot-fill: var(--bg-card);
 }
 html[data-city-theme="chicago"] {
   --line-1-raw: #00a1de; /* Blue Line */
@@ -137,14 +145,33 @@ html[data-city-theme="chicago"] {
      widely-installed match. */
   --theme-font: 'Franklin Gothic Medium', 'Segoe UI', Arial, sans-serif;
 
-  /* CTA's map is comparatively minimal — thinner lines, small plain dots. */
-  --prereq-line-height: 3px;
+  /* CTA's real map: a thick colored line with plain white circle stations
+     sitting right on top of it, the circle's own diameter matching the
+     line's thickness rather than a thin line with a small dot floating
+     over it — so the line height is set to equal the dot's own diameter,
+     not an independent smaller value. */
+  --prereq-line-height: 14px;
   --prereq-dot-width: 14px;
   --prereq-dot-height: 14px;
   --prereq-dot-radius: 50%;
-  --prereq-dot-fill: var(--bg-card);
+  --prereq-dot-fill: #ffffff; /* true white, matching CTA's real stations — var(--bg-card) is an off-white cream, not quite it. See the dark-mode override below. */
   --prereq-dot-border-width: 3px;
   --prereq-dot-border-color: var(--accent);
+}
+/* Same reasoning as NYC's equivalent override above — a hardcoded white
+   dot only reads as "the classic look" against a light page background;
+   on a dark page it just looks like a punched-out hole, so fall back to
+   the normal adaptive card color instead. */
+html[data-theme="dark"][data-city-theme="chicago"] {
+  --prereq-dot-fill: var(--bg-card);
+}
+/* Compact spacing to match the diagonal label treatment below: with the
+   label rotated up out of the way instead of reserving a full
+   line-height + 16px of vertical room below the dot, stations don't
+   need nearly as much of their own box — this only affects layout math
+   (flex gap, connector line length), not the dot/line rendering itself. */
+.prereq-station {
+  width: 70px;
 }
 html[data-city-theme="tokyo"] {
   --line-1-raw: #009bbf; /* Tozai Line */
@@ -538,13 +565,22 @@ p a:hover {
 }
 
 /* General headings */
-h3, h4 {
+h2, h3, h4 {
   color: var(--heading);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-top: 0;
 }
-h3 {
+/* The underline ("the line") marks a walloftext CARD's own top-level
+   heading — "CS2040 — Data Structures and Algorithms", "Projects",
+   "Introduction", etc. — site-wide. It used to live on h3, back when h3
+   WAS that top heading everywhere; h3 is now free for a page's own
+   in-content subheadings (e.g. "Assignments" inside a course's notes)
+   without dragging a card-level underline into the middle of a page's
+   own content. If you add a new card, its title goes in h2 to get this
+   line; anything you write inside that card's body can use h3/h4 freely
+   with no line. */
+h2 {
   border-bottom: 3px solid var(--border);
   padding-bottom: 10px;
 }
@@ -969,7 +1005,7 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
   align-items: center;
   justify-content: center;
   gap: 0;
-  margin: 24px 0;
+  margin: 70px 0 24px 0; /* top margin bumped from 24px: every station's diagonal label is now absolutely positioned and floats entirely above its dot, contributing zero height to the map itself — 24px wasn't reserving nearly enough room, so the tallest labels (e.g. "CS1010E" rotated -40deg) clipped up into whatever sits right above .prereq-map (the Subway map/Tree view-switcher buttons on a real course page). */
 }
 .prereq-map.is-hidden {
   display: none;
@@ -998,7 +1034,7 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
   --prereq-segment-color: var(--accent);
 }
 .prereq-station.prereq {
-  --prereq-segment-color: var(--border);
+  --prereq-segment-color: var(--prereq-grayed-color);
 }
 /* IMPORTANT: scoped to ".prereq-map >" direct children only. Without that,
    this also matched the individual .prereq-station elements NESTED inside
@@ -1067,38 +1103,173 @@ body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
   box-shadow: var(--prereq-dot-ring);
   transition: transform 0.15s;
 }
-/* Grayed prerequisite — solid muted fill regardless of theme (overrides
-   both the tick-mark themes, which carry color via background, and the
-   ring themes, which carry it via border-color), so "already done" reads
-   the same everywhere without needing a per-theme override. */
+/* Grayed prerequisite — solid light gray fill/ring (var(--prereq-grayed-
+   color)), not transparency. This used to force background/border-color
+   to var(--border), which read as solid black/dark-gray; an opacity fade
+   was tried instead but rejected — a solid color reads as a deliberate
+   "done/muted" state, translucency reads as broken/half-rendered. Chicago
+   gets its own override right below — its dots are always plain white,
+   grayed or not, with no separate muted-ring look (a white-with-gray-
+   ring version was tried and rejected too — Chicago just wants a white
+   dot, full stop). */
 .prereq-station.prereq .prereq-dot {
-  background: var(--border);
-  border-color: var(--border);
+  background: var(--prereq-grayed-color);
+  border-color: var(--prereq-grayed-color);
   box-shadow: none;
+}
+/* [LOCATION: grayed/prerequisite dots specifically under Chicago theme]
+   Plain white, same as Chicago's normal (non-grayed) dot fill — no ring,
+   no muted border, just white. border-color matches background exactly
+   so the border still occupies its usual width (keeping the dot's total
+   size consistent with every other theme) without rendering as a
+   visible outline. */
+html[data-city-theme="chicago"] .prereq-station.prereq .prereq-dot {
+  background: #ffffff;
+  border-color: #ffffff;
+}
+html[data-theme="dark"][data-city-theme="chicago"] .prereq-station.prereq .prereq-dot {
+  background: var(--bg-card);
+  border-color: var(--bg-card); /* same reasoning as Chicago's normal dark-mode override: true white would look like a punched hole on a dark card */
 }
 .prereq-station.prereq .prereq-label {
   opacity: 0.6;
 }
-/* The current course always fills solid with the real line color
-   (var(--accent), not --prereq-dot-fill/border-color) so "you are here"
-   reads clearly regardless of the active theme's normal station style —
-   a plain black BART tick, or another theme's black-ringed circle. */
+/* The current course's dot — default/SF: solid black (var(--nav-bg)), no
+   ring, matching a normal BART tick's own plain-black styling. This used
+   to fill solid with var(--accent) instead, on the idea that "you are
+   here" should read in the line's own color — but that's exactly what
+   made it disappear on Chicago (see the ring-themes override below):
+   an accent-filled dot sitting on an accent-colored line segment (the
+   final "leading into current" one) has zero contrast against it, same
+   color, same width, no edge to see. SF's tick never had that problem
+   since it doesn't share the line's color anyway. */
 .prereq-station.current .prereq-dot {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--nav-bg);
+  border-color: var(--nav-bg);
+  box-shadow: none;
+}
+/* [LOCATION: the current-course dot for every RING-style theme — NYC,
+   Chicago, Tokyo, Seoul] White inside, black ring: same contrast fix as
+   SF's plain black above, but these themes carry their color via a
+   border/ring around a filled circle rather than the fill itself, so
+   "white center" is the equivalent move — it can't ever match the line
+   color under it, whatever that color is, the way an accent fill could.
+   The border-color and box-shadow are both var(--nav-bg) (not
+   var(--accent)) so there's exactly one black ring, not a colored ring
+   plus a separate black halo doubling up. */
+html[data-city-theme="nyc"] .prereq-station.current .prereq-dot,
+html[data-city-theme="chicago"] .prereq-station.current .prereq-dot,
+html[data-city-theme="tokyo"] .prereq-station.current .prereq-dot,
+html[data-city-theme="seoul"] .prereq-station.current .prereq-dot {
+  background: #ffffff;
+  border-color: var(--nav-bg);
+  box-shadow: 0 0 0 1px var(--nav-bg);
+}
+html[data-theme="dark"][data-city-theme="nyc"] .prereq-station.current .prereq-dot,
+html[data-theme="dark"][data-city-theme="chicago"] .prereq-station.current .prereq-dot,
+html[data-theme="dark"][data-city-theme="tokyo"] .prereq-station.current .prereq-dot,
+html[data-theme="dark"][data-city-theme="seoul"] .prereq-station.current .prereq-dot {
+  background: var(--bg-card); /* true white would look like a punched hole on a dark card, same reasoning as every other dark-mode fill override on this page */
+}
+
+/* ============================================================
+   EXEMPT / "dead" prerequisite — a course you were WAIVED from
+   (e.g. MA1301 for MA1512). It's technically a prerequisite but you never
+   actually took it, so it should read differently from a normal grayed
+   prereq: the station is drawn as an X (not a dot/tick/circle), and the
+   connector leading OUT of it is dotted rather than solid — "this
+   connection isn't really travelled". Add class "exempt" alongside
+   "prereq" on the station: class="prereq-station prereq exempt".
+   ============================================================ */
+/* Blank the dot's normal fill/border/ring and draw an X centred on it.
+   The dot KEEPS its theme dimensions, so it stays centred on the
+   connector line exactly like any other station (see the connector's
+   derived "top" math above) — only its visual changes. */
+.prereq-station.exempt .prereq-dot {
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+.prereq-station.exempt .prereq-dot::before,
+.prereq-station.exempt .prereq-dot::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22px;  /* length of each stroke of the X */
+  height: 3px;  /* thickness of each stroke */
+  border-radius: 2px;
+  background: var(--prereq-grayed-color);
+}
+.prereq-station.exempt .prereq-dot::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.prereq-station.exempt .prereq-dot::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+/* Drop the "terminus cap" a normal first station gets (the short stub of
+   line extending PAST the leftmost dot) — on an exempt X that's a
+   dead/waived start, there's nothing before it, and the solid stub
+   otherwise pokes out of the left of the X and muddies the shape. */
+.prereq-map > .prereq-station.exempt:first-child::before {
+  display: none;
+}
+/* Dotted connector out of an exempt station — overrides the solid
+   background bar from the base connector rule above. The extra ".exempt"
+   gives it higher specificity, so it wins regardless of source order.
+   Same box + "top" as the base rule (so it sits exactly where the solid
+   bar did); height collapses to 0 and the border-top IS the dotted line. */
+.prereq-map > .prereq-station.exempt:not(:last-child)::after {
+  background: none;
+  height: 0;
+  /* Start the dotted line ~13px right of the X's centre so its first dot
+     clears the X's arm instead of overlapping it, and trim the width by
+     the same amount so the far end still lands exactly on the next dot's
+     centre (base rule is left:50% / width:100% = centre-to-centre). */
+  left: calc(50% + 13px);
+  width: calc(100% - 13px);
+  border-top: var(--prereq-line-height) dotted var(--prereq-grayed-color);
 }
 .prereq-label {
   position: relative; /* so z-index below actually applies */
-  z-index: 1; /* sits above connector lines (z-index 0) that pass behind it in a .prereq-branch */
-  display: block;
-  line-height: 16px; /* fixed so .prereq-branch's merge-line math (below) can rely on a known station height */
+  z-index: 1;
+  line-height: 16px;
   font-weight: 700;
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  text-align: center;
-  background: var(--bg-card); /* "knocks out" any branch connector line running behind it — see the note above */
   padding: 0 2px;
+  /* [LOCATION: every station LABEL, all themes] Real transit maps (CTA's
+     is the clearest example) angle station names diagonally off the line
+     instead of stacking them underneath — lets stations sit closer
+     together since the label's footprint is diagonal instead of a full
+     horizontal line-width. Positioned absolutely so it's out of normal
+     flow entirely (the station's own height becomes just the dot's — see
+     ".prereq-station" width comment below for the matching compact-
+     spacing change), then rotated around its own LEFT-BOTTOM corner —
+     not center — so that corner (which "left: 50%" already pins directly
+     above the dot's horizontal center) stays fixed as the pivot and the
+     text grows up and away from it. That's deliberate: it's what makes
+     the text's left/start edge read as anchored right above the dot
+     instead of floating off to some side of it.
+
+     IMPORTANT: this used to lose to a second, later ".prereq-label" rule
+     that also set "position" (to "relative") — same specificity, same
+     selector, so the later one silently won for that one property even
+     though this rule's other properties (left/bottom/transform) still
+     applied. The result was a broken hybrid of relative AND absolute
+     positioning math that made the label land beside the dot instead of
+     above it. Fixed by merging into ONE rule instead of two — don't
+     re-split this into a separate ".prereq-label" block elsewhere in the
+     file, or the same bug comes back. */
+  position: absolute;
+  left: calc(50% + 10px); /* nudged right of dead-center so the text reads as emerging out of the dot rather than pivoting from directly on top of it — bumped up from +3px so a branch's bottom sub-station label (e.g. EE2111A) clears its own curve at the lower margin-bottom below, instead of crossing into it. */
+  bottom: 100%;
+  margin-bottom: 7px; /* a station sitting mid-line (e.g. CS1010E, with a continuous connector running through both its left AND right side) needs more starting clearance than a branch tip does — 4px left the rotated text's own low/left end dipping back down into the line right where it anchors, before it had risen enough to clear it. Nudged down 7px total from the original 14px since. */
+  transform: rotate(-40deg);
+  transform-origin: left bottom;
+  white-space: nowrap;
+  background: none; /* no longer sits on top of the line, so the old "knock out the line behind me" background box isn't needed */
 }
 /* Only clickable stations (real <a> tags) get the hover animation —
    "current" and plain (no-page) prerequisites are inert. Grayed
@@ -1123,23 +1294,38 @@ a.prereq-station:not(.prereq):hover .prereq-label {
    >>> BRANCH CODE START <<<
    PREREQUISITE BRANCH — an OR-group: two stations stacked vertically,
    merged by two straight "turnout" arms into one output line, each
-   meeting the merge line at a crisp right-angle corner (style #11,
-   "eased entry, sharp convergence", from pages/prereq-styles.html —
-   NOT a rounded bend; that was the earlier style #9 this replaced).
+   easing into the merge line through a small rounded corner (style #9,
+   "eased elbow", from pages/prereq-styles.html — real rail can't take a
+   90-degree turn on a dime, so the corner is curved, not a crisp L-join).
 
    Geometry is derived, not eyeballed. Each .prereq-station's dot is
    centered at half its own --prereq-dot-height (first child, flush with
    the station's top); the label below it is a fixed 16px line plus the
    station's 8px gap, i.e. 24px of "extra" content below every dot
-   center. With exactly 2 stacked stations of identical height S = D+24:
+   center. With exactly 2 stacked stations of identical height S = D+24,
+   separated by the branch's own flex `gap` (G):
      dot1 center (from branch top)    = D/2
      dot2 center (from branch bottom) = D/2 + 24
-     merge Y (from branch top)        = D + 19
+     merge Y (from branch top)        = D + 12 + G/2
        (the midpoint of dot1Y and dot2Y — NOT the branch's own 50%
        mark, since the branch isn't vertically symmetric around its
-       center; using 50% here was the earlier bug that only stayed
+       center; using 50% here was an earlier bug that only stayed
        hidden on SF's tall tick and showed up as a visible gap on
        every circle-based theme.)
+   G matters here specifically because of --prereq-branch-corner: the
+   curve needs to sit entirely BELOW label1's bottom edge (D+24), not
+   just have its merge point clear it, or the rounded bend visibly cuts
+   across the label text. That needs merge Y - corner >= D+24, i.e.
+   G >= 2 * (24 + corner - 12). At corner = 14px that's G >= 52; G is set
+   to 56px below (merge Y = D+40) for a few px of breathing room. The
+   original G = 14px (merge Y = D+19) was tuned back when the corner was
+   sized to --prereq-line-height and near-invisible (3px-8px) — it never
+   had to clear the label because there was no visible curve to clear it
+   with. Growing the corner to a visible 14px without also growing G is
+   exactly what put the rounded bend on top of "EE1111A"/"EE2111A"'s own
+   text. If --prereq-branch-corner ever changes again, G (and the 40px
+   below) need to be rederived from the inequality above, not just left
+   as-is.
    Markup needs 4 extra pieces alongside the two .prereq-station's,
    since a single element only gets ::before/::after — not enough for
    2 straight arms + 2 curves + 1 output line:
@@ -1160,14 +1346,14 @@ a.prereq-station:not(.prereq):hover .prereq-label {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 14px;
+  gap: 86px; /* NOT an arbitrary spacing choice — see the merge-Y derivation in the comment block above. 56px (the bare minimum for the curve to clear the label at all) turned out to leave only ~2px of actual visual gap, which reads as touching once anti-aliasing softens the edges — 86px leaves ~17px of clear space instead, an unmistakable gap. Must stay >= 52px as long as --prereq-branch-corner is 14px, but keep it well above that minimum, not right at it. */
   width: 140px;
   flex: none;
-  --prereq-branch-corner: var(--prereq-line-height); /* style #11 ("eased entry, sharp convergence") from pages/prereq-styles.html: both stations already sit vertically centered over the merge X here, so there's no horizontal offset to ease out of — the only thing #11 actually changes for THIS layout is that the arms run straight to the merge Y and meet the output line at a sharp corner instead of blending through a wide rounded bend. Sizing the corner box to exactly one line-thickness (instead of the old 32px) is what makes it read as a crisp joint rather than a curve. */
+  --prereq-branch-corner: 14px; /* style #9 ("eased elbow") from pages/prereq-styles.html: fixed px, not tied to --prereq-line-height, so the curve stays visible as an actual bend across every theme's line thickness (3px-8px) instead of shrinking to an unnoticeable nub on thin lines like Chicago's. 14px is small enough to still read as a corner rather than a full sweeping turnout (that was the even-older 32px "smooth turnout curve" style), just no longer sharp. */
   /* Branches are always an OR-group of prerequisites (there's no "current"
      or "next" branch), so this is always gray — unlike ".prereq-station",
      there's no ".prereq" modifier class needed to opt into it. */
-  --prereq-segment-color: var(--border);
+  --prereq-segment-color: var(--prereq-grayed-color);
 }
 .prereq-branch .prereq-station {
   width: auto;
@@ -1177,7 +1363,7 @@ a.prereq-station:not(.prereq):hover .prereq-label {
 .prereq-branch-arm-top {
   position: absolute;
   top: calc(var(--prereq-dot-height) / 2);
-  height: calc(var(--prereq-dot-height) / 2 + 19px - var(--prereq-branch-corner));
+  height: calc(var(--prereq-dot-height) / 2 + 55px - var(--prereq-branch-corner));
   left: calc(50% - (var(--prereq-line-height) / 2));
   width: var(--prereq-line-height);
   background: var(--prereq-segment-color);
@@ -1186,18 +1372,19 @@ a.prereq-station:not(.prereq):hover .prereq-label {
    e.g. above EE2111A] Straight arm from the merge Y up to dot2's center. */
 .prereq-branch-arm-bottom {
   position: absolute;
-  top: calc(var(--prereq-dot-height) + 19px + var(--prereq-branch-corner));
+  top: calc(var(--prereq-dot-height) + 55px + var(--prereq-branch-corner));
   bottom: calc(var(--prereq-dot-height) / 2 + 24px);
   left: calc(50% - (var(--prereq-line-height) / 2));
   width: var(--prereq-line-height);
   background: var(--prereq-segment-color);
 }
 /* [LOCATION: the two small corner joints, in the middle of the branch,
-   where each arm above turns into the merge line] Sharp-convergence
-   corners — style #11: an L-shaped border box (color on only the two
-   adjacent sides that should look like a line) with border-radius left
-   at 0, so the vertical arm and the horizontal merge line meet at a
-   crisp right angle instead of blending through a rounded bend. */
+   where each arm above turns into the merge line] Eased corners — style
+   #9: the same "quarter-circle" trick used elsewhere on this page (a box
+   colored on only the two adjacent sides that should look like a line),
+   but this time with border-radius set on the one corner where those two
+   sides actually meet, so the vertical arm curves smoothly into the
+   horizontal merge line instead of joining it at a sharp right angle. */
 .prereq-branch-curve {
   position: absolute;
   left: calc(50% - (var(--prereq-line-height) / 2));
@@ -1206,18 +1393,24 @@ a.prereq-station:not(.prereq):hover .prereq-label {
   border: 0 solid var(--prereq-segment-color);
 }
 /* [LOCATION: the TOP corner specifically — the one EE1111A's arm turns
-   into] */
+   into] Vertical arm runs down the left edge, merge line runs right along
+   the bottom edge — those two sides meet at the box's bottom-left corner,
+   so that's the one that gets rounded. */
 .prereq-branch-curve-top {
-  top: calc(var(--prereq-dot-height) + 19px - var(--prereq-branch-corner));
+  top: calc(var(--prereq-dot-height) + 55px - var(--prereq-branch-corner));
   border-left-width: var(--prereq-line-height);
   border-bottom-width: var(--prereq-line-height);
+  border-bottom-left-radius: var(--prereq-branch-corner);
 }
 /* [LOCATION: the BOTTOM corner specifically — the one EE2111A's arm turns
-   into] */
+   into] Mirror of the top corner: merge line runs right along the top
+   edge, vertical arm continues down the left edge, so the round goes on
+   the box's top-left corner instead. */
 .prereq-branch-curve-bottom {
-  top: calc(var(--prereq-dot-height) + 19px);
+  top: calc(var(--prereq-dot-height) + 55px);
   border-left-width: var(--prereq-line-height);
   border-top-width: var(--prereq-line-height);
+  border-top-left-radius: var(--prereq-branch-corner);
 }
 /* [LOCATION: the single horizontal line exiting the RIGHT side of the
    branch, continuing on to whatever's next in the .prereq-map (e.g. into
@@ -1231,7 +1424,7 @@ a.prereq-station:not(.prereq):hover .prereq-label {
    win (a bare ".prereq-branch:not(:last-child)::after" here would lose to
    it and silently do nothing, which is exactly what happened before). */
 .prereq-map > .prereq-branch:not(:last-child)::after {
-  top: calc(var(--prereq-dot-height) + 19px - (var(--prereq-line-height) / 2));
+  top: calc(var(--prereq-dot-height) + 55px - (var(--prereq-line-height) / 2));
   left: calc(50% - (var(--prereq-line-height) / 2) + var(--prereq-branch-corner));
   width: calc(100% + (var(--prereq-line-height) / 2) - var(--prereq-branch-corner));
 }
@@ -1705,12 +1898,69 @@ a.gallery-tree-node:hover {
 
 /* ============================================================
    PREREQUISITE MAP, D3-DRIVEN — for pages/prereq-d3-demo.html only.
-   The ".prereq-map"/".prereq-station"/".prereq-branch" elements here are
-   the same real components above, just built by scripts/d3 instead of
-   hand-typed HTML — no new node/line styling needed. This block is only
-   the small chrome around the map: the module picker, the back button,
-   and the breadcrumb of previously-viewed modules.
+   ".prereq-station"/".prereq-dot"/".prereq-label" are the same real
+   station components used everywhere else on the site — D3 places them
+   with real computed pixel coordinates (see the "LAYOUT" comment in that
+   page's <script>) instead of the CSS-formula positioning the static
+   .prereq-branch component relies on. The connector LINES are a
+   completely different mechanism from .prereq-branch's CSS spans: a
+   plain SVG overlaid on #prereq-map, drawn from those same coordinates,
+   so a line and the station it touches can never drift apart the way
+   .prereq-branch's curve and its label once did. Branches route through
+   an invisible "ghost" waypoint node (a coordinate with no marker,
+   skipped entirely in the render pass) instead of hand-derived corner
+   math — see buildColumns() in the page's own script. This block is
+   both that SVG's line styling AND the small chrome around the map: the
+   module picker, the back button, and the breadcrumb of previously-
+   viewed modules.
    ============================================================ */
+/* [LOCATION: #prereq-map itself] Deliberately NOT ".prereq-map" — that
+   class carries the ".prereq-map > .prereq-station::before/::after"
+   mini-connector rules from the static component above, which would
+   still fire on these D3-generated stations (they're real
+   ".prereq-station" elements, direct children of this container) and
+   draw small stray connector nubs the SVG lines don't need. A different
+   class sidesteps the collision entirely instead of overriding it back
+   off again. */
+.prereq-d3-map {
+  position: relative;
+  margin: 24px 0;
+  overflow-x: auto; /* the SVG inside has a fixed pixel width (as many columns/rows as the data needs) — on a narrow/squished viewport that can exceed the card's width, so scroll horizontally within the map instead of visually spilling out past the card into whatever's next to it. */
+  overflow-y: hidden;
+}
+/* When the D3 map is used as the "Subway map" view behind a Subway/Tree
+   view-switcher (see classes/ee2028.html + initPrereqViewSwitcher in
+   scripts/theme.js), the switcher hides it by adding .is-hidden — the D3
+   script sets an inline display via style, so this needs !important to
+   win. Mirrors the existing ".prereq-map.is-hidden" rule for the old
+   hand-typed map. */
+.prereq-d3-map.is-hidden {
+  display: none !important;
+}
+.prereq-d3-svg {
+  pointer-events: none; /* clicks fall through to the station <a> markers layered on top */
+}
+/* [LOCATION: every connector line drawn by the D3 page] Same color/
+   thickness the CSS-only lines use, just applied to an SVG stroke
+   instead of a background box. Neutral gray by default — only the one
+   segment leading directly into the course you're viewing gets colored
+   (see ".prereq-d3-line-accent" below), matching how a real transit map
+   only highlights the line you're actually riding. */
+.prereq-d3-line {
+  fill: none;
+  stroke: var(--prereq-grayed-color); /* was var(--border) — same near-black-reads-too-harsh issue the static .prereq-branch component had, same fix */
+  stroke-width: var(--prereq-line-height);
+  stroke-linecap: butt; /* was "square", which extends the stroke half its own width PAST each line endpoint — every line's x1/x2 lands exactly on a station's dot center, so that extension poked out visibly past the dot on thin/small-dot themes (SF's 5px tick especially). "butt" stops exactly at the coordinate instead; the dot drawn on top already covers the join, so there's no visible gap either way. */
+  stroke-linejoin: miter;
+}
+/* [LOCATION: the single line segment feeding into the "current" course's
+   own dot] Colored --accent instead of gray — this is a DESTINATION
+   check (is the station this line ends at the current course?), not a
+   source check, which is why a gray "prereq" station like CS1010E can
+   still have a colored line leaving it. */
+.prereq-d3-line-accent {
+  stroke: var(--accent);
+}
 .prereq-d3-controls {
   display: flex;
   align-items: center;
@@ -1752,6 +2002,12 @@ a.prereq-d3-breadcrumb-item:hover {
   font-size: 0.9rem;
   margin-top: 10px;
   opacity: 0.8;
+}
+.prereq-d3-forward-heading {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
 }
 
 /* ============================================================

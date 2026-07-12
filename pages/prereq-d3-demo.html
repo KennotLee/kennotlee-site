@@ -33,19 +33,30 @@
     </ul>
     <div>
       <div class="walloftext">
-        <h3>Prerequisite map, D3-driven</h3>
+        <h2>Prerequisite map, D3-driven</h2>
         <p><span class="placeholder-note">Test page — not linked from Classes</span></p>
         <p>
           Every course page's <code>.prereq-map</code> so far has been
-          hand-typed HTML per course. This page instead keeps prerequisite
-          data in a plain JS object (see <code>moduleData</code> in this
-          page's source) and has D3 walk it and build the exact same
-          <code>.prereq-station</code>/<code>.prereq-dot</code>/<code>.prereq-label</code>/<code>.prereq-branch</code>
-          markup from <a href="prereq-branch-themed.html">prereq-branch-themed.html</a>
-          — so city theme and dark mode keep working for free, same CSS,
-          zero duplication. The map is also click-through: any grayed
-          station is a real prerequisite of the one currently shown, click
-          it to re-center the map on that module and see <em>its</em> chain.
+          hand-typed HTML per course, and branches (an OR-group like
+          EE2028's) use a CSS component whose curve/corner position is a
+          hand-derived pixel formula — which turned out fragile: growing
+          the corner's radius on <a href="../classes/ee2028.html">the real
+          EE2028 page</a> made it visibly cut through its own station
+          label, twice, before the formula got fixed. This page keeps
+          prerequisite data in a plain JS object (see
+          <code>moduleData</code> in this page's source) and has D3
+          compute real pixel coordinates for every station instead — the
+          <code>.prereq-station</code>/<code>.prereq-dot</code>/
+          <code>.prereq-label</code> markers are the same real components
+          (so city theme and dark mode still work for free), but the
+          connector lines are a plain SVG drawn from those same
+          coordinates, so a line and the station it touches can't drift
+          apart. A branch's two lines converge on an invisible "ghost"
+          node — a coordinate with no marker, just a routing waypoint —
+          instead of a curve/corner formula. The map is also
+          click-through: any grayed station is a real prerequisite of the
+          one currently shown, click it to re-center the map on that
+          module and see <em>its</em> chain.
         </p>
       </div>
 
@@ -56,8 +67,17 @@
           <button type="button" id="back-btn" onclick="goBackPrereq()">&larr; Back</button>
         </div>
         <div class="prereq-d3-breadcrumb" id="prereq-breadcrumb"></div>
-        <div class="prereq-map" id="prereq-map"></div>
+        <div class="prereq-d3-map" id="prereq-map"></div>
         <div class="prereq-d3-info" id="prereq-info"></div>
+        <!-- Forward fan-out: the reverse of the map above. That one walks
+             BACKWARD from the current module to its prerequisites; this
+             one shows what branches FORWARD out of the current module —
+             every other module that lists it as a direct prerequisite —
+             Boston Green Line style, one trunk splitting into several
+             lines toward different termini. Hidden entirely (no heading,
+             no empty box) when the current module has no dependents. -->
+        <h4 class="prereq-d3-forward-heading" id="prereq-forward-heading"></h4>
+        <div class="prereq-d3-map" id="prereq-forward"></div>
       </div>
     </div>
     <footer class="theme-picker">
@@ -127,10 +147,6 @@
         CS2030: { name: "Programming Methodology II", chain: [
           { type: "station", code: "CS1010E" },
         ] },
-        CS3230: { name: "Design and Analysis of Algorithms", chain: [
-          { type: "station", code: "CS1010E" },
-          { type: "station", code: "CS2040" },
-        ] },
         MA1512: { name: "Differential Equations for Engineering", chain: [] },
         EE2023: { name: "Signals and Systems", chain: [
           { type: "station", code: "MA1512" },
@@ -145,18 +161,78 @@
           { type: "branch", alts: ["EE1111A", "EE2111A"] },
           { type: "station", code: "CS1010E" },
         ] },
+        // CS1010E fans out to a lot of downstream modules in real life —
+        // CS2040/CS2030/EE2028 above already carry it as a prereq; these
+        // three are new entries added just so CS1010E has more (messy,
+        // placeholder-named) dependents to click through on this page.
+        // Real names/chains TBD.
+        EE2026: { name: "Module EE2026", chain: [
+          { type: "station", code: "CS1010E" },
+        ] },
+        CS2100DE: { name: "Module CS2100DE", chain: [
+          { type: "station", code: "CS1010E" },
+        ] },
+        EE2211: { name: "Module EE2211", chain: [
+          { type: "station", code: "CS1010E" },
+        ] },
       };
 
       let prereqHistory = [];
+      let currentPrereqCode = null;
 
-      function appendStation(parent, code, { prereq = false, current = false } = {}) {
+      // LAYOUT — real computed pixel coordinates via D3, not the CSS
+      // pixel-formula approach the static .prereq-branch component uses
+      // (see classes/ee2028.html's CSS: that component's curve overlapping
+      // its own station label, twice, was exactly this class of bug —
+      // hand-derived formulas drifting out of sync as constants changed).
+      // Here every station's (x, y) is computed once in JS and both the
+      // SVG lines AND the HTML station markers are placed from the same
+      // numbers, so they can't drift apart.
+      //
+      // GHOST NODES: a branch's two lines need somewhere to converge
+      // before continuing on as one line. Rather than eyeball a merge
+      // point in CSS, the layout inserts a real column into the "columns"
+      // array for it — same as any station — except it's marked
+      // `ghost: true`, which addStationMarker() / the line-color pass
+      // both check to skip ever drawing a marker for it. It has real
+      // coordinates and participates in the layout like any other node;
+      // it's just never rendered, purely a routing waypoint.
+      const SLOT_W = 180; // horizontal space per real (non-ghost) column — trimmed from 220 so the map needs a horizontal scrollbar (see ".prereq-d3-map"'s overflow-x) less often on a narrow viewport
+      const ROW_Y = 160; // the main line's y — also the branch's own merge Y
+      const SPLIT = 80; // vertical offset of each branch sub-station from ROW_Y
+      const STATION_W = 140; // matches ".prereq-station"'s own CSS width
+      const CORNER_R = 14; // shared 90-degree-bend radius — matches --prereq-branch-corner on the static CSS component, used for both the branch merge below and the forward fan-out further down, so every rounded corner on this page reads as the same "house style" bend.
+
+      function buildColumns(steps) {
+        const columns = [];
+        let x = SLOT_W / 2;
+        steps.forEach((step) => {
+          if (step.type === "branch") {
+            const vertX = x + SLOT_W / 2;
+            columns.push({ type: "branch", x, vertX, alts: step.alts });
+            columns.push({ type: "station", x: vertX, ghost: true });
+          } else {
+            columns.push({ type: "station", x, code: step.code, current: !!step.current });
+          }
+          x += SLOT_W;
+        });
+        return columns;
+      }
+
+      function addStationMarker(svgRoot, mapEl, x, y, code, { prereq = false, current = false } = {}) {
         const mod = moduleData[code];
         const clickable = !current;
         const classes = ["prereq-station"];
         if (prereq) classes.push("prereq");
         if (current) classes.push("current");
 
-        const el = parent.append(clickable ? "a" : "div").attr("class", classes.join(" "));
+        const dotH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--prereq-dot-height")) || 20;
+        const el = d3.select(mapEl).append(clickable ? "a" : "div")
+          .attr("class", classes.join(" "))
+          .style("position", "absolute")
+          .style("left", (x - STATION_W / 2) + "px")
+          .style("top", (y - dotH / 2) + "px")
+          .style("width", STATION_W + "px");
         if (clickable) {
           el.attr("href", "#").on("click", (event) => {
             event.preventDefault();
@@ -171,29 +247,78 @@
       function renderPrereqMap(code, opts = {}) {
         const mod = moduleData[code];
         if (!mod) return;
+        currentPrereqCode = code;
 
         if (opts.pushHistory !== false && prereqHistory[prereqHistory.length - 1] !== code) {
           prereqHistory.push(code);
         }
 
-        const map = d3.select("#prereq-map");
-        map.selectAll("*").remove();
+        const mapEl = document.getElementById("prereq-map");
+        mapEl.innerHTML = "";
+        mapEl.style.position = "relative";
 
         const steps = mod.chain.concat([{ type: "station", code, current: true }]);
-        steps.forEach((step) => {
-          if (step.type === "branch") {
-            const branch = map.append("div").attr("class", "prereq-branch");
-            step.alts.forEach((altCode) => appendStation(branch, altCode, { prereq: true }));
-            branch.append("span").attr("class", "prereq-branch-arm prereq-branch-arm-top");
-            branch.append("span").attr("class", "prereq-branch-arm prereq-branch-arm-bottom");
-            branch.append("span").attr("class", "prereq-branch-curve prereq-branch-curve-top");
-            branch.append("span").attr("class", "prereq-branch-curve prereq-branch-curve-bottom");
+        const columns = buildColumns(steps);
+        const width = columns[columns.length - 1].x + SLOT_W / 2;
+        const height = ROW_Y + SPLIT + 90;
+        mapEl.style.height = height + "px";
+
+        const svg = d3.select(mapEl).append("svg")
+          .attr("class", "prereq-d3-svg")
+          .attr("width", width)
+          .attr("height", height)
+          .style("position", "absolute")
+          .style("left", 0)
+          .style("top", 0)
+          .style("overflow", "visible");
+
+        // Pass 1: lines. A segment is colored --accent only when it leads
+        // DIRECTLY into the current course (matching the reference "only
+        // the last mile is highlighted" look) — everything else, including
+        // every line inside a branch, is the neutral --border gray.
+        for (let i = 0; i < columns.length; i++) {
+          const col = columns[i];
+          if (col.type === "branch") {
+            const topY = ROW_Y - SPLIT;
+            const botY = ROW_Y + SPLIT;
+            // Rounded elbows, same CORNER_R/Q-curve technique as the
+            // forward fan-out below: stop the horizontal stub short of
+            // the bend, curve through it, continue on the vertical.
+            svg.append("path")
+              .attr("class", "prereq-d3-line")
+              .attr("fill", "none")
+              .attr("d", `M ${col.x} ${topY} L ${col.vertX - CORNER_R} ${topY} Q ${col.vertX} ${topY} ${col.vertX} ${topY + CORNER_R} L ${col.vertX} ${ROW_Y}`);
+            svg.append("path")
+              .attr("class", "prereq-d3-line")
+              .attr("fill", "none")
+              .attr("d", `M ${col.x} ${botY} L ${col.vertX - CORNER_R} ${botY} Q ${col.vertX} ${botY} ${col.vertX} ${botY - CORNER_R} L ${col.vertX} ${ROW_Y}`);
           } else {
-            appendStation(map, step.code, { prereq: !step.current, current: !!step.current });
+            const next = columns[i + 1];
+            if (next) {
+              svg.append("line")
+                .attr("class", "prereq-d3-line")
+                .classed("prereq-d3-line-accent", !!next.current)
+                .attr("x1", col.x).attr("y1", ROW_Y)
+                .attr("x2", next.x).attr("y2", ROW_Y);
+            }
+          }
+        }
+
+        // Pass 2: station markers — ghost columns are skipped entirely, no
+        // marker, no label, nothing rendered for them at all.
+        columns.forEach((col) => {
+          if (col.ghost) return;
+          if (col.type === "branch") {
+            const topY = ROW_Y - SPLIT;
+            const botY = ROW_Y + SPLIT;
+            addStationMarker(svg, mapEl, col.x, topY, col.alts[0], { prereq: true });
+            addStationMarker(svg, mapEl, col.x, botY, col.alts[1], { prereq: true });
+          } else {
+            addStationMarker(svg, mapEl, col.x, ROW_Y, col.code, { prereq: !col.current, current: !!col.current });
           }
         });
 
-        map.selectAll(".prereq-station, .prereq-branch")
+        d3.select(mapEl).selectAll(".prereq-station")
           .style("opacity", 0)
           .transition().duration(250).ease(d3.easeCubicOut)
           .style("opacity", 1);
@@ -201,6 +326,112 @@
         d3.select("#target-select").property("value", code);
         d3.select("#prereq-info").text(`${code} — ${mod.name}`);
         renderBreadcrumb();
+        renderForwardFanOut(code);
+      }
+
+      // The reverse direction of everything above: instead of walking
+      // BACKWARD from a module to its own listed prerequisites, this scans
+      // every OTHER module's chain looking for ones that name `code`
+      // directly (as a plain station or as one alt of a branch) — i.e.
+      // "what does this module unlock". There's no reverse-lookup index
+      // for this, so it's a plain O(n) scan of moduleData each render;
+      // fine at this data size, would want a precomputed map if this ever
+      // grew to hundreds of modules.
+      function findDependents(code) {
+        return Object.keys(moduleData).filter((k) => {
+          return moduleData[k].chain.some((step) =>
+            (step.type === "station" && step.code === code) ||
+            (step.type === "branch" && step.alts && step.alts.includes(code))
+          );
+        }).sort();
+      }
+
+      // [LOCATION: the "what X leads to" fan-out, Boston Green Line style]
+      // One trunk out of the source station, splitting at a single fan
+      // point into a straight diagonal line per dependent — same idea as
+      // the B/C/D/E branches all leaving Kenmore toward different
+      // termini. Deliberately its own function/layout rather than
+      // reusing buildColumns() above: that one lays out a single
+      // horizontal row (chain of prerequisites), this one fans one
+      // station out across a whole vertical spread, different enough
+      // geometry that forcing it through the same columns model would
+      // just make both harder to follow.
+      function renderForwardFanOut(code) {
+        const dependents = findDependents(code);
+        const mapEl = document.getElementById("prereq-forward");
+        const heading = document.getElementById("prereq-forward-heading");
+        mapEl.innerHTML = "";
+
+        if (dependents.length === 0) {
+          mapEl.style.display = "none";
+          heading.style.display = "none";
+          return;
+        }
+        heading.style.display = "";
+        heading.textContent = `What ${code} leads to`;
+        mapEl.style.display = "";
+        mapEl.style.position = "relative";
+
+        const SOURCE_X = 90;
+        const FAN_X = 200; // trimmed from 260 — same reasoning as SLOT_W above
+        const DEST_X = 420; // trimmed from 560
+        const SPACING = 75; // generous — same reasoning as SPLIT above: a rotated diagonal label needs real vertical room, not just enough for the dot
+        const topPad = 40;
+        const height = dependents.length * SPACING + topPad;
+        const centerY = height / 2;
+        mapEl.style.height = height + "px";
+
+        const svg = d3.select(mapEl).append("svg")
+          .attr("class", "prereq-d3-svg")
+          .attr("width", DEST_X + 160)
+          .attr("height", height)
+          .style("position", "absolute")
+          .style("left", 0)
+          .style("top", 0)
+          .style("overflow", "visible");
+
+        // 90-degree-turn routing, not diagonals: trunk out to FAN_X, then
+        // each dependent gets its OWN path from there — vertical toward
+        // its own row, a rounded elbow, then horizontal into its dot.
+        // There's no single separate "spine" element; every path
+        // overlaps the same FAN_X vertical corridor on its way to its
+        // own row, and since they're all the same color/width that
+        // overlap is exactly what reads as one continuous spine. Doing
+        // it this way (instead of one real spine line + separate taps)
+        // is what makes rounding possible at all — a rounded corner is a
+        // property of ONE path bending, not of two independent lines
+        // that happen to touch, so each tap needs to own its whole
+        // route from the fan point to get a curve at its bend. FAN_X
+        // itself is still the ghost node in spirit: a coordinate that
+        // every path routes through but that never gets its own marker.
+        const depYs = dependents.map((_, i) => topPad / 2 + i * SPACING + SPACING / 2);
+
+        svg.append("line")
+          .attr("class", "prereq-d3-line prereq-d3-line-accent")
+          .attr("x1", SOURCE_X).attr("y1", centerY)
+          .attr("x2", FAN_X).attr("y2", centerY);
+
+        dependents.forEach((depCode, i) => {
+          const y = depYs[i];
+          const dir = y === centerY ? 0 : (y > centerY ? 1 : -1);
+          const d = dir === 0
+            ? `M ${FAN_X} ${centerY} L ${DEST_X} ${y}`
+            : `M ${FAN_X} ${centerY} L ${FAN_X} ${y - dir * CORNER_R} Q ${FAN_X} ${y} ${FAN_X + CORNER_R} ${y} L ${DEST_X} ${y}`;
+          svg.append("path")
+            .attr("class", "prereq-d3-line prereq-d3-line-accent")
+            .attr("fill", "none")
+            .attr("d", d);
+        });
+
+        addStationMarker(svg, mapEl, SOURCE_X, centerY, code, { current: true });
+        dependents.forEach((depCode, i) => {
+          addStationMarker(svg, mapEl, DEST_X, depYs[i], depCode, {});
+        });
+
+        d3.select(mapEl).selectAll(".prereq-station")
+          .style("opacity", 0)
+          .transition().duration(250).ease(d3.easeCubicOut)
+          .style("opacity", 1);
       }
 
       function renderBreadcrumb() {
@@ -228,6 +459,82 @@
         renderPrereqMap(prereqHistory[prereqHistory.length - 1], { pushHistory: false });
       }
 
+      // Android-ScrollView-style drag-to-pan for the horizontally-scrollable
+      // maps: grab anywhere on the map and drag to pan, with a fling/momentum
+      // glide on release. Attached ONCE per container (the containers persist
+      // across re-renders — only their innerHTML changes), so this doesn't
+      // need re-wiring every render.
+      //
+      // Only engages for MOUSE input: touch and pen fall through to the
+      // browser's own native overflow scrolling, which already gives the
+      // real momentum-scroll feel on those devices (and hijacking it with
+      // JS there tends to fight the OS and feel worse, not better). So this
+      // is specifically the desktop-mouse gap — where you'd otherwise be
+      // stuck with just the scrollbar.
+      function enableDragScroll(el) {
+        let down = false, moved = false;
+        let startX = 0, startScroll = 0;
+        let lastX = 0, lastT = 0, velocity = 0; // velocity in px/ms, for the fling
+        let raf = null;
+        const DRAG_THRESHOLD = 5; // px of movement before it's a drag, not a click
+
+        el.style.cursor = "grab";
+        // pan-y: let the browser keep handling VERTICAL page scroll natively
+        // (so dragging up/down the page still works over the map); we only
+        // take over the horizontal axis.
+        el.style.touchAction = "pan-y";
+
+        el.addEventListener("pointerdown", (e) => {
+          if (e.pointerType !== "mouse") return; // touch/pen use native scroll
+          if (el.scrollWidth <= el.clientWidth) return; // nothing to pan
+          down = true; moved = false;
+          startX = e.clientX; startScroll = el.scrollLeft;
+          lastX = e.clientX; lastT = performance.now(); velocity = 0;
+          if (raf) { cancelAnimationFrame(raf); raf = null; } // stop any in-flight fling
+          el.style.cursor = "grabbing";
+          el.style.userSelect = "none";
+        });
+
+        window.addEventListener("pointermove", (e) => {
+          if (!down) return;
+          const dx = e.clientX - startX;
+          if (Math.abs(dx) > DRAG_THRESHOLD) moved = true;
+          el.scrollLeft = startScroll - dx;
+          const now = performance.now();
+          const dt = now - lastT;
+          if (dt > 0) velocity = (e.clientX - lastX) / dt;
+          lastX = e.clientX; lastT = now;
+        });
+
+        window.addEventListener("pointerup", () => {
+          if (!down) return;
+          down = false;
+          el.style.cursor = "grab";
+          el.style.userSelect = "";
+          if (moved) {
+            // Suppress the click that fires right after a drag, so a station
+            // you happened to grab-drag over doesn't also navigate.
+            el.dataset.suppressClick = "1";
+            setTimeout(() => { delete el.dataset.suppressClick; }, 0);
+            // Fling: keep gliding in the drag's direction, decaying by a
+            // fixed friction factor each frame until it's negligible.
+            const glide = () => {
+              velocity *= 0.94;
+              el.scrollLeft -= velocity * 16; // ~16ms per frame
+              if (Math.abs(velocity) > 0.02) raf = requestAnimationFrame(glide);
+              else raf = null;
+            };
+            if (Math.abs(velocity) > 0.05) raf = requestAnimationFrame(glide);
+          }
+        });
+
+        // Capture phase so it runs before the station <a>'s own click handler:
+        // if we just dragged, cancel the click entirely.
+        el.addEventListener("click", (e) => {
+          if (el.dataset.suppressClick) { e.preventDefault(); e.stopPropagation(); }
+        }, true);
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         const select = d3.select("#target-select");
         select.selectAll("option")
@@ -237,7 +544,24 @@
           .text((d) => `${d} — ${moduleData[d].name}`);
         select.on("change", function () { renderPrereqMap(this.value); });
 
+        enableDragScroll(document.getElementById("prereq-map"));
+        enableDragScroll(document.getElementById("prereq-forward"));
+
         renderPrereqMap("EE2028");
+
+        // Every station's y-coordinate is computed from --prereq-dot-height
+        // at render time (see addStationMarker), and that variable changes
+        // per city theme (5px BART tick vs 20px Tokyo badge) — so a theme
+        // switch after the initial render needs a re-render, or the dots
+        // drift a few px off-center from their own lines. scripts/theme.js
+        // defines setCityTheme globally; wrap it here rather than editing
+        // that shared file, since this recompute is only needed on this
+        // one SVG-driven page.
+        const originalSetCityTheme = window.setCityTheme;
+        window.setCityTheme = function (city) {
+          originalSetCityTheme(city);
+          if (currentPrereqCode) renderPrereqMap(currentPrereqCode, { pushHistory: false });
+        };
       });
     </script>
   </body>

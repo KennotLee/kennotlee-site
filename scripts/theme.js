@@ -55,20 +55,50 @@ function updateCityThemeUI() {
 function initPrereqViewSwitcher() {
   var buttons = document.querySelectorAll('[data-prereq-view]');
   if (buttons.length === 0) return;
-  var map = document.querySelector('.prereq-map');
+  // ".prereq-map" is the old hand-typed subway diagram; ".prereq-d3-map"
+  // is the newer D3 widget that replaced it on some pages (e.g.
+  // classes/ee2028.html). Either can be the "map" view the Tree toggle
+  // flips against — take whichever this page actually has.
+  var map = document.querySelector('.prereq-map') || document.querySelector('.prereq-d3-map');
   var tree = document.querySelector('.prereq-tree');
+  // Both halves must exist for the toggle to mean anything. Guard so a
+  // click can never throw on a null.
+  if (!map || !tree) return;
+
+  // Hide/show with INLINE display, NOT by toggling an "is-hidden" class.
+  // The class approach only works if a matching
+  // ".<selector>.is-hidden { display:none }" rule exists in the
+  // stylesheet — and the D3 map's rule (".prereq-d3-map.is-hidden") was
+  // added recently, so a browser running a stale cached style.css can
+  // lack it. In that case picking "Tree" added the class but the map
+  // never hid (both stayed on screen), which reads exactly as "the tree
+  // toggle is broken". Inline display needs no CSS rule, so it works even
+  // against an old cached stylesheet. Strip any starting is-hidden class
+  // first so these inline styles are the single source of truth.
+  map.classList.remove('is-hidden');
+  tree.classList.remove('is-hidden');
+
+  function showView(showTree) {
+    map.style.display = showTree ? 'none' : '';
+    tree.style.display = showTree ? '' : 'none';
+    buttons.forEach(function (b) {
+      var isActive = (b.dataset.prereqView === 'tree') === showTree;
+      b.classList.toggle('is-active', isActive);
+      b.setAttribute('aria-pressed', String(isActive));
+    });
+  }
+
   buttons.forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var showTree = btn.dataset.prereqView === 'tree';
-      map.classList.toggle('is-hidden', showTree);
-      tree.classList.toggle('is-hidden', !showTree);
-      buttons.forEach(function (other) {
-        var isActive = other === btn;
-        other.classList.toggle('is-active', isActive);
-        other.setAttribute('aria-pressed', String(isActive));
-      });
+      showView(btn.dataset.prereqView === 'tree');
     });
   });
+
+  // Set the initial state from whichever button starts active (the map,
+  // by default) rather than trusting the HTML's is-hidden class, which we
+  // just stripped above.
+  var active = document.querySelector('[data-prereq-view].is-active');
+  showView(!!active && active.dataset.prereqView === 'tree');
 }
 
 // Zoom control for one ".gallery-diagram" (see the ".gallery-zoom-
