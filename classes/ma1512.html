@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <script src="../scripts/theme.js"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Lee Profile</title>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+  </head>
+  <!-- "page-classes" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-classes">
+    <div class="header">
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+      <h1>kennotlee</h1>
+      <div class="subtitle">Personal Profile & Portfolio</div>
+    </div>
+    <ul class="navbar">
+      <li class="dropdown">
+        <details>
+          <summary>Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
+      <li><a href="../pages.html">Pages</a></li>
+      <li><a href="../projects.html">Projects</a></li>
+      <li><a href="../classes.html" class="active">Classes</a></li>
+    </ul>
+    <div>
+      <div class="walloftext">
+        <!-- ==== EDIT: course title + tag pills ====
+             h2 is "CODE &mdash; Full Title" — the underline ("the line") is
+             tied to h2 site-wide (it marks a card's own top heading), so
+             this needs to stay h2 to keep it. Any in-content subheadings
+             you add to this card can freely use h3/h4 with no line. Each
+             .tech-tag is a small pill (category / semester / year) — add,
+             remove, or reword freely. -->
+        <h2>MA1512 &mdash; Differential Equations for Engineering</h2>
+        <div class="class-detail-meta">
+          <span class="tech-tag">Math & Fundamentals</span>
+          <span class="tech-tag">Semester TBD</span>
+        </div>
+        <p><span class="placeholder-note">Placeholder content — swap in your real notes</span></p>
+        <!-- ==== EDIT: your notes / review for this course ====
+             Plain HTML, no markdown: <p> paragraphs, <ul>/<ol> lists,
+             <b>/<em>, <a href="...">links</a>, <code>, <blockquote>, <img>.
+             Delete the "placeholder-note" span above once the page is done. -->
+        <p>
+          Notes on MA1512 go here — lecture format, tutorials, grading breakdown, whatever's
+          worth remembering about this one.
+        </p>
+      </div>
+
+      <div class="walloftext">
+        <h4>Prerequisites</h4>
+        <!-- ==== EDIT: prerequisite map ====
+             Read left-to-right as Prerequisite(s) >>> Current >>> Next.
+             Each station is a .prereq-station: add class "prereq" for a
+             done/required course (grayed), "current" for THIS course
+             (filled), or neither for a course this one leads to. Change the
+             <span class="prereq-label"> text to the course code. Use
+             <a href="other.html" class="prereq-station ..."> to make a
+             station link. Full guide + OR-branch example: _template.html.
+             (The .theme-picker-hint <p> below is an optional note above the
+             map — reword or delete it.) -->
+        <p class="theme-picker-hint">Exempted from MA1301 — shown as a crossed-out (X) station with a dotted "dead" connection below, since it isn't actually part of the path taken.</p>
+        <div class="prereq-map">
+          <!-- MA1301 is "exempt": the extra class draws it as an X with a
+               dotted connector (see "EXEMPT / dead prerequisite" in
+               stylesheets/style.css) instead of a normal grayed dot. -->
+          <div class="prereq-station prereq exempt">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">MA1301</span>
+          </div>
+          <div class="prereq-station current">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">MA1512</span>
+          </div>
+        </div>
+        <a class="back-link" href="../classes.html">&larr; Back to Classes</a>
+      </div>
+    </div>
+    <footer class="theme-picker">
+      <h4>Subway Theme</h4>
+      <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system, just for fun.</p>
+      <div class="theme-swatches">
+        <button type="button" class="theme-swatch" data-city="sf" onclick="setCityTheme('sf')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-sf-1"></span>
+            <span class="swatch-dot dot-sf-2"></span>
+            <span class="swatch-dot dot-sf-3"></span>
+            <span class="swatch-dot dot-sf-4"></span>
+          </span>
+          <span class="swatch-label">San Francisco</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="nyc" onclick="setCityTheme('nyc')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-nyc-1"></span>
+            <span class="swatch-dot dot-nyc-2"></span>
+            <span class="swatch-dot dot-nyc-3"></span>
+            <span class="swatch-dot dot-nyc-4"></span>
+          </span>
+          <span class="swatch-label">New York</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="chicago" onclick="setCityTheme('chicago')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-chicago-1"></span>
+            <span class="swatch-dot dot-chicago-2"></span>
+            <span class="swatch-dot dot-chicago-3"></span>
+            <span class="swatch-dot dot-chicago-4"></span>
+          </span>
+          <span class="swatch-label">Chicago</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="tokyo" onclick="setCityTheme('tokyo')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-tokyo-1"></span>
+            <span class="swatch-dot dot-tokyo-2"></span>
+            <span class="swatch-dot dot-tokyo-3"></span>
+            <span class="swatch-dot dot-tokyo-4"></span>
+          </span>
+          <span class="swatch-label">Tokyo</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="seoul" onclick="setCityTheme('seoul')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-seoul-1"></span>
+            <span class="swatch-dot dot-seoul-2"></span>
+            <span class="swatch-dot dot-seoul-3"></span>
+            <span class="swatch-dot dot-seoul-4"></span>
+          </span>
+          <span class="swatch-label">Seoul</span>
+        </button>
+      </div>
+      <p class="theme-current" id="theme-current-label">Current: <strong>San Francisco</strong></p>
+    </footer>
+  </body>
+</html>

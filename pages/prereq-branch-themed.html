@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <script src="../scripts/theme.js"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Lee Profile</title>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+  </head>
+  <!-- "page-pages" sets this page's accent color (see stylesheets/style.css) —
+       matches the "Pages" nav tab this is reached from, same as its sibling
+       pages/prereq-styles.html (the fixed-color version of 9-17). -->
+  <body class="page-pages">
+    <div class="header">
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+      <h1>kennotlee</h1>
+      <div class="subtitle">Personal Profile & Portfolio</div>
+    </div>
+    <ul class="navbar">
+      <li class="dropdown">
+        <details>
+          <summary>Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
+      <li><a href="../pages.html" class="active">Pages</a></li>
+      <li><a href="../projects.html">Projects</a></li>
+      <li><a href="../classes.html">Classes</a></li>
+    </ul>
+    <div>
+      <div class="walloftext">
+        <h2>Themed Branch Style Gallery (9&ndash;17)</h2>
+        <p><span class="placeholder-note">Test page — not linked from Classes</span></p>
+        <p>
+          Same nine shapes as entries 9&ndash;17 in <a href="prereq-styles.html">prereq-styles.html</a>
+          (the "eased elbow" family: plain, branching on both sides, and grayed),
+          but rebuilt to actually respond to the theme — every station below is
+          the real <code>.prereq-station</code>/<code>.prereq-dot</code>/<code>.prereq-label</code>
+          component, not a fixed SVG circle, so switching the footer's city
+          theme changes the dot shape and size (BART tick, NYC ring, Tokyo
+          badge...) live, and the connector lines' thickness and color follow
+          <code>--prereq-line-height</code>/<code>--accent</code>/<code>--border</code>
+          the same way the real map does. Only the curved connectors
+          themselves are still one-off SVG (no CSS equivalent for this
+          particular bend shape exists yet). Boxed stations are real links
+          (<code>href="#"</code> placeholders) and lift on hover, same "hover
+          only if there's a link" rule as everywhere else. GALLERY-ONLY markup
+          — see the "GALLERY DIAGRAM, THEMED" comment in stylesheets/style.css
+          for exactly how the positioning math works.
+        </p>
+      </div>
+
+      <div class="walloftext">
+        <h4>9. Eased elbow, themed</h4>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 520px; height: 180px;">
+          <svg viewBox="-60 0 520 180" class="gallery-diagram-svg">
+            <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 74 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+          </svg>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(30px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE1111A</span></a>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2111A</span></a>
+          <a href="#" class="prereq-station" style="left: 210px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">CS1010E</span></a>
+          <a href="#" class="prereq-station current" style="left: 390px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2028</span></a>
+        </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>10. One straight, one branch, themed</h4>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 520px; height: 180px;">
+          <svg viewBox="-60 0 520 180" class="gallery-diagram-svg">
+            <line x1="40" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+          </svg>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE1111A</span></a>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2111A</span></a>
+          <a href="#" class="prereq-station" style="left: 210px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">CS1010E</span></a>
+          <a href="#" class="prereq-station current" style="left: 390px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2028</span></a>
+        </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>11. Eased entry, sharp convergence, themed</h4>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 520px; height: 180px;">
+          <svg viewBox="-60 0 520 180" class="gallery-diagram-svg">
+            <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round; stroke-linejoin: miter;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round; stroke-linejoin: miter;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+          </svg>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(30px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE1111A</span></a>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2111A</span></a>
+          <a href="#" class="prereq-station" style="left: 210px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">CS1010E</span></a>
+          <a href="#" class="prereq-station current" style="left: 390px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2028</span></a>
+        </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>12. Eased elbow (#9), mirrored &mdash; themed</h4>
+        <div class="gallery-diagram-wrap">
+        <div class="gallery-zoom-controls">
+          <button type="button" onclick="zoomGalleryDiagram(this, -0.15)">&minus;</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0)">Reset</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0.15)">+</button>
+        </div>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 900px; height: 180px;">
+          <svg viewBox="-60 0 900 180" class="gallery-diagram-svg">
+            <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 74 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <line x1="400" y1="90" x2="580" y2="90" style="stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <path d="M 580 90 L 684 90 Q 700 90 700 74 L 700 46 Q 700 30 716 30 L 760 30" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <path d="M 580 90 L 684 90 Q 700 90 700 106 L 700 134 Q 700 150 716 150 L 760 150" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+          </svg>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(30px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE1111A</span></a>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2111A</span></a>
+          <a href="#" class="prereq-station" style="left: 210px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">CS1010E</span></a>
+          <a href="#" class="prereq-station current" style="left: 390px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2028</span></a>
+          <a href="#" class="prereq-station" style="left: 570px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE5111A</span></a>
+          <a href="#" class="prereq-station" style="left: 750px; top: calc(30px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE6111A</span></a>
+          <a href="#" class="prereq-station" style="left: 750px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE7111A</span></a>
+        </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>13. One straight, one branch (#10), mirrored &mdash; themed</h4>
+        <div class="gallery-diagram-wrap">
+        <div class="gallery-zoom-controls">
+          <button type="button" onclick="zoomGalleryDiagram(this, -0.15)">&minus;</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0)">Reset</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0.15)">+</button>
+        </div>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 900px; height: 180px;">
+          <svg viewBox="-60 0 900 180" class="gallery-diagram-svg">
+            <line x1="40" y1="90" x2="760" y2="90" style="stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <path d="M 684 90 Q 700 90 700 106 L 700 134 Q 700 150 716 150 L 760 150" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+          </svg>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE1111A</span></a>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2111A</span></a>
+          <a href="#" class="prereq-station" style="left: 210px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">CS1010E</span></a>
+          <a href="#" class="prereq-station current" style="left: 390px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2028</span></a>
+          <a href="#" class="prereq-station" style="left: 750px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE6111A</span></a>
+          <a href="#" class="prereq-station" style="left: 750px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE7111A</span></a>
+        </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>14. Eased entry, sharp convergence (#11), mirrored &mdash; themed</h4>
+        <div class="gallery-diagram-wrap">
+        <div class="gallery-zoom-controls">
+          <button type="button" onclick="zoomGalleryDiagram(this, -0.15)">&minus;</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0)">Reset</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0.15)">+</button>
+        </div>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 900px; height: 180px;">
+          <svg viewBox="-60 0 900 180" class="gallery-diagram-svg">
+            <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round; stroke-linejoin: miter;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 90 L 220 90" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round; stroke-linejoin: miter;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <line x1="400" y1="90" x2="580" y2="90" style="stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <path d="M 580 90 L 700 90 L 700 46 Q 700 30 716 30 L 760 30" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round; stroke-linejoin: miter;" />
+            <path d="M 580 90 L 700 90 L 700 134 Q 700 150 716 150 L 760 150" style="fill: none; stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round; stroke-linejoin: miter;" />
+          </svg>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(30px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE1111A</span></a>
+          <a href="#" class="prereq-station" style="left: 30px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2111A</span></a>
+          <a href="#" class="prereq-station" style="left: 210px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">CS1010E</span></a>
+          <a href="#" class="prereq-station current" style="left: 390px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2028</span></a>
+          <a href="#" class="prereq-station" style="left: 570px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE5111A</span></a>
+          <a href="#" class="prereq-station" style="left: 750px; top: calc(30px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE6111A</span></a>
+          <a href="#" class="prereq-station" style="left: 750px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE7111A</span></a>
+        </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>15. Eased elbow (#9), grayed &mdash; themed</h4>
+        <p class="theme-picker-hint">EE1111A/EE2111A/CS1010E now use the real ".prereq-station.prereq" modifier (same class the actual grayed-prerequisite course pages use) instead of just a differently-colored line — dot fill, line color, AND label opacity all come from that one class.</p>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 520px; height: 180px;">
+          <svg viewBox="-60 0 520 180" class="gallery-diagram-svg">
+            <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 74 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--border); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90 L 220 90" style="fill: none; stroke: var(--border); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+          </svg>
+          <a href="#" class="prereq-station prereq" style="left: 30px; top: calc(30px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE1111A</span></a>
+          <a href="#" class="prereq-station prereq" style="left: 30px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2111A</span></a>
+          <a href="#" class="prereq-station prereq" style="left: 210px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">CS1010E</span></a>
+          <a href="#" class="prereq-station current" style="left: 390px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2028</span></a>
+        </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>16. One straight, one branch (#10), grayed &mdash; themed</h4>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 520px; height: 180px;">
+          <svg viewBox="-60 0 520 180" class="gallery-diagram-svg">
+            <line x1="40" y1="90" x2="220" y2="90" style="stroke: var(--border); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 106 Q 100 90 116 90" style="fill: none; stroke: var(--border); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+          </svg>
+          <a href="#" class="prereq-station prereq" style="left: 30px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE1111A</span></a>
+          <a href="#" class="prereq-station prereq" style="left: 30px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2111A</span></a>
+          <a href="#" class="prereq-station prereq" style="left: 210px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">CS1010E</span></a>
+          <a href="#" class="prereq-station current" style="left: 390px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2028</span></a>
+        </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>17. Eased entry, sharp convergence (#11), grayed &mdash; themed</h4>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 520px; height: 180px;">
+          <svg viewBox="-60 0 520 180" class="gallery-diagram-svg">
+            <path d="M 40 30 L 84 30 Q 100 30 100 46 L 100 90 L 220 90" style="fill: none; stroke: var(--border); stroke-width: var(--prereq-line-height); stroke-linecap: round; stroke-linejoin: miter;" />
+            <path d="M 40 150 L 84 150 Q 100 150 100 134 L 100 90 L 220 90" style="fill: none; stroke: var(--border); stroke-width: var(--prereq-line-height); stroke-linecap: round; stroke-linejoin: miter;" />
+            <line x1="220" y1="90" x2="400" y2="90" style="stroke: var(--accent); stroke-width: var(--prereq-line-height); stroke-linecap: round;" />
+          </svg>
+          <a href="#" class="prereq-station prereq" style="left: 30px; top: calc(30px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE1111A</span></a>
+          <a href="#" class="prereq-station prereq" style="left: 30px; top: calc(150px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2111A</span></a>
+          <a href="#" class="prereq-station prereq" style="left: 210px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">CS1010E</span></a>
+          <a href="#" class="prereq-station current" style="left: 390px; top: calc(90px - (var(--prereq-dot-height) / 2));"><span class="prereq-dot"></span><span class="prereq-label">EE2028</span></a>
+        </div>
+        </div>
+      </div>
+    </div>
+    <footer class="theme-picker">
+      <h4>Subway Theme</h4>
+      <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system — this is the whole point of this page, try it.</p>
+      <div class="theme-swatches">
+        <button type="button" class="theme-swatch" data-city="sf" onclick="setCityTheme('sf')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-sf-1"></span>
+            <span class="swatch-dot dot-sf-2"></span>
+            <span class="swatch-dot dot-sf-3"></span>
+            <span class="swatch-dot dot-sf-4"></span>
+          </span>
+          <span class="swatch-label">San Francisco</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="nyc" onclick="setCityTheme('nyc')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-nyc-1"></span>
+            <span class="swatch-dot dot-nyc-2"></span>
+            <span class="swatch-dot dot-nyc-3"></span>
+            <span class="swatch-dot dot-nyc-4"></span>
+          </span>
+          <span class="swatch-label">New York</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="chicago" onclick="setCityTheme('chicago')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-chicago-1"></span>
+            <span class="swatch-dot dot-chicago-2"></span>
+            <span class="swatch-dot dot-chicago-3"></span>
+            <span class="swatch-dot dot-chicago-4"></span>
+          </span>
+          <span class="swatch-label">Chicago</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="tokyo" onclick="setCityTheme('tokyo')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-tokyo-1"></span>
+            <span class="swatch-dot dot-tokyo-2"></span>
+            <span class="swatch-dot dot-tokyo-3"></span>
+            <span class="swatch-dot dot-tokyo-4"></span>
+          </span>
+          <span class="swatch-label">Tokyo</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="seoul" onclick="setCityTheme('seoul')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-seoul-1"></span>
+            <span class="swatch-dot dot-seoul-2"></span>
+            <span class="swatch-dot dot-seoul-3"></span>
+            <span class="swatch-dot dot-seoul-4"></span>
+          </span>
+          <span class="swatch-label">Seoul</span>
+        </button>
+      </div>
+      <p class="theme-current" id="theme-current-label">Current: <strong>San Francisco</strong></p>
+    </footer>
+  </body>
+</html>

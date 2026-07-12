@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <html lang="">
   <head>
-    <script src="./scripts/theme.js"></script>
+    <script src="../scripts/theme.js"></script>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kenneth Lee Profile</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js">  </script>
-    <link rel="stylesheet" type="text/css" href="./stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
   </head>
-  <!-- "page-pages" sets this page's accent color (see stylesheets/style.css) -->
-  <body class="page-pages">
-    <!-- <div id="app">{{message}}</div> -->
-
-<!--^^ meant for some vue stuff-->
+  <!-- "page-classes" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-classes">
     <div class="header">
       <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
       <h1>kennotlee</h1>
@@ -24,45 +20,63 @@
         <details>
           <summary>Home &#9662;</summary>
           <ul class="dropdown-content">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#about">About</a></li>
-            <li><a href="index.html#contact">Contact</a></li>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
           </ul>
         </details>
       </li>
-      <li><a href="pages.html" class="active">Pages</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="classes.html">Classes</a></li>
+      <li><a href="../pages.html">Pages</a></li>
+      <li><a href="../projects.html">Projects</a></li>
+      <li><a href="../classes.html" class="active">Classes</a></li>
     </ul>
     <div>
       <div class="walloftext">
-        <h2>Here are my pages</h2>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="projects.html">Projects</a></li>
-          <li><a href="classes.html">Classes</a></li>
-          <li><a href="pages/prereq-styles.html">Prerequisite branch style gallery</a> — comparing a few different ways to draw an OR-branch, test page, not linked from Classes</li>
-          <li><a href="pages/prereq-branch-themed.html">Themed branch style gallery (9&ndash;17)</a> — the same "eased elbow" shapes rebuilt with the real per-theme station/dot component, so switching city theme actually changes them live, test page, not linked from Classes</li>
-          <li><a href="pages/prereq-tree-demo.html">Prerequisite tree demo</a> — a standalone look at the NUSMods-style AND/OR tree view, test page, not linked from Classes</li>
-          <li><a href="pages/prereq-tree-styles.html">Prerequisite tree style gallery</a> — comparing tree/dependency-graph styles, including a NUSMods dependency-graph recreation, test page, not linked from Classes</li>
-          <li><a href="pages/prereq-d3-demo.html">Prerequisite map, D3-driven</a> — same real station/dot/branch components, but built from a JS data object and click-through instead of hand-typed HTML, test page, not linked from Classes</li>
-          <li><a href="pages/prereq-graph.html">Prerequisite graph, D3-driven (combined)</a> — the D3 demo's two directions merged into one graph: prerequisites flow in from the left, the module fans out to its dependents on the right, sharing one center station, test page, not linked from Classes</li>
-        </ul>
+        <!-- ==== EDIT: course title + tag pills ====
+             h2 is "CODE &mdash; Full Title" — the underline ("the line") is
+             tied to h2 site-wide (it marks a card's own top heading), so
+             this needs to stay h2 to keep it. Any in-content subheadings
+             you add to this card can freely use h3/h4 with no line. Each
+             .tech-tag is a small pill (category / semester / year) — add,
+             remove, or reword freely. -->
+        <h2>EE3131C &mdash; Communications Systems</h2>
+        <div class="class-detail-meta">
+          <span class="tech-tag">Electrical Engineering Core</span>
+          <span class="tech-tag">Semester TBD</span>
+        </div>
+        <p><span class="placeholder-note">Placeholder content — swap in your real notes</span></p>
+        <!-- ==== EDIT: your notes / review for this course ====
+             Plain HTML, no markdown: <p> paragraphs, <ul>/<ol> lists,
+             <b>/<em>, <a href="...">links</a>, <code>, <blockquote>, <img>.
+             Delete the "placeholder-note" span above once the page is done. -->
+        <p>
+          Notes on EE3131C go here — lecture format, labs, grading breakdown, whatever's
+          worth remembering about this one.
+        </p>
+      </div>
+
+      <div class="walloftext">
+        <h4>Prerequisites</h4>
+        <!-- Chain: MA1512 is required for EE2023, which is required for this
+             course. Both have their own pages, so both are links even
+             though they're grayed — "prereq" doesn't mean "not clickable". -->
+        <div class="prereq-map">
+          <a href="ma1512.html" class="prereq-station prereq">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">MA1512</span>
+          </a>
+          <a href="ee2023.html" class="prereq-station prereq">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">EE2023</span>
+          </a>
+          <div class="prereq-station current">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">EE3131C</span>
+          </div>
+        </div>
+        <a class="back-link" href="../classes.html">&larr; Back to Classes</a>
       </div>
     </div>
-<!--    <script type="module" src="/src/main.js"></script>-->
-    <script>
-        // import HelloWorld from "@/components/HelloWorld.vue";
-
-        const app = Vue.createApp({
-            data(){
-                return {
-                    message: "HelloWorld"
-                }
-            }
-        });
-        app.mount('#app');
-    </script>
     <footer class="theme-picker">
       <h4>Subway Theme</h4>
       <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system, just for fun.</p>

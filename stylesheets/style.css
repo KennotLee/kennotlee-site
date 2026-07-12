@@ -16,18 +16,57 @@
   --nav-bg: #1a1a1a;        /* header + navbar background (dark bar) */
   --nav-bg-hover: #262626;  /* navbar item hover background */
   --nav-text: #f5f4f2;      /* text/icon color on the dark navbar */
-  --accent: #0064a4;        /* DEFAULT accent — overridden per-page below */
+  --accent: #0099cc;        /* DEFAULT accent — overridden per-page below */
   --highlight: #ffc72c;     /* "you are here" active-tab yellow, and link hover */
   --highlight-text: #1a1a1a;/* text color used on top of --highlight */
   --tag-bg: #262626;        /* project tech-tag pill background */
   --tag-text: #f5f4f2;      /* project tech-tag pill text */
+  --prereq-grayed-color: #b8b8b8; /* "already done" prerequisite dots/lines — a real light gray, not var(--border) (#262626, near-black) and not opacity-faded (a solid color reads more deliberate than translucency). */
+  --theme-font: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* SF/BART default — real subway signage face */
+  /* Text color to use ON TOP OF --accent. Light mode's --accent is a dark
+     saturated hue (needs light text); dark mode's --accent is auto-
+     brightened toward white (needs dark text) — see the nav hover rule
+     further down, which highlights in var(--accent) and needs this to
+     stay readable in both themes. */
+  --accent-text: var(--nav-text);
 
-  /* Fixed category colors — used for the Classes page category coding
-     (see ".cat-*" rules below), independent of page accent/theme */
-  --line-blue: #0064a4;
-  --line-green: #2e7d32;
-  --line-orange: #b35900;
-  --line-red: #c62828;
+  /* --line-*-raw holds the "true" hue for the active CITY THEME (see the
+     city-theme block below) at full light-mode saturation. --line-* is what
+     the rest of the CSS actually uses; in dark mode it's recomputed below
+     via color-mix() so every city theme automatically gets a lighter/dark-
+     mode-safe variant without needing to hand-pick a second color.
+
+     Numbered (not color-named) on purpose so this scales past 4 — to add
+     a 5th color, add --line-5-raw/--line-5 here and in the dark-mode block
+     below, give every city theme a --line-5-raw value, and use var(--line-5)
+     wherever you want it (a page accent, a new .cat-5, a new .dot-<city>-5). */
+  /* Real BART line colors: Blue, Green, Orange, Red. */
+  --line-1-raw: #0099cc;
+  --line-2-raw: #00a650;
+  --line-3-raw: #f7941d;
+  --line-4-raw: #ed1c24;
+
+  --line-1: var(--line-1-raw);
+  --line-2: var(--line-2-raw);
+  --line-3: var(--line-3-raw);
+  --line-4: var(--line-4-raw);
+
+  /* Prerequisite-map "cartography" — how THAT city's real map draws a
+     line/station, not just its colors (used by .prereq-map, further down
+     this file). BART's real system map doesn't draw circles at all: each
+     station is a short black tick mark crossing the colored line, with
+     the name next to it — the line carries the color, the station mark
+     is always plain black. This is the DEFAULT (SF/BART); every other
+     city theme overrides all of these back to some circle/badge variant
+     (see the per-city blocks below). */
+  --prereq-dot-width: 5px;
+  --prereq-dot-height: 28px;
+  --prereq-dot-radius: 2px;
+  --prereq-dot-fill: var(--nav-bg);
+  --prereq-dot-border-width: 0px;
+  --prereq-dot-border-color: transparent;
+  --prereq-dot-ring: none;
+  --prereq-line-height: 9px;
 }
 
 /* Dark mode palette — applied when <html data-theme="dark">.
@@ -41,64 +80,267 @@
   --nav-bg: #000000;
   --nav-bg-hover: #1a1a1a;
   --nav-text: #f5f4f2;
-  --accent: #4da3ff;
+  --accent: color-mix(in srgb, #0099cc 65%, white);
   --highlight: #ffc72c;
   --highlight-text: #1a1a1a;
   --tag-bg: #333333;
   --tag-text: #f5f4f2;
+  --accent-text: var(--highlight-text);
+  --prereq-grayed-color: #8a8a8a; /* lighter than dark mode's --border (#4a4a4a) so "already done" still reads as a deliberately lighter gray against a dark card, not just inherit whatever the ambient border color happens to be. */
 
-  /* Brighter versions of the category colors so they still read on dark cards */
-  --line-blue: #4da3ff;
-  --line-green: #6fcf73;
-  --line-orange: #ffb347;
-  --line-red: #ff6f60;
+  /* Auto-brighten whichever city theme is active (mixed toward white) so it
+     still reads on dark cards, instead of hand-tuning a dark hex per city. */
+  --line-1: color-mix(in srgb, var(--line-1-raw) 65%, white);
+  --line-2: color-mix(in srgb, var(--line-2-raw) 65%, white);
+  --line-3: color-mix(in srgb, var(--line-3-raw) 65%, white);
+  --line-4: color-mix(in srgb, var(--line-4-raw) 65%, white);
+}
+
+/* ============================================================
+   CITY THEME — swaps the whole subway color palette
+   Set via <html data-city-theme="..."> by the footer theme-picker
+   (scripts/theme.js: setCityTheme()), persisted in localStorage.
+   "sf" (San Francisco / BART) is the default and lives in :root
+   above, so it needs no override rule here.
+
+   TO ADD A NEW CITY: add a block below with its four --line-*-raw
+   hex values, then add a matching swatch button + .dot-<city>-*
+   CSS (search "THEME PICKER" further down this file) and a new
+   option in the footer markup on each HTML page.
+   ============================================================ */
+html[data-city-theme="nyc"] {
+  --line-1-raw: #0039a6; /* A/C/E */
+  --line-2-raw: #00933c; /* 4/5/6 */
+  --line-3-raw: #ff6319; /* B/D/F/M */
+  --line-4-raw: #ee352e; /* 1/2/3 */
+  /* MTA signage has used Helvetica since the 1970 Unimark/Vignelli
+     standards manual — same face as SF, kept explicit for clarity. */
+  --theme-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* Vignelli's 1972 diagram: very bold lines, small stations drawn as
+     plain white circles with a BLACK ring — the line carries the color,
+     not the station. The current stop still fills solid with --accent
+     (see ".prereq-station.current" further down) so "you are here"
+     still reads clearly even though other stations' rings go black. */
+  --prereq-line-height: 8px;
+  --prereq-dot-width: 16px;
+  --prereq-dot-height: 16px;
+  --prereq-dot-radius: 50%;
+  --prereq-dot-fill: #ffffff; /* true white — the classic "white dot, black ring" look. var(--bg-card) is an off-white cream (#f5f4f2), close but not quite it; see the dark-mode override below for why this can't just always be white. */
+  --prereq-dot-border-width: 4px;
+  --prereq-dot-border-color: var(--nav-bg);
+}
+/* A hardcoded white dot fill would look like a glaring hole punched in
+   the page once the surrounding card goes dark — fall back to the normal
+   adaptive card color in dark mode instead of forcing white there too. */
+html[data-theme="dark"][data-city-theme="nyc"] {
+  --prereq-dot-fill: var(--bg-card);
+}
+html[data-city-theme="chicago"] {
+  --line-1-raw: #00a1de; /* Blue Line */
+  --line-2-raw: #009b3a; /* Green Line */
+  --line-3-raw: #f9461c; /* Orange Line */
+  --line-4-raw: #c60c30; /* Red Line */
+  /* CTA wayfinding uses a bold gothic sans; Franklin Gothic is the closest
+     widely-installed match. */
+  --theme-font: 'Franklin Gothic Medium', 'Segoe UI', Arial, sans-serif;
+
+  /* CTA's real map: a thick colored line with plain white circle stations
+     sitting right on top of it, the circle's own diameter matching the
+     line's thickness rather than a thin line with a small dot floating
+     over it — so the line height is set to equal the dot's own diameter,
+     not an independent smaller value. */
+  --prereq-line-height: 14px;
+  --prereq-dot-width: 14px;
+  --prereq-dot-height: 14px;
+  --prereq-dot-radius: 50%;
+  --prereq-dot-fill: #ffffff; /* true white, matching CTA's real stations — var(--bg-card) is an off-white cream, not quite it. See the dark-mode override below. */
+  --prereq-dot-border-width: 3px;
+  --prereq-dot-border-color: var(--accent);
+}
+/* Same reasoning as NYC's equivalent override above — a hardcoded white
+   dot only reads as "the classic look" against a light page background;
+   on a dark page it just looks like a punched-out hole, so fall back to
+   the normal adaptive card color instead. */
+html[data-theme="dark"][data-city-theme="chicago"] {
+  --prereq-dot-fill: var(--bg-card);
+}
+/* Compact spacing to match the diagonal label treatment below: with the
+   label rotated up out of the way instead of reserving a full
+   line-height + 16px of vertical room below the dot, stations don't
+   need nearly as much of their own box — this only affects layout math
+   (flex gap, connector line length), not the dot/line rendering itself. */
+.prereq-station {
+  width: 70px;
+}
+html[data-city-theme="tokyo"] {
+  --line-1-raw: #009bbf; /* Tozai Line */
+  --line-2-raw: #00a650; /* Chiyoda Line */
+  --line-3-raw: #f39700; /* Ginza Line */
+  --line-4-raw: #f62e36; /* Marunouchi Line */
+  /* Tokyo Metro signage pairs Latin type with Japanese gothic faces —
+     these render Latin text with a subtly different rhythm than Helvetica. */
+  --theme-font: 'Yu Gothic', 'Meiryo', 'Helvetica Neue', sans-serif;
+
+  /* Tokyo Metro labels stations with rounded-square line/number badges
+     (e.g. "T-01"), not plain circles — approximated here with a rounded
+     square instead of a full circle. */
+  --prereq-dot-width: 20px;
+  --prereq-dot-height: 20px;
+  --prereq-dot-radius: 6px;
+  --prereq-dot-fill: var(--bg-card);
+  --prereq-dot-border-width: 4px;
+  --prereq-dot-border-color: var(--accent);
+}
+html[data-city-theme="seoul"] {
+  --line-1-raw: #0032a0; /* Line 1 */
+  --line-2-raw: #00a84d; /* Line 2 */
+  --line-3-raw: #ef7c1c; /* Line 3 */
+  --line-4-raw: #00A4E3; /* Line 4 */
+  /* Same idea for Seoul Metro — Korean gothic system fonts instead of Helvetica. */
+  --theme-font: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Helvetica Neue', sans-serif;
+
+  /* Seoul Metro draws stations as a colored ring with a white gap before
+     the colored border — a "target" look, simulated with a two-layer
+     box-shadow (see .prereq-dot further down). */
+  --prereq-dot-width: 20px;
+  --prereq-dot-height: 20px;
+  --prereq-dot-radius: 50%;
+  --prereq-dot-fill: var(--bg-card);
+  --prereq-dot-border-width: 4px;
+  --prereq-dot-border-color: var(--accent);
+  --prereq-dot-ring: 0 0 0 3px var(--bg-page), 0 0 0 5px var(--accent);
 }
 
 /* ============================================================
    PER-PAGE ACCENT
    Each page's <body> carries a "page-*" class (set in the HTML,
-   e.g. <body class="page-home">). That class swaps --accent, which
-   recolors the header underline, navbar underline, card left/top
-   borders, and links — so the whole page's "subway line color"
-   changes as you move between Home/Pages/Projects/Classes.
+   e.g. <body class="page-home">). That class points --accent at
+   one of the --line-* variables above, which recolors the header
+   underline, navbar underline, card left/top borders, and links —
+   so the whole page's "line color" changes as you move between
+   Home/Pages/Projects/Classes, AND changes again if you switch
+   city themes, with no extra rules needed per theme.
 
-   TO CHANGE A PAGE'S COLOR: edit the hex value in the matching
-   line below (light mode) and the matching line further down
-   (dark mode). TO ADD A NEW PAGE: add a body.page-yourpage rule
-   here, its dark-mode counterpart below, and add
-   class="page-yourpage" to that page's <body> tag.
+   TO CHANGE WHICH LINE COLOR A PAGE USES: point it at a different
+   --line-* variable below. TO ADD A NEW PAGE: add a body.page-
+   yourpage rule here and add class="page-yourpage" to that page's
+   <body> tag.
    ============================================================ */
-body.page-home { --accent: #0064a4; }     /* index.html      — blue   */
-body.page-pages { --accent: #2e7d32; }    /* pages.html       — green  */
-body.page-projects { --accent: #b35900; } /* projects.html    — orange */
-body.page-classes { --accent: #c62828; }  /* classes.html, cs2040.html — red */
-
-html[data-theme="dark"] body.page-home { --accent: #4da3ff; }
-html[data-theme="dark"] body.page-pages { --accent: #6fcf73; }
-html[data-theme="dark"] body.page-projects { --accent: #ffb347; }
-html[data-theme="dark"] body.page-classes { --accent: #ff6f60; }
+body.page-home { --accent: var(--line-1); }     /* index.html */
+body.page-pages { --accent: var(--line-2); }    /* pages.html */
+body.page-projects { --accent: var(--line-3); } /* projects.html */
+body.page-classes { --accent: var(--line-4); }  /* classes.html, classes/*.html */
 
 /* ============================================================
    PER-CATEGORY COLORS (Classes page only)
    Each <div class="class-category"> in classes.html also carries
-   a "cat-*" modifier class (cat-blue / cat-green / cat-orange /
-   cat-red). That colors just that category's course boxes and
-   heading underline, using the fixed --line-* variables above —
-   deliberately separate from the page accent, so all categories
-   don't turn red just because the Classes page's accent is red.
+   a "cat-*" modifier class (cat-1 / cat-2 / cat-3 / cat-4). That
+   colors just that category's course boxes and heading underline,
+   using the --line-* variables above — deliberately separate from
+   the page accent, so all categories don't turn red just because
+   the Classes page's accent is red.
 
    TO RECOLOR A CATEGORY: change its "cat-*" class in classes.html
-   to a different one of the four below (or add a new cat-xxx pair
-   here plus a matching --line-xxx variable above).
+   to a different one of the four below. TO ADD A 5TH CATEGORY
+   COLOR: add a --line-5(-raw) pair above (see the note there),
+   then add a ".cat-5" pair of rules here matching the pattern below.
    ============================================================ */
-.class-category.cat-blue .class-list li { border-left-color: var(--line-blue); }
-.class-category.cat-blue h4 { border-bottom-color: var(--line-blue); }
-.class-category.cat-green .class-list li { border-left-color: var(--line-green); }
-.class-category.cat-green h4 { border-bottom-color: var(--line-green); }
-.class-category.cat-orange .class-list li { border-left-color: var(--line-orange); }
-.class-category.cat-orange h4 { border-bottom-color: var(--line-orange); }
-.class-category.cat-red .class-list li { border-left-color: var(--line-red); }
-.class-category.cat-red h4 { border-bottom-color: var(--line-red); }
+.class-category.cat-1 .class-list li { border-left-color: var(--line-1); }
+.class-category.cat-1 h4 { border-bottom-color: var(--line-1); }
+
+.view-switcher {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 20px 0 6px 0;
+}
+
+.view-switcher-btn {
+  appearance: none;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.view-switcher-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.view-switcher-btn.is-active {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+
+.classes-view.is-hidden {
+  display: none;
+}
+
+.semester-group {
+  margin-top: 28px;
+}
+
+.semester-group:first-child {
+  margin-top: 12px;
+}
+
+.semester-group h4 {
+  border-bottom: 3px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+}
+
+.class-list-semester {
+  grid-template-columns: 1fr;
+}
+
+/* Category tag pills + read-time badge, appended as a trailing row on a
+   course <li> by buildTagsRow() in classes.html. In the category view this
+   only holds SECONDARY categories (the primary one is implied by which
+   cat-* box the course sits in); the semester view rebuilds it with ALL
+   categories, since there's no box heading there to imply one. */
+.class-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.class-tag {
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 3px 8px;
+}
+.read-time-badge {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 2px 7px;
+  opacity: 0.85;
+}
+.class-category.cat-2 .class-list li { border-left-color: var(--line-2); }
+.class-category.cat-2 h4 { border-bottom-color: var(--line-2); }
+.class-category.cat-3 .class-list li { border-left-color: var(--line-3); }
+.class-category.cat-3 h4 { border-bottom-color: var(--line-3); }
+.class-category.cat-4 .class-list li { border-left-color: var(--line-4); }
+.class-category.cat-4 h4 { border-bottom-color: var(--line-4); }
 
 * {
   box-sizing: border-box;
@@ -106,7 +348,7 @@ html[data-theme="dark"] body.page-classes { --accent: #ff6f60; }
 
 body {
   margin: 0;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: var(--theme-font);
   background: var(--bg-page);
   color: var(--text);
   min-height: 100vh;
@@ -171,6 +413,12 @@ body {
    One single-color underline runs along the bottom of the whole
    bar (border-bottom below) — deliberately not a per-tab border,
    since two adjacent colored lines looked misaligned/doubled.
+
+   Sticky on purpose: the header (h1 "kennotlee" banner) is NOT
+   sticky and scrolls away normally, but the navbar itself pins to
+   the top of the viewport once you scroll past it, so the tabs
+   stay reachable. z-index keeps it above page content (which has
+   no z-index of its own, so this only needs to beat "auto").
    ============================================================ */
 ul.navbar {
   list-style-type: none;
@@ -180,21 +428,29 @@ ul.navbar {
   background: var(--nav-bg);
   display: flex;
   flex-wrap: wrap;
-  border-bottom: 3px solid var(--accent);
+  border-bottom: 8px solid var(--accent);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-/* NOTE: kept unscoped (not ".navbar li") on purpose so it also
-   affects plain <li> elsewhere (e.g. contact icon list); it only
-   sets float, which harmless/overridden where not wanted (see
-   ".class-list li { float: none }" and ".dropdown-content li"). */
-li {
-  float: left;
-}
+/* NOTE: navbar <li> tabs need no float — ul.navbar is display:flex above,
+   and flex items ignore float entirely. A previous version of this file
+   had a global "li { float: left }" here for the navbar; it turned out to
+   be dead weight for the navbar (flex already ignored it) while silently
+   breaking any plain <ul><li> list written elsewhere on the page (e.g. in
+   a .walloftext) — floated list items don't wrap/stack like a normal
+   list. Removed. ".class-list li" and ".dropdown-content li" set their
+   own layout directly and don't depend on this rule. */
 
 /* IMPORTANT: keep this scoped to ".navbar li a" (not a bare "li a").
    An earlier bug used the unscoped selector and it leaked this bold/
    centered/uppercase nav styling onto unrelated links elsewhere on
    the page (e.g. the CS2040 link inside .class-list). */
+/* padding/border/font stay IDENTICAL across default/hover/active below —
+   only background, text color, and a transform (which doesn't affect
+   layout) ever change, so no tab ever changes height when hovered or
+   selected. */
 .navbar li a,
 .navbar summary {
   display: block;
@@ -206,7 +462,9 @@ li {
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.9rem;
-  transition: background 0.15s;
+  line-height: 1.2; /* fixed, so the "Home ▾" arrow glyph can't make that tab a px taller than the rest */
+  border: none;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
   cursor: pointer;
   list-style: none;
 }
@@ -214,18 +472,38 @@ li {
   display: none;
 }
 
-.navbar li a:hover:not(.active),
-.navbar summary:hover {
-  background: var(--nav-bg-hover);
+/* Both hover AND the "you are here" active tab highlight in the CURRENT
+   PAGE's own accent color (var(--accent) — blue on Home, green on Pages,
+   orange on Projects, red on Classes/course pages; see "PER-PAGE ACCENT"
+   above) — no more separate yellow "active" color, hover and selected
+   now look like the same family of state. --accent-text keeps the label
+   readable in both light mode (dark accent → light text) and dark mode
+   (accent auto-brightened → dark text).
+   IMPORTANT: kept scoped to ".navbar" on purpose — an earlier bug used a
+   bare ".active" and it bled into the theme-picker's ".theme-swatch
+   .active" state (same class name, different feature), making swatch
+   labels render invisible (near-black text on a dark background). */
+.navbar li a:hover,
+.navbar li a.active,
+.navbar summary:hover,
+.navbar summary.active {
+  background: var(--accent);
+  color: var(--accent-text);
 }
 
-/* "You are here" marker — put class="active" on the current page's
-   nav <a> (or its <summary>, for the Home dropdown) in each HTML file.
-   Uses !important because it must win over both the per-page accent
-   background and the hover background. */
-.active {
-  background: var(--highlight);
-  color: var(--highlight-text) !important;
+/* Lift only on actual hover, not on a merely-active-but-not-hovered tab —
+   otherwise the current page's tab would always sit 2px higher than its
+   neighbors instead of lining up with them.
+   The box-shadow is load-bearing, not decorative: translateY(-2px) alone
+   would lift the tab and expose 2px of the dark navbar background (var(
+   --nav-bg)) underneath it as a black sliver. The shadow, in the exact
+   same accent color as the tab's own hover background, fills that gap so
+   the highlighted area reads as one continuous block instead of a tab
+   floating above a gap. */
+.navbar li a:hover,
+.navbar summary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 0 var(--accent);
 }
 
 /* Dropdown ("Home ▾" menu) built with native <details>/<summary> —
@@ -287,22 +565,86 @@ p a:hover {
 }
 
 /* General headings */
-h3, h4 {
+h2, h3, h4 {
   color: var(--heading);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-top: 0;
 }
-h3 {
+/* The underline ("the line") marks a walloftext CARD's own top-level
+   heading — "CS2040 — Data Structures and Algorithms", "Projects",
+   "Introduction", etc. — site-wide. It used to live on h3, back when h3
+   WAS that top heading everywhere; h3 is now free for a page's own
+   in-content subheadings (e.g. "Assignments" inside a course's notes)
+   without dragging a card-level underline into the middle of a page's
+   own content. If you add a new card, its title goes in h2 to get this
+   line; anything you write inside that card's body can use h3/h4 freely
+   with no line. */
+h2 {
   border-bottom: 3px solid var(--border);
   padding-bottom: 10px;
 }
 
+/* ============================================================
+   BASIC MARKDOWN-STYLE CONTENT
+   Write plain <ul>/<ol>/<li>, <code>, <pre>, <blockquote>, <hr>,
+   <strong>/<em> directly inside a .walloftext (e.g. a class detail
+   page's notes section) and it'll look reasonable without any extra
+   classes — no markdown parser involved, you're just writing the
+   HTML a markdown renderer would have produced.
+   ============================================================ */
+.walloftext ul,
+.walloftext ol {
+  margin: 0 0 16px 0;
+  padding-left: 1.4em;
+  color: var(--text);
+}
+.walloftext li {
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+.walloftext li:last-child {
+  margin-bottom: 0;
+}
+.walloftext code {
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  font-size: 0.9em;
+  font-family: 'Courier New', Courier, monospace;
+}
+.walloftext pre {
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  overflow-x: auto;
+  margin: 0 0 16px 0;
+}
+.walloftext pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+.walloftext blockquote {
+  margin: 0 0 16px 0;
+  padding: 4px 16px;
+  border-left: 4px solid var(--accent);
+  color: var(--text);
+  opacity: 0.85;
+  font-style: italic;
+}
+.walloftext hr {
+  border: none;
+  border-top: 2px solid var(--border);
+  margin: 24px 0;
+}
+
 /* Contact section on index.html. Deliberately overrides the walloftext
-   left border to always be yellow (--highlight), regardless of page
-   accent, so it stands out as a call-to-action. */
+   left border to a fixed line color (red) instead of following Home's
+   own accent (blue), so it stands out a bit as a call-to-action even
+   though it lives on the Home page. Pick any --line-1..4 you like. */
 .contact-section {
-  border-left-color: var(--highlight);
+  border-left-color: var(--line-4);
 }
 .contact-lede {
   margin-bottom: 18px;
@@ -423,6 +765,17 @@ h3 {
   color: var(--heading);
   font-size: 1.1rem;
 }
+/* Only the title links to the project's own detail page (not the whole
+   card, unlike ".class-list li") — the card already has separate GitHub/
+   Demo links below, and a `<a>` can't nest inside another `<a>`. */
+.project-card h4 a {
+  color: inherit;
+  text-decoration: none;
+}
+.project-card h4 a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
 
 .project-card p {
   margin: 0 0 14px 0;
@@ -484,17 +837,64 @@ h3 {
 }
 
 .class-list li {
+  position: relative;
   float: none;
   background: var(--bg-card);
   border: 1.5px solid var(--border);
   border-left: 5px solid var(--accent);
   padding: 12px 14px;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+/* Highlight badge — top-right corner of any course marked data-highlight=
+   "true" in classes.html (curated by hand, not a visitor toggle: see the
+   comment block near the top of the category view markup, and
+   applyHighlightState() in the script below). Positioned absolutely so it
+   never disturbs the class-code/class-name flow underneath it. */
+.highlight-badge {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 2;
+  color: var(--highlight);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* Highlighted courses only get the star badge above — no card tint/ring/
+   border-color change, so the box still reads as whatever its normal
+   category color is. */
+
+/* "★ Highlights only" filter button (top of the Classes page) — toggles
+   body.show-highlights-only, which hides every non-highlighted course in
+   WHICHEVER view is currently showing, plus any category box / semester
+   group left with nothing highlighted in it. Reuses .view-switcher-btn's
+   base look but its own (later, so it wins the tie) active-state color, so
+   it doesn't get confused with the category/semester view tabs. */
+.highlights-filter-btn.is-active {
+  background: var(--highlight);
+  color: var(--highlight-text);
+  border-color: var(--highlight);
+}
+body.show-highlights-only .class-list li:not(.is-highlight) {
+  display: none;
+}
+body.show-highlights-only .class-category:not(:has(.is-highlight)) {
+  display: none;
+}
+body.show-highlights-only .semester-group:not(:has(.is-highlight)) {
+  display: none;
 }
 /* Only CS2040 currently links out (to cs2040.html); this resets the
    anchor back to plain text styling so a linked course box looks
    identical to a plain (non-linked) one, just clickable. To link
-   another course, wrap its two <span>s in the same way in classes.html. */
+   another course, wrap its two <span>s in the same way in classes.html.
+   NOTE: no height:100% here (on purpose) — an earlier version forced the
+   anchor to fill the li's full height, which fought with the read-time
+   badge/tags row appended as a SIBLING after it: the li's grid-row height
+   got established from the anchor's own content, the anchor then claimed
+   100% of that, leaving zero room for the sibling row, which overflowed
+   below the box instead of the box growing to fit it. */
 .class-list li a {
   display: block;
   padding: 0;
@@ -505,9 +905,17 @@ h3 {
   border-bottom: none;
   text-decoration: none;
 }
+/* Lift-on-hover, same language as .project-card/.theme-swatch, but only
+   for boxes that actually link somewhere (:has(a)) — a plain, non-linked
+   course entry shouldn't look interactive since clicking it does nothing. */
+.class-list li:has(a) {
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
 .class-list li:has(a):hover {
   border-left-color: var(--highlight);
   cursor: pointer;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 0 var(--border);
 }
 
 .class-code {
@@ -538,4 +946,1226 @@ h3 {
   display: inline-block;
   margin-top: 18px;
   font-weight: 700;
+}
+
+/* ============================================================
+   PREREQUISITE MAP — a literal subway-line diagram, read as three
+   zones left to right: Prerequisite(s) (grayed — already done/exempt,
+   de-emphasized) >>> Current (filled solid, "you are here") >>> Next
+   (hollow, normal theme color — a course THIS one unlocks; omit the
+   whole segment if there isn't one, don't leave it empty).
+
+   Not just colors — the actual cartography changes per city theme too,
+   via --prereq-line-height/--prereq-dot-width/--prereq-dot-height/
+   --prereq-dot-radius/--prereq-dot-border-color/--prereq-dot-ring
+   (defaults in :root, city overrides live in the "CITY THEME" block
+   near the top of this file): SF/BART draws a plain black tick mark
+   crossing the line, NYC is an extra-bold line with small black-ringed
+   circles (the line carries the color, not the station — real
+   Vignelli-diagram style), Chicago is thin and minimal, Tokyo uses
+   rounded-square badges, Seoul uses a white-gap double ring.
+
+   Markup — a station is just a <div class="prereq-station">:
+     - add "prereq" for anything required to take the current course
+       (grays out both the dot/tick AND the line segment leading out of
+       it — see --prereq-segment-color below)
+     - add "current" for the course this page is about
+     - anything else (no modifier) reads as "next"
+   Use <a href="..."> instead of <div> for any station that has its own
+   page, so it's clickable and gets a hover animation for free — grayed
+   "prereq" stations can still be links.
+
+   <div class="prereq-map">
+     <div class="prereq-station prereq">
+       <span class="prereq-dot"></span>
+       <span class="prereq-label">CS1010E</span>
+     </div>
+     <div class="prereq-station current">
+       <span class="prereq-dot"></span>
+       <span class="prereq-label">CS2040</span>
+     </div>
+   </div>
+
+   BRANCHES (OR-groups) — when two or more courses are alternatives
+   (either one satisfies the requirement), stack them in a
+   ".prereq-branch" instead of laying them side by side as separate
+   ".prereq-station"s (which would read as "both required", i.e. AND).
+   A branch merges its stations into one output line via two curved
+   "turnout" arms — station-diagram style, no text label needed, the
+   shape itself reads as "either of these". See the "PREREQUISITE
+   BRANCH" section further down for the full markup (2 stations + 4
+   connector spans) and the geometry this all derives from.
+
+   Two SEPARATE top-level items (two ".prereq-station"s, or a station
+   next to a branch) in the same .prereq-map read as AND — both feed
+   into whatever comes next.
+   ============================================================ */
+.prereq-map {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 70px 0 24px 0; /* top margin bumped from 24px: every station's diagonal label is now absolutely positioned and floats entirely above its dot, contributing zero height to the map itself — 24px wasn't reserving nearly enough room, so the tallest labels (e.g. "CS1010E" rotated -40deg) clipped up into whatever sits right above .prereq-map (the Subway map/Tree view-switcher buttons on a real course page). */
+}
+.prereq-map.is-hidden {
+  display: none;
+}
+/* Each station draws its OWN connector segment running from its dot's
+   center to the next station's dot center, instead of one line spanning
+   the whole map independent of where the dots actually land. Since every
+   station is the same fixed width, "left: 50%, width: 100%" always lands
+   exactly on the next station's center — this stays correctly aligned no
+   matter how many stations there are, unlike a single full-span line
+   guessing where the first/last dot happen to be. */
+.prereq-station {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 140px;
+  flex: none;
+  text-decoration: none;
+  color: var(--text);
+  /* Indirection so the connector rule below can just always read this one
+     variable, instead of needing a separate override per role. Default =
+     the real line color (used by plain/"next" stations); ".prereq"
+     repoints it to a neutral gray. */
+  --prereq-segment-color: var(--accent);
+}
+.prereq-station.prereq {
+  --prereq-segment-color: var(--prereq-grayed-color);
+}
+/* IMPORTANT: scoped to ".prereq-map >" direct children only. Without that,
+   this also matched the individual .prereq-station elements NESTED inside
+   a .prereq-branch (they're not literally the last child there either,
+   since the branch's own connector spans come after them) — each one drew
+   its OWN stray connector at full width, overflowing out of the branch
+   independently of the branch's single intended merge line, which is the
+   ".prereq-map > .prereq-branch:not(:last-child)::after" rule further
+   down. */
+.prereq-map > .prereq-station:not(:last-child)::after,
+.prereq-map > .prereq-branch:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  /* The dot's vertical CENTER is at half its own size (it's the station's
+     first child, flush with the top). A line's "top" is its top EDGE, not
+     its center, so centering a --prereq-line-height-tall bar on that point
+     means backing off by half the line's own height too — forgetting that
+     second half-step is what made this line sit visibly below the dots
+     before. Both halves use the same theme variables driving the dot/line
+     themselves, so this can't drift out of sync when a city theme changes
+     dot or line size. */
+  top: calc((var(--prereq-dot-height) / 2) - (var(--prereq-line-height) / 2));
+  left: 50%;
+  width: 100%;
+  height: var(--prereq-line-height);
+  background: var(--prereq-segment-color);
+  z-index: 0;
+}
+/* First/last top-level segment gets a short cap extending a little past
+   its own dot's center — otherwise the connector (which only ever runs
+   dot-center to dot-center) touches just half of the outermost dots,
+   which reads as lopsided rather than as a normal line terminus,
+   especially on SF's thin tick mark. (".prereq-branch" already uses its
+   own "::before" for the internal OR merge bar, so a first-child branch
+   doesn't get this extra cap — a minor cosmetic gap only if a branch is
+   literally the very first thing in the map.) */
+.prereq-map > .prereq-station:first-child::before {
+  content: "";
+  position: absolute;
+  top: calc((var(--prereq-dot-height) / 2) - (var(--prereq-line-height) / 2));
+  left: calc(50% - 16px);
+  width: 16px;
+  height: var(--prereq-line-height);
+  background: var(--prereq-segment-color, var(--border));
+  z-index: 0;
+}
+.prereq-map > .prereq-station:last-child::after,
+.prereq-map > .prereq-branch:last-child::after {
+  content: "";
+  position: absolute;
+  top: calc((var(--prereq-dot-height) / 2) - (var(--prereq-line-height) / 2));
+  left: 50%;
+  width: 16px;
+  height: var(--prereq-line-height);
+  background: var(--prereq-segment-color, var(--border));
+  z-index: 0;
+}
+.prereq-dot {
+  position: relative;
+  z-index: 1;
+  width: var(--prereq-dot-width);
+  height: var(--prereq-dot-height);
+  border-radius: var(--prereq-dot-radius);
+  background: var(--prereq-dot-fill);
+  border: var(--prereq-dot-border-width) solid var(--prereq-dot-border-color);
+  box-shadow: var(--prereq-dot-ring);
+  transition: transform 0.15s;
+}
+/* Grayed prerequisite — solid light gray fill/ring (var(--prereq-grayed-
+   color)), not transparency. This used to force background/border-color
+   to var(--border), which read as solid black/dark-gray; an opacity fade
+   was tried instead but rejected — a solid color reads as a deliberate
+   "done/muted" state, translucency reads as broken/half-rendered. Chicago
+   gets its own override right below — its dots are always plain white,
+   grayed or not, with no separate muted-ring look (a white-with-gray-
+   ring version was tried and rejected too — Chicago just wants a white
+   dot, full stop). */
+.prereq-station.prereq .prereq-dot {
+  background: var(--prereq-grayed-color);
+  border-color: var(--prereq-grayed-color);
+  box-shadow: none;
+}
+/* [LOCATION: grayed/prerequisite dots specifically under Chicago theme]
+   Plain white, same as Chicago's normal (non-grayed) dot fill — no ring,
+   no muted border, just white. border-color matches background exactly
+   so the border still occupies its usual width (keeping the dot's total
+   size consistent with every other theme) without rendering as a
+   visible outline. */
+html[data-city-theme="chicago"] .prereq-station.prereq .prereq-dot {
+  background: #ffffff;
+  border-color: #ffffff;
+}
+html[data-theme="dark"][data-city-theme="chicago"] .prereq-station.prereq .prereq-dot {
+  background: var(--bg-card);
+  border-color: var(--bg-card); /* same reasoning as Chicago's normal dark-mode override: true white would look like a punched hole on a dark card */
+}
+.prereq-station.prereq .prereq-label {
+  opacity: 0.6;
+}
+/* The current course's dot — default/SF: solid black (var(--nav-bg)), no
+   ring, matching a normal BART tick's own plain-black styling. This used
+   to fill solid with var(--accent) instead, on the idea that "you are
+   here" should read in the line's own color — but that's exactly what
+   made it disappear on Chicago (see the ring-themes override below):
+   an accent-filled dot sitting on an accent-colored line segment (the
+   final "leading into current" one) has zero contrast against it, same
+   color, same width, no edge to see. SF's tick never had that problem
+   since it doesn't share the line's color anyway. */
+.prereq-station.current .prereq-dot {
+  background: var(--nav-bg);
+  border-color: var(--nav-bg);
+  box-shadow: none;
+}
+/* [LOCATION: the current-course dot for every RING-style theme — NYC,
+   Chicago, Tokyo, Seoul] White inside, black ring: same contrast fix as
+   SF's plain black above, but these themes carry their color via a
+   border/ring around a filled circle rather than the fill itself, so
+   "white center" is the equivalent move — it can't ever match the line
+   color under it, whatever that color is, the way an accent fill could.
+   The border-color and box-shadow are both var(--nav-bg) (not
+   var(--accent)) so there's exactly one black ring, not a colored ring
+   plus a separate black halo doubling up. */
+html[data-city-theme="nyc"] .prereq-station.current .prereq-dot,
+html[data-city-theme="chicago"] .prereq-station.current .prereq-dot,
+html[data-city-theme="tokyo"] .prereq-station.current .prereq-dot,
+html[data-city-theme="seoul"] .prereq-station.current .prereq-dot {
+  background: #ffffff;
+  border-color: var(--nav-bg);
+  box-shadow: 0 0 0 1px var(--nav-bg);
+}
+html[data-theme="dark"][data-city-theme="nyc"] .prereq-station.current .prereq-dot,
+html[data-theme="dark"][data-city-theme="chicago"] .prereq-station.current .prereq-dot,
+html[data-theme="dark"][data-city-theme="tokyo"] .prereq-station.current .prereq-dot,
+html[data-theme="dark"][data-city-theme="seoul"] .prereq-station.current .prereq-dot {
+  background: var(--bg-card); /* true white would look like a punched hole on a dark card, same reasoning as every other dark-mode fill override on this page */
+}
+
+/* ============================================================
+   EXEMPT / "dead" prerequisite — a course you were WAIVED from
+   (e.g. MA1301 for MA1512). It's technically a prerequisite but you never
+   actually took it, so it should read differently from a normal grayed
+   prereq: the station is drawn as an X (not a dot/tick/circle), and the
+   connector leading OUT of it is dotted rather than solid — "this
+   connection isn't really travelled". Add class "exempt" alongside
+   "prereq" on the station: class="prereq-station prereq exempt".
+   ============================================================ */
+/* Blank the dot's normal fill/border/ring and draw an X centred on it.
+   The dot KEEPS its theme dimensions, so it stays centred on the
+   connector line exactly like any other station (see the connector's
+   derived "top" math above) — only its visual changes. */
+.prereq-station.exempt .prereq-dot {
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+.prereq-station.exempt .prereq-dot::before,
+.prereq-station.exempt .prereq-dot::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22px;  /* length of each stroke of the X */
+  height: 3px;  /* thickness of each stroke */
+  border-radius: 2px;
+  background: var(--prereq-grayed-color);
+}
+.prereq-station.exempt .prereq-dot::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.prereq-station.exempt .prereq-dot::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+/* Drop the "terminus cap" a normal first station gets (the short stub of
+   line extending PAST the leftmost dot) — on an exempt X that's a
+   dead/waived start, there's nothing before it, and the solid stub
+   otherwise pokes out of the left of the X and muddies the shape. */
+.prereq-map > .prereq-station.exempt:first-child::before {
+  display: none;
+}
+/* Dotted connector out of an exempt station — overrides the solid
+   background bar from the base connector rule above. The extra ".exempt"
+   gives it higher specificity, so it wins regardless of source order.
+   Same box + "top" as the base rule (so it sits exactly where the solid
+   bar did); height collapses to 0 and the border-top IS the dotted line. */
+.prereq-map > .prereq-station.exempt:not(:last-child)::after {
+  background: none;
+  height: 0;
+  /* Start the dotted line ~13px right of the X's centre so its first dot
+     clears the X's arm instead of overlapping it, and trim the width by
+     the same amount so the far end still lands exactly on the next dot's
+     centre (base rule is left:50% / width:100% = centre-to-centre). */
+  left: calc(50% + 13px);
+  width: calc(100% - 13px);
+  border-top: var(--prereq-line-height) dotted var(--prereq-grayed-color);
+}
+.prereq-label {
+  position: relative; /* so z-index below actually applies */
+  z-index: 1;
+  line-height: 16px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 2px;
+  /* [LOCATION: every station LABEL, all themes] Real transit maps (CTA's
+     is the clearest example) angle station names diagonally off the line
+     instead of stacking them underneath — lets stations sit closer
+     together since the label's footprint is diagonal instead of a full
+     horizontal line-width. Positioned absolutely so it's out of normal
+     flow entirely (the station's own height becomes just the dot's — see
+     ".prereq-station" width comment below for the matching compact-
+     spacing change), then rotated around its own LEFT-BOTTOM corner —
+     not center — so that corner (which "left: 50%" already pins directly
+     above the dot's horizontal center) stays fixed as the pivot and the
+     text grows up and away from it. That's deliberate: it's what makes
+     the text's left/start edge read as anchored right above the dot
+     instead of floating off to some side of it.
+
+     IMPORTANT: this used to lose to a second, later ".prereq-label" rule
+     that also set "position" (to "relative") — same specificity, same
+     selector, so the later one silently won for that one property even
+     though this rule's other properties (left/bottom/transform) still
+     applied. The result was a broken hybrid of relative AND absolute
+     positioning math that made the label land beside the dot instead of
+     above it. Fixed by merging into ONE rule instead of two — don't
+     re-split this into a separate ".prereq-label" block elsewhere in the
+     file, or the same bug comes back. */
+  position: absolute;
+  left: calc(50% + 10px); /* nudged right of dead-center so the text reads as emerging out of the dot rather than pivoting from directly on top of it — bumped up from +3px so a branch's bottom sub-station label (e.g. EE2111A) clears its own curve at the lower margin-bottom below, instead of crossing into it. */
+  bottom: 100%;
+  margin-bottom: 7px; /* a station sitting mid-line (e.g. CS1010E, with a continuous connector running through both its left AND right side) needs more starting clearance than a branch tip does — 4px left the rotated text's own low/left end dipping back down into the line right where it anchors, before it had risen enough to clear it. Nudged down 7px total from the original 14px since. */
+  transform: rotate(-40deg);
+  transform-origin: left bottom;
+  white-space: nowrap;
+  background: none; /* no longer sits on top of the line, so the old "knock out the line behind me" background box isn't needed */
+}
+/* Only clickable stations (real <a> tags) get the hover animation —
+   "current" and plain (no-page) prerequisites are inert. Grayed
+   prerequisites can still be links (e.g. a prereq that has its own
+   detail page) and keep the same lift, just without the color-shift,
+   since ".prereq-label" is already deliberately muted.
+   IMPORTANT: the lift transform goes on ".prereq-dot" only, NOT on
+   ".prereq-station" itself. The station's own connector line (the
+   ::before/::after in the "PREREQUISITE MAP" rules above) is a
+   pseudo-element OF that same station element — transforming the
+   station would drag its connector along with it, kinking the line at
+   exactly the station you're hovering. Transforming just the dot lifts
+   the "you are here" marker while the line stays put. */
+a.prereq-station:hover .prereq-dot {
+  transform: translateY(-4px);
+}
+a.prereq-station:not(.prereq):hover .prereq-label {
+  color: var(--accent);
+}
+
+/* ============================================================
+   >>> BRANCH CODE START <<<
+   PREREQUISITE BRANCH — an OR-group: two stations stacked vertically,
+   merged by two straight "turnout" arms into one output line, each
+   easing into the merge line through a small rounded corner (style #9,
+   "eased elbow", from pages/prereq-styles.html — real rail can't take a
+   90-degree turn on a dime, so the corner is curved, not a crisp L-join).
+
+   Geometry is derived, not eyeballed. Each .prereq-station's dot is
+   centered at half its own --prereq-dot-height (first child, flush with
+   the station's top); the label below it is a fixed 16px line plus the
+   station's 8px gap, i.e. 24px of "extra" content below every dot
+   center. With exactly 2 stacked stations of identical height S = D+24,
+   separated by the branch's own flex `gap` (G):
+     dot1 center (from branch top)    = D/2
+     dot2 center (from branch bottom) = D/2 + 24
+     merge Y (from branch top)        = D + 12 + G/2
+       (the midpoint of dot1Y and dot2Y — NOT the branch's own 50%
+       mark, since the branch isn't vertically symmetric around its
+       center; using 50% here was an earlier bug that only stayed
+       hidden on SF's tall tick and showed up as a visible gap on
+       every circle-based theme.)
+   G matters here specifically because of --prereq-branch-corner: the
+   curve needs to sit entirely BELOW label1's bottom edge (D+24), not
+   just have its merge point clear it, or the rounded bend visibly cuts
+   across the label text. That needs merge Y - corner >= D+24, i.e.
+   G >= 2 * (24 + corner - 12). At corner = 14px that's G >= 52; G is set
+   to 56px below (merge Y = D+40) for a few px of breathing room. The
+   original G = 14px (merge Y = D+19) was tuned back when the corner was
+   sized to --prereq-line-height and near-invisible (3px-8px) — it never
+   had to clear the label because there was no visible curve to clear it
+   with. Growing the corner to a visible 14px without also growing G is
+   exactly what put the rounded bend on top of "EE1111A"/"EE2111A"'s own
+   text. If --prereq-branch-corner ever changes again, G (and the 40px
+   below) need to be rederived from the inequality above, not just left
+   as-is.
+   Markup needs 4 extra pieces alongside the two .prereq-station's,
+   since a single element only gets ::before/::after — not enough for
+   2 straight arms + 2 curves + 1 output line:
+
+   <div class="prereq-branch">
+     <div class="prereq-station prereq">...EE1111A...</div>
+     <div class="prereq-station prereq">...EE2111A...</div>
+     <span class="prereq-branch-arm prereq-branch-arm-top"></span>
+     <span class="prereq-branch-arm prereq-branch-arm-bottom"></span>
+     <span class="prereq-branch-curve prereq-branch-curve-top"></span>
+     <span class="prereq-branch-curve prereq-branch-curve-bottom"></span>
+   </div>
+   No "OR" text needed — the curve-into-one-line shape already reads as
+   "either of these", the way a real turnout does on a transit map.
+   ============================================================ */
+.prereq-branch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 86px; /* NOT an arbitrary spacing choice — see the merge-Y derivation in the comment block above. 56px (the bare minimum for the curve to clear the label at all) turned out to leave only ~2px of actual visual gap, which reads as touching once anti-aliasing softens the edges — 86px leaves ~17px of clear space instead, an unmistakable gap. Must stay >= 52px as long as --prereq-branch-corner is 14px, but keep it well above that minimum, not right at it. */
+  width: 140px;
+  flex: none;
+  --prereq-branch-corner: 14px; /* style #9 ("eased elbow") from pages/prereq-styles.html: fixed px, not tied to --prereq-line-height, so the curve stays visible as an actual bend across every theme's line thickness (3px-8px) instead of shrinking to an unnoticeable nub on thin lines like Chicago's. 14px is small enough to still read as a corner rather than a full sweeping turnout (that was the even-older 32px "smooth turnout curve" style), just no longer sharp. */
+  /* Branches are always an OR-group of prerequisites (there's no "current"
+     or "next" branch), so this is always gray — unlike ".prereq-station",
+     there's no ".prereq" modifier class needed to opt into it. */
+  --prereq-segment-color: var(--prereq-grayed-color);
+}
+.prereq-branch .prereq-station {
+  width: auto;
+}
+/* [LOCATION: the vertical bar directly under the TOP station's dot, e.g.
+   under EE1111A] Straight arm from dot1's center down to the merge Y. */
+.prereq-branch-arm-top {
+  position: absolute;
+  top: calc(var(--prereq-dot-height) / 2);
+  height: calc(var(--prereq-dot-height) / 2 + 55px - var(--prereq-branch-corner));
+  left: calc(50% - (var(--prereq-line-height) / 2));
+  width: var(--prereq-line-height);
+  background: var(--prereq-segment-color);
+}
+/* [LOCATION: the vertical bar directly above the BOTTOM station's dot,
+   e.g. above EE2111A] Straight arm from the merge Y up to dot2's center. */
+.prereq-branch-arm-bottom {
+  position: absolute;
+  top: calc(var(--prereq-dot-height) + 55px + var(--prereq-branch-corner));
+  bottom: calc(var(--prereq-dot-height) / 2 + 24px);
+  left: calc(50% - (var(--prereq-line-height) / 2));
+  width: var(--prereq-line-height);
+  background: var(--prereq-segment-color);
+}
+/* [LOCATION: the two small corner joints, in the middle of the branch,
+   where each arm above turns into the merge line] Eased corners — style
+   #9: the same "quarter-circle" trick used elsewhere on this page (a box
+   colored on only the two adjacent sides that should look like a line),
+   but this time with border-radius set on the one corner where those two
+   sides actually meet, so the vertical arm curves smoothly into the
+   horizontal merge line instead of joining it at a sharp right angle. */
+.prereq-branch-curve {
+  position: absolute;
+  left: calc(50% - (var(--prereq-line-height) / 2));
+  width: var(--prereq-branch-corner);
+  height: var(--prereq-branch-corner);
+  border: 0 solid var(--prereq-segment-color);
+}
+/* [LOCATION: the TOP corner specifically — the one EE1111A's arm turns
+   into] Vertical arm runs down the left edge, merge line runs right along
+   the bottom edge — those two sides meet at the box's bottom-left corner,
+   so that's the one that gets rounded. */
+.prereq-branch-curve-top {
+  top: calc(var(--prereq-dot-height) + 55px - var(--prereq-branch-corner));
+  border-left-width: var(--prereq-line-height);
+  border-bottom-width: var(--prereq-line-height);
+  border-bottom-left-radius: var(--prereq-branch-corner);
+}
+/* [LOCATION: the BOTTOM corner specifically — the one EE2111A's arm turns
+   into] Mirror of the top corner: merge line runs right along the top
+   edge, vertical arm continues down the left edge, so the round goes on
+   the box's top-left corner instead. */
+.prereq-branch-curve-bottom {
+  top: calc(var(--prereq-dot-height) + 55px);
+  border-left-width: var(--prereq-line-height);
+  border-top-width: var(--prereq-line-height);
+  border-top-left-radius: var(--prereq-branch-corner);
+}
+/* [LOCATION: the single horizontal line exiting the RIGHT side of the
+   branch, continuing on to whatever's next in the .prereq-map (e.g. into
+   CS1010E)] Output line continuing right to whatever comes after the
+   branch — sits at the true merge Y (see the geometry note above, NOT
+   50%), starting right where the corner joints end so it reads as one
+   continuous straight run rather than overlapping them.
+   IMPORTANT: matches ".prereq-map > .prereq-branch:not(:last-child)::after"
+   exactly (same prefix) on purpose — the base rule above it is scoped
+   that way too, and needs EQUAL specificity for this override to actually
+   win (a bare ".prereq-branch:not(:last-child)::after" here would lose to
+   it and silently do nothing, which is exactly what happened before). */
+.prereq-map > .prereq-branch:not(:last-child)::after {
+  top: calc(var(--prereq-dot-height) + 55px - (var(--prereq-line-height) / 2));
+  left: calc(50% - (var(--prereq-line-height) / 2) + var(--prereq-branch-corner));
+  width: calc(100% + (var(--prereq-line-height) / 2) - var(--prereq-branch-corner));
+}
+/* >>> BRANCH CODE END <<< */
+
+/* ============================================================
+   PREREQUISITE TREE — a plain, non-subway-themed alternative to
+   .prereq-map, specifically for when there's real AND/OR logic to show.
+   Modeled on NUSMods' module prerequisite tree: rounded-rect nodes,
+   top-down layout (prerequisites above, the course you're viewing at
+   the bottom), plain right-angle connector lines (not the subway map's
+   curves), and OR-groups shown by converging lines into a small round
+   "OR" badge sitting on the trunk line. Not city-themed on purpose
+   (plain var(--border)/var(--bg-card)/var(--accent) only) — it's the
+   "read the fine print" view, not the "just for fun" one.
+
+   Pair it with a view-switcher (same widget classes.html uses) so both
+   pages using ".prereq-map" AND/OR logic can toggle between them:
+
+   <div class="view-switcher" role="tablist" aria-label="Prerequisite view">
+     <button type="button" class="view-switcher-btn is-active" data-prereq-view="map" aria-pressed="true">Subway map</button>
+     <button type="button" class="view-switcher-btn" data-prereq-view="tree" aria-pressed="false">Tree</button>
+   </div>
+   <div class="prereq-map">...</div>
+   <div class="prereq-tree is-hidden">
+     <!-- One ".tree-level" = one row of things that must ALL be true
+          (AND) to proceed down to whatever's below them. Each direct
+          child of a ".tree-level" is either a ".tree-node" (a single
+          required course) or a ".tree-fork" (an OR-group — see below).
+          Every child needs a fixed width (default 160px via CSS; add
+          "small" to go 120px, used inside forks) so the connector
+          lines, which each item draws pointing at the NEXT item's
+          center, land correctly — same trick as .prereq-map. -->
+     <div class="tree-level">
+       <div class="tree-node tree-node-prereq">CS1010E</div>
+       <div class="tree-fork">
+         <div class="tree-fork-row">
+           <div class="tree-node tree-node-prereq small">EE1111A</div>
+           <div class="tree-node tree-node-prereq small">EE2111A</div>
+         </div>
+         <span class="tree-fork-badge">OR</span>
+       </div>
+     </div>
+     <div class="tree-node tree-node-current">EE2028</div>
+   </div>
+
+   Wire the toggle up with scripts/theme.js's initPrereqViewSwitcher() —
+   see classes/ee2028.html for a real working example.
+   ============================================================ */
+.prereq-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 28px 0;
+}
+.prereq-tree.is-hidden {
+  display: none;
+}
+.tree-node {
+  position: relative;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  text-align: center;
+  transition: transform 0.15s, border-color 0.15s;
+}
+a.tree-node:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+.tree-node-current {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+.tree-node-prereq {
+  opacity: 0.6;
+}
+
+/* One row of AND-ed requirements. Every direct child is a fixed-width
+   "slot"; each non-last slot draws a right-angle connector — a stub
+   down from its own node, then a horizontal run to the next slot's
+   center — reaching a single shared trunk that continues down into
+   whatever node/tree-level comes after this one. Same "each item points
+   at the next item's center" technique as .prereq-map's connectors,
+   just orthogonal (stub + horizontal) instead of one straight segment. */
+.tree-level {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* NOT the default "stretch" — otherwise a plain
+    .tree-node next to a taller .tree-fork stretches to match it, leaving
+    empty space inside its own border instead of staying its natural size. */
+  position: relative;
+  margin-bottom: 28px;
+}
+.tree-level > * {
+  position: relative;
+  /* Wide enough to fit a 2-node .tree-fork (2 x 110px fork-row items)
+     without it overflowing into the neighboring slot — a plain
+     .tree-node just centers within the extra space, it doesn't need it.
+     Every slot MUST stay the same width, plain node or fork: the
+     connector lines below only work because each slot's own line
+     reaches exactly "one slot width" to the right, landing on the next
+     slot's center — a narrower slot for plain nodes would throw that
+     math off. */
+  width: 240px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tree-level > *::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 26px;
+  background: var(--border);
+}
+.tree-level > *:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: calc(100% + 13px);
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+}
+/* Trunk from the level's shared midpoint down into the next node —
+   .tree-level always sits directly above one .tree-node (never another
+   .tree-level), so this is just "the node right after a level". */
+.tree-level + .tree-node {
+  margin-top: 26px;
+}
+.tree-level + .tree-node::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 26px;
+  background: var(--border);
+}
+
+/* OR-fork — the exact same "level of fixed-width slots with right-angle
+   connectors" pattern as .tree-level, just smaller and nested inside a
+   single .tree-level slot, with a round badge marking the merge point
+   instead of continuing straight into another .tree-level. */
+.tree-fork {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tree-fork-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  margin-bottom: 22px;
+}
+.tree-fork-row > * {
+  position: relative;
+  width: 110px;
+  flex: none;
+}
+.tree-fork-row > *::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: 22px;
+  background: var(--border);
+}
+.tree-fork-row > *:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: calc(100% + 11px);
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+}
+.tree-fork-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg-page);
+  color: var(--text);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+/* NOTE: no "width" here on purpose — inside a .tree-fork-row, the outer
+   ".tree-fork-row > *" rule already sets width:110px, and that fixed
+   width is what the row's connector lines rely on to land on the right
+   center point. Overriding it here (even to "auto") would win on
+   specificity and silently break that math. */
+.tree-node.small {
+  padding: 6px 10px;
+  font-size: 0.72rem;
+}
+
+/* ============================================================
+   GALLERY DIAGRAM — one-off styles for pages/prereq-styles.html only (the
+   "which branch style looks best" comparison page). NOT part of the
+   real .prereq-branch component and not used anywhere else — fixed
+   pixel coordinates via inline SVG, not derived from --prereq-* theme
+   variables, since this is just a side-by-side comparison, not a
+   themed production component. Safe to delete this whole block (and
+   pages/prereq-styles.html) once a winner is picked and the real component
+   is updated to match.
+
+   >>> FINE-TUNING: IF LINES AND BOXES DON'T LINE UP <<<
+   Every diagram here draws its CONNECTOR LINES in one coordinate space
+   (the inline <svg viewBox="0 0 W H">) but positions its NODE BOXES/LABELS
+   in a totally different one (plain CSS "left"/"top" on ".gallery-node" /
+   ".gallery-tree-node" / etc., relative to this ".gallery-diagram" div).
+   Those two only line up if this div's RENDERED pixel size is EXACTLY
+   W x H — otherwise the SVG's default "preserveAspectRatio" scales AND
+   re-centers its whole coordinate space to fit whatever size this div
+   actually is, independently of the plain-CSS boxes, which never scale or
+   re-center. Left alone (no explicit width), this div just fills its
+   parent card (~644px on this site) — so unless your viewBox width also
+   happens to be 644, the lines silently drift away from the boxes, worse
+   the wider the diagram is.
+   FIX: always set BOTH width and height inline on ".gallery-diagram" to
+   match the <svg>'s viewBox numbers EXACTLY (see any entry below for the
+   pattern: style="width: Wpx; height: Hpx;").
+
+   THAT WIDTH MUST STAY EXACT, UNCONSTRAINED — so the scrollbar for when W
+   is wider than the card can't live on ".gallery-diagram" itself (capping
+   ITS width with e.g. max-width:100% would just re-trigger the exact
+   scale-drift this fix exists to avoid). It lives one level up instead, on
+   the WRAPPING ".gallery-diagram-scroll" div every diagram needs around
+   it:
+     <div class="gallery-diagram-scroll">
+       <div class="gallery-diagram" style="width: Wpx; height: Hpx;">...</div>
+     </div>
+   ".gallery-diagram-scroll" is the one capped to the card's real width
+   (max-width: 100%) and given "overflow-x: auto" — so a too-wide diagram
+   scrolls WITHIN its own card instead of spilling out past it. */
+.gallery-diagram-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.gallery-diagram {
+  position: relative;
+  height: 140px;
+  margin: 20px 0;
+  transform-origin: top left;
+  transition: transform 0.15s;
+}
+/* Optional per-diagram zoom (see ".gallery-zoom-controls" below) — wrap
+   BOTH the controls and the scroll box in one ".gallery-diagram-wrap" so
+   zoomGalleryDiagram() (scripts/theme.js) can find the right diagram from
+   whichever button was clicked, and so the controls stay visible even
+   once the diagram itself is scrolled sideways:
+     <div class="gallery-diagram-wrap">
+       <div class="gallery-zoom-controls">
+         <button type="button" onclick="zoomGalleryDiagram(this, -0.15)">&minus;</button>
+         <button type="button" onclick="zoomGalleryDiagram(this, 0)">Reset</button>
+         <button type="button" onclick="zoomGalleryDiagram(this, 0.15)">+</button>
+       </div>
+       <div class="gallery-diagram-scroll">
+         <div class="gallery-diagram" style="width: Wpx; height: Hpx;">...</div>
+       </div>
+     </div>
+   Only worth adding to diagrams actually wider than the card (roughly
+   >700px) — a diagram that already fits doesn't need zooming out, and
+   zooming in just re-creates the same scroll a plain wide diagram has. */
+.gallery-zoom-controls {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.gallery-zoom-controls button {
+  appearance: none;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.gallery-zoom-controls button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.gallery-diagram-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.gallery-node {
+  position: absolute;
+  border: 2px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 6px 10px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.gallery-node-current {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+/* Plain text label (no box) for the "real subway map" variant — labels
+   sit next to a proper circle station marker drawn in the SVG itself,
+   not inside a bordered box like the other gallery variants. */
+.gallery-node-label {
+  position: absolute;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   GALLERY TREE DIAGRAM — one-off styles for pages/prereq-tree-styles.html
+   ONLY (the "which prerequisite TREE style looks best" comparison page —
+   sister page to pages/prereq-styles.html above, which compares LINE-MAP branch
+   shapes instead). Reuses ".gallery-diagram"/".gallery-diagram-svg" from
+   above for the wrapper/SVG layer.
+
+   Recreates a NUSMods-style dependency graph: reverse dependents ("needs"
+   this course) in --line-4 (red), prerequisites (what this needs) in
+   --line-2 (green/teal), the course itself in --line-3 (orange) — same
+   three --line-* variables the rest of the site uses (city-theme swap
+   recolors these same as everywhere else), connected by plain right-angle
+   "brace" connectors (a shared vertical spine collecting several
+   horizontal stubs, then one output line) with the relationship ("needs" /
+   "all of" / "one of") labeled directly on the connecting line. Pixel
+   COORDINATES are still fixed (not derived from theme variables), same
+   reasoning as the GALLERY DIAGRAM block above — only the colors follow
+   the theme.
+
+   Only nodes that are real links (an <a>, because that course has its own
+   page) get the hover lift — see "a.gallery-tree-node:hover" below, same
+   "hover iff there's a link" rule as ".class-list li:has(a):hover" and
+   "a.prereq-station:hover" elsewhere in this file. Plain (non-link) nodes
+   use a <div> instead and stay inert. */
+.gallery-tree-node {
+  position: absolute;
+  display: block;
+  width: 100px;
+  padding: 6px 8px;
+  border-radius: 3px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+a.gallery-tree-node:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 0 var(--border);
+}
+/* All three roles fill solid (matching the reference screenshots) using
+   the *raw* (undimmed) --line-N-raw variables, NOT the plain --line-N
+   dark-mode-brightened ones — the brightened versions go pastel-light in
+   dark mode (see the dark-mode --line-* overrides near the top of this
+   file) and stop reading against white text. Raw stays fully saturated in
+   both themes, so white text is always safe, while still tracking
+   city-theme swaps (just not the light/dark toggle). Same reasoning
+   ".tree-node-current"/".prereq-station.current .prereq-dot" use for
+   filling with var(--accent) instead of a possibly-brightened line color. */
+.gallery-tree-node-dependent {
+  background: var(--line-4-raw);
+  border: 2px solid var(--line-4-raw);
+  color: #fff;
+}
+.gallery-tree-node-prereq {
+  background: var(--line-2-raw);
+  border: 2px solid var(--line-2-raw);
+  color: #fff;
+}
+.gallery-tree-node-current {
+  background: var(--line-3-raw);
+  border: 2px solid var(--line-3-raw);
+  color: #fff;
+}
+/* Plain text "node" (no box) — used for items one hop further out than
+   the rest (e.g. EE4604/EE4605, or the fork-only EE2012A), same idea as
+   ".gallery-node-label" above but centered on its own row like a real
+   node instead of sitting beside an SVG-drawn circle. */
+.gallery-tree-label {
+  position: absolute;
+  width: 100px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  text-align: center;
+  color: var(--text);
+  opacity: 0.7;
+}
+/* Relationship label sitting directly on a connector line — positioned by
+   its OWN horizontal-center point via "left" + "transform: translateX(
+   -50%)" rather than a fixed width, since unlike the nodes above these
+   aren't slot-aligned to the stub-line math, just centered on whatever
+   segment they annotate. */
+.gallery-tree-relation {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+  opacity: 0.75;
+  background: var(--bg-card);
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   GALLERY DIAGRAM, THEMED — for pages/prereq-branch-themed.html only
+   (live-themed remakes of gallery entries 9-17). UNLIKE the two GALLERY
+   blocks above, these reuse the REAL ".prereq-station"/".prereq-dot"/
+   ".prereq-label" component for every node — meaning dot shape/size
+   (tick/ring/square per city), line color (--accent/--border), and hover-
+   only-if-linked all come from the SAME theme system the real course pages
+   use, for free. Only the curved CONNECTOR shapes are still one-off SVG
+   <path>s (this geometry has no CSS equivalent yet), but even those use
+   "stroke-width: var(--prereq-line-height)" so thickness themes too.
+
+   ".prereq-station" is normally positioned by its parent ".prereq-map"
+   (position: relative, laid out in a flex row). Here each one is instead
+   placed by hand at an exact (x, y) target — this is the ONLY override
+   these diagrams need: */
+.gallery-diagram .prereq-station {
+  position: absolute;
+}
+/* Every station's "top" is written as "calc(TARGET_Y - (var(--prereq-dot-
+   height) / 2))" rather than a bare pixel value — the dot sits flush at
+   the station's own top edge, so this keeps the dot's CENTER pinned at
+   TARGET_Y (matching the SVG line endpoints) no matter how tall that
+   theme's dot happens to be (5px BART tick vs 20px Tokyo badge). "left" is
+   plain "TARGET_X - 70" (half of ".prereq-station"'s fixed 140px width,
+   since it centers its dot+label within that box) — the SVG viewBox
+   itself is deliberately widened on the left (e.g. "viewBox='-60 0 520
+   180'" instead of "0 0 460 180") so that offset never goes negative for
+   the leftmost stations; see the comment on any entry below for the exact
+   numbers. */
+
+/* ============================================================
+   PREREQUISITE MAP, D3-DRIVEN — for pages/prereq-d3-demo.html only.
+   ".prereq-station"/".prereq-dot"/".prereq-label" are the same real
+   station components used everywhere else on the site — D3 places them
+   with real computed pixel coordinates (see the "LAYOUT" comment in that
+   page's <script>) instead of the CSS-formula positioning the static
+   .prereq-branch component relies on. The connector LINES are a
+   completely different mechanism from .prereq-branch's CSS spans: a
+   plain SVG overlaid on #prereq-map, drawn from those same coordinates,
+   so a line and the station it touches can never drift apart the way
+   .prereq-branch's curve and its label once did. Branches route through
+   an invisible "ghost" waypoint node (a coordinate with no marker,
+   skipped entirely in the render pass) instead of hand-derived corner
+   math — see buildColumns() in the page's own script. This block is
+   both that SVG's line styling AND the small chrome around the map: the
+   module picker, the back button, and the breadcrumb of previously-
+   viewed modules.
+   ============================================================ */
+/* [LOCATION: #prereq-map itself] Deliberately NOT ".prereq-map" — that
+   class carries the ".prereq-map > .prereq-station::before/::after"
+   mini-connector rules from the static component above, which would
+   still fire on these D3-generated stations (they're real
+   ".prereq-station" elements, direct children of this container) and
+   draw small stray connector nubs the SVG lines don't need. A different
+   class sidesteps the collision entirely instead of overriding it back
+   off again. */
+.prereq-d3-map {
+  position: relative;
+  margin: 24px 0;
+  overflow-x: auto; /* the SVG inside has a fixed pixel width (as many columns/rows as the data needs) — on a narrow/squished viewport that can exceed the card's width, so scroll horizontally within the map instead of visually spilling out past the card into whatever's next to it. */
+  overflow-y: hidden;
+}
+/* When the D3 map is used as the "Subway map" view behind a Subway/Tree
+   view-switcher (see classes/ee2028.html + initPrereqViewSwitcher in
+   scripts/theme.js), the switcher hides it by adding .is-hidden — the D3
+   script sets an inline display via style, so this needs !important to
+   win. Mirrors the existing ".prereq-map.is-hidden" rule for the old
+   hand-typed map. */
+.prereq-d3-map.is-hidden {
+  display: none !important;
+}
+.prereq-d3-svg {
+  pointer-events: none; /* clicks fall through to the station <a> markers layered on top */
+}
+/* [LOCATION: every connector line drawn by the D3 page] Same color/
+   thickness the CSS-only lines use, just applied to an SVG stroke
+   instead of a background box. Neutral gray by default — only the one
+   segment leading directly into the course you're viewing gets colored
+   (see ".prereq-d3-line-accent" below), matching how a real transit map
+   only highlights the line you're actually riding. */
+.prereq-d3-line {
+  fill: none;
+  stroke: var(--prereq-grayed-color); /* was var(--border) — same near-black-reads-too-harsh issue the static .prereq-branch component had, same fix */
+  stroke-width: var(--prereq-line-height);
+  stroke-linecap: butt; /* was "square", which extends the stroke half its own width PAST each line endpoint — every line's x1/x2 lands exactly on a station's dot center, so that extension poked out visibly past the dot on thin/small-dot themes (SF's 5px tick especially). "butt" stops exactly at the coordinate instead; the dot drawn on top already covers the join, so there's no visible gap either way. */
+  stroke-linejoin: miter;
+}
+/* [LOCATION: the single line segment feeding into the "current" course's
+   own dot] Colored --accent instead of gray — this is a DESTINATION
+   check (is the station this line ends at the current course?), not a
+   source check, which is why a gray "prereq" station like CS1010E can
+   still have a colored line leaving it. */
+.prereq-d3-line-accent {
+  stroke: var(--accent);
+}
+.prereq-d3-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.prereq-d3-controls select {
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+}
+.prereq-d3-controls button {
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+.prereq-d3-breadcrumb {
+  text-align: center;
+  font-size: 0.85rem;
+  min-height: 1.2em;
+  margin-bottom: 12px;
+  opacity: 0.85;
+}
+.prereq-d3-breadcrumb-item {
+  color: var(--text);
+}
+a.prereq-d3-breadcrumb-item {
+  color: var(--accent);
+  text-decoration: none;
+}
+a.prereq-d3-breadcrumb-item:hover {
+  text-decoration: underline;
+}
+.prereq-d3-info {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  opacity: 0.8;
+}
+.prereq-d3-forward-heading {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* ============================================================
+   THEME PICKER — footer on every page, lets you swap the whole
+   city subway theme (colors + font) just for fun. Swatch buttons
+   call setCityTheme('sf' | 'nyc' | 'chicago' | 'tokyo' | 'seoul')
+   from scripts/theme.js, which sets <html data-city-theme="...">
+   and saves the choice to localStorage.
+   ============================================================ */
+.theme-picker {
+  max-width: 700px;
+  margin: 12px auto 40px auto;
+  padding: 20px 24px 24px 24px;
+  text-align: center;
+  border-top: 3px solid var(--border);
+}
+.theme-picker h4 {
+  margin-bottom: 4px;
+}
+.theme-picker-hint {
+  font-size: 0.8rem;
+  color: var(--text);
+  opacity: 0.75;
+  text-transform: none;
+  letter-spacing: normal;
+  margin: 0 0 16px 0;
+}
+.theme-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+}
+
+/* Each swatch looks like a little station sign: a solid color-stripe
+   "legend" across the top (the city's actual line colors), a dark
+   plate below with the city name. The active one gets a yellow
+   border/shadow plus a checkmark badge — kept obvious on purpose,
+   since a subtle hover-only cue is easy to miss. */
+.theme-swatch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 128px;
+  background: var(--nav-bg);
+  border: 2px solid var(--border);
+  padding: 0 0 12px 0;
+  font-family: inherit;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.72rem;
+  color: var(--nav-text);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.theme-swatch:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 0 var(--accent);
+}
+.theme-swatch.active {
+  border-color: var(--highlight);
+  box-shadow: 0 6px 0 var(--highlight);
+}
+.theme-swatch.active:hover {
+  box-shadow: 0 6px 0 var(--highlight);
+}
+/* Checkmark badge, generated purely in CSS — no matching HTML element
+   needed. Only shows once scripts/theme.js adds the "active" class. */
+.theme-swatch.active::before {
+  content: "\2713";
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  color: var(--highlight);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.swatch-dots {
+  display: flex;
+  width: 100%;
+  height: 12px;
+  margin-bottom: 10px;
+}
+.swatch-dot {
+  flex: 1;
+}
+.swatch-label {
+  display: block;
+  padding: 0 8px;
+}
+
+/* Each swatch label renders in THAT city's own font, independent of
+   whichever theme is currently active — same idea as the fixed .dot-*
+   preview colors above: the swatch previews what you'd get, it doesn't
+   just reflect the live page. Without this, every label would render in
+   whatever font is currently active, so e.g. "NEW YORK" wouldn't
+   actually look like Helvetica unless NYC was already selected. */
+.theme-swatch[data-city="sf"] .swatch-label,
+.theme-swatch[data-city="nyc"] .swatch-label {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.theme-swatch[data-city="chicago"] .swatch-label {
+  font-family: 'Franklin Gothic Medium', 'Segoe UI', Arial, sans-serif;
+}
+.theme-swatch[data-city="tokyo"] .swatch-label {
+  font-family: 'Yu Gothic', 'Meiryo', 'Helvetica Neue', sans-serif;
+}
+.theme-swatch[data-city="seoul"] .swatch-label {
+  font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Helvetica Neue', sans-serif;
+}
+
+/* Live confirmation line under the swatches, updated by
+   updateCityThemeUI() — spells out the active city by name so it's
+   unambiguous the click actually did something. */
+.theme-current {
+  margin: 16px 0 0 0;
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text);
+}
+.theme-current strong {
+  color: var(--accent);
+}
+
+/* Fixed preview colors for each swatch — intentionally NOT tied to the
+   live --line-* variables, so a swatch always shows what that city
+   looks like regardless of which theme is currently active. */
+.dot-sf-1 { background: #0099cc; }
+.dot-sf-2 { background: #00a650; }
+.dot-sf-3 { background: #f7941d; }
+.dot-sf-4 { background: #ed1c24; }
+
+.dot-nyc-1 { background: #0039a6; }
+.dot-nyc-2 { background: #00933c; }
+.dot-nyc-3 { background: #ff6319; }
+.dot-nyc-4 { background: #ee352e; }
+
+.dot-chicago-1 { background: #00a1de; }
+.dot-chicago-2 { background: #009b3a; }
+.dot-chicago-3 { background: #f9461c; }
+.dot-chicago-4 { background: #c60c30; }
+
+.dot-tokyo-1 { background: #009bbf; }
+.dot-tokyo-2 { background: #00a650; }
+.dot-tokyo-3 { background: #f39700; }
+.dot-tokyo-4 { background: #f62e36; }
+
+.dot-seoul-1 { background: #0032a0; }
+.dot-seoul-2 { background: #00a84d; }
+.dot-seoul-3 { background: #ef7c1c; }
+.dot-seoul-4 { background: #00a4e3; }
+
+@media (max-width: 800px) {
+  .theme-picker {
+    margin: 8px 4px 24px 4px;
+    padding: 16px 8px 20px 8px;
+  }
 }

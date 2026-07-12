@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <!-- The ?v=N on our own scripts/styles is a cache-buster: bump the
+         number whenever you change theme.js / prereq-graph.js / style.css
+         and want to be SURE the browser re-fetches them instead of reusing
+         a stale cached copy (a stale theme.js was making the Subway/Tree
+         toggle look broken). It just makes the URL different so the cache
+         can't reuse the old one. -->
+    <script src="../scripts/theme.js?v=2"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Lee Profile</title>
+    <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+    <script src="../scripts/prereq-graph.js?v=2"></script>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css?v=2">
+  </head>
+  <!-- "page-classes" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-classes">
+    <div class="header">
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+      <h1>kennotlee</h1>
+      <div class="subtitle">Personal Profile & Portfolio</div>
+    </div>
+    <ul class="navbar">
+      <li class="dropdown">
+        <details>
+          <summary>Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
+      <li><a href="../pages.html">Pages</a></li>
+      <li><a href="../projects.html">Projects</a></li>
+      <li><a href="../classes.html" class="active">Classes</a></li>
+    </ul>
+    <div>
+      <div class="walloftext">
+        <!-- ==== EDIT: course title + tag pills ====
+             h2 is "CODE &mdash; Full Title" — the underline ("the line") is
+             tied to h2 site-wide (it marks a card's own top heading), so
+             this needs to stay h2 to keep it. Any in-content subheadings
+             you add to this card can freely use h3/h4 with no line. Each
+             .tech-tag is a small pill (category / semester / year) — add,
+             remove, or reword freely. -->
+        <h2>EE2028 &mdash; Microcontroller Programming and Interfacing</h2>
+        <div class="class-detail-meta">
+          <span class="tech-tag">Electrical Engineering Core</span>
+          <span class="tech-tag">Semester TBD</span>
+        </div>
+        <p><span class="placeholder-note">Placeholder content — swap in your real notes</span></p>
+        <!-- ==== EDIT: your notes / review for this course ====
+             Plain HTML, no markdown: <p> paragraphs, <ul>/<ol> lists,
+             <b>/<em>, <a href="...">links</a>, <code>, <blockquote>, <img>.
+             Delete the "placeholder-note" span above once the page is done. -->
+        <p>
+          Notes on EE2028 go here — lecture format, labs, grading breakdown, whatever's
+          worth remembering about this one.
+        </p>
+      </div>
+
+      <div class="walloftext">
+        <h4>Prerequisites</h4>
+        <!-- The branch (EE1111A OR EE2111A) merges directly into CS1010E's
+             own line, which then continues on to EE2028 — so reading
+             left-to-right: (EE1111A OR EE2111A) feeds into CS1010E, then
+             CS1010E feeds into EE2028. This page has real AND/OR logic, so
+             it gets the Tree toggle (see stylesheets/style.css,
+             "PREREQUISITE TREE") — pages with just a straight chain (CS2040,
+             MA1512, EE3131C, EE2023) don't need it, there's no logic to spell
+             out differently. -->
+        <div class="view-switcher" role="tablist" aria-label="Prerequisite view selector">
+          <button type="button" class="view-switcher-btn is-active" data-prereq-view="map" aria-pressed="true">Subway map</button>
+          <button type="button" class="view-switcher-btn" data-prereq-view="tree" aria-pressed="false">Tree</button>
+        </div>
+        <!-- The "Subway map" view is now the D3 graph (scripts/prereq-graph.js,
+             the shared widget), centered on EE2028 via data-initial. It draws
+             the same (EE1111A OR EE2111A) → CS1010E → EE2028 chain the old
+             hand-typed .prereq-branch markup did, but from computed pixel
+             coordinates instead of a CSS pixel-formula (which had repeatedly
+             put the branch curve on top of its own labels). Stations are
+             click-through: click a prerequisite to re-center the graph on it
+             and see ITS chain; EE2028 reappears in that view's fan-out (it
+             depends on CS1010E), so navigation is reversible right in the
+             graph. The Tree view below is unchanged. -->
+        <!-- ==== EDIT: prerequisite data for THIS graph lives in
+             scripts/prereq-graph.js (the moduleData object) — NOT inline
+             here, unlike the other class pages' hand-typed maps. Change a
+             course's prereqs there and every page using the widget updates.
+             data-initial below just picks which module the graph centers on
+             (keep it as this page's own code). -->
+        <div class="prereq-d3-map" id="prereq-map" data-initial="EE2028"></div>
+        <div class="prereq-tree is-hidden">
+          <div class="tree-level">
+            <div class="tree-node tree-node-prereq">CS1010E</div>
+            <div class="tree-fork">
+              <div class="tree-fork-row">
+                <div class="tree-node tree-node-prereq small">EE1111A</div>
+                <div class="tree-node tree-node-prereq small">EE2111A</div>
+              </div>
+              <span class="tree-fork-badge">OR</span>
+            </div>
+          </div>
+          <div class="tree-node tree-node-current">EE2028</div>
+        </div>
+        <a class="back-link" href="../classes.html">&larr; Back to Classes</a>
+      </div>
+    </div>
+    <footer class="theme-picker">
+      <h4>Subway Theme</h4>
+      <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system, just for fun.</p>
+      <div class="theme-swatches">
+        <button type="button" class="theme-swatch" data-city="sf" onclick="setCityTheme('sf')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-sf-1"></span>
+            <span class="swatch-dot dot-sf-2"></span>
+            <span class="swatch-dot dot-sf-3"></span>
+            <span class="swatch-dot dot-sf-4"></span>
+          </span>
+          <span class="swatch-label">San Francisco</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="nyc" onclick="setCityTheme('nyc')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-nyc-1"></span>
+            <span class="swatch-dot dot-nyc-2"></span>
+            <span class="swatch-dot dot-nyc-3"></span>
+            <span class="swatch-dot dot-nyc-4"></span>
+          </span>
+          <span class="swatch-label">New York</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="chicago" onclick="setCityTheme('chicago')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-chicago-1"></span>
+            <span class="swatch-dot dot-chicago-2"></span>
+            <span class="swatch-dot dot-chicago-3"></span>
+            <span class="swatch-dot dot-chicago-4"></span>
+          </span>
+          <span class="swatch-label">Chicago</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="tokyo" onclick="setCityTheme('tokyo')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-tokyo-1"></span>
+            <span class="swatch-dot dot-tokyo-2"></span>
+            <span class="swatch-dot dot-tokyo-3"></span>
+            <span class="swatch-dot dot-tokyo-4"></span>
+          </span>
+          <span class="swatch-label">Tokyo</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="seoul" onclick="setCityTheme('seoul')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-seoul-1"></span>
+            <span class="swatch-dot dot-seoul-2"></span>
+            <span class="swatch-dot dot-seoul-3"></span>
+            <span class="swatch-dot dot-seoul-4"></span>
+          </span>
+          <span class="swatch-label">Seoul</span>
+        </button>
+      </div>
+      <p class="theme-current" id="theme-current-label">Current: <strong>San Francisco</strong></p>
+    </footer>
+  </body>
+</html>

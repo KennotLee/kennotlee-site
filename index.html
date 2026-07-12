@@ -18,6 +18,7 @@
       <p hidden>Please I don't know how to make a website oh god oh god oh god I am just going based on feelings barely with any AI in case the whole website falls apart and I am not even using chrome and I don't know if this will change things</p>
       <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
       <h1>kennotlee</h1>
+      <p hidden>Now I used AI oops heehee</p>
       <div class="subtitle">Personal Profile & Portfolio</div>
     </div>
     <ul class="navbar">
@@ -37,22 +38,40 @@
     </ul>
     <div>
       <div class="walloftext">
-        <h3>Introduction</h3>
-        <p>Hello I am Kenneth Lee and this is my website</p>
+        <h2>Introduction</h2>
+        <p>Hello I am Kenneth Lee and this is my website. Right now it might looks empty because I have not filled it with much content yet.</p>
       </div>
       <div class="walloftext">
-        <h3>About Me</h3>
+        <h2>About Me</h2>
         <p>
           I am a graduate from <a href="https://www.nushigh.edu.sg/">NUS High School of Math and Science</a>
 
           I am currently studying Electrical Engineering at <a href="https://cde.nus.edu.sg/">College of Engineering </a> at <a href="https://www.nus.edu.sg/">National University of Singapore</a>. I am also studying Computing as a second major.
         </p>
-        
-        <h3>My experience</h3>
-
       </div>
+      <div class="walloftext">
+        
+        <h2>My experience</h2>
+        <p>HMGICS: June - Dec 2026</p>
+      </div>
+
+      <div class="walloftext">
+        
+        <h2>TODO</h2>
+        <ol>
+          <li>Fill in the rest of the website</li>
+          <li>Make the website more interactive</li>
+          <li>Make the website more visually appealing</li>
+          <li>Fix the About/Contact nav links — nothing has <code>id="about"</code>, and Contact uses <code>id="Contact"</code> (capital) while every link points to lowercase <code>#contact</code>, so both currently go nowhere</li>
+          <li>Add a real favicon at the site root — every page requests <code>/favicon.ico</code> but only <code>public/favicon.ico</code> exists, which isn't actually served since the site isn't built/deployed via Vite</li>
+          <li>Swap the placeholder Instagram/LinkedIn links in Contact for real profile URLs</li>
+          <li>Decide whether to keep or delete the leftover Vue/Vite scaffolding (<code>src/</code>, <code>public/</code>, <code>vite.config.js</code>, <code>package.json</code>) — it isn't wired into the actual site</li>
+          <li>Give each page its own <code>&lt;title&gt;</code> and a <code>&lt;meta name="description"&gt;</code> — right now every page shares the exact same title</li>
+        </ol>
+      </div>
+
       <div id="Contact" class="walloftext contact-section">
-        <h3>Contact</h3>
+        <h2>Contact</h2>
         <h4 class="contact-lede">Find me via:</h4>
         <!-- MANUAL EDIT: GitHub already points at the real profile. Instagram
              and LinkedIn below are still placeholder URLs (instagram.com/,
@@ -91,5 +110,57 @@
       });
       app.mount('#app');
     </script>
+    <footer class="theme-picker">
+      <h4>Themes</h4>
+      <p class="theme-picker-hint">Inspired by each city's subway line colors and fonts :)</p>
+      <div class="theme-swatches">
+        <button type="button" class="theme-swatch" data-city="sf" onclick="setCityTheme('sf')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-sf-1"></span>
+            <span class="swatch-dot dot-sf-2"></span>
+            <span class="swatch-dot dot-sf-3"></span>
+            <span class="swatch-dot dot-sf-4"></span>
+          </span>
+          <span class="swatch-label">San Francisco</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="nyc" onclick="setCityTheme('nyc')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-nyc-1"></span>
+            <span class="swatch-dot dot-nyc-2"></span>
+            <span class="swatch-dot dot-nyc-3"></span>
+            <span class="swatch-dot dot-nyc-4"></span>
+          </span>
+          <span class="swatch-label">New York</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="chicago" onclick="setCityTheme('chicago')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-chicago-1"></span>
+            <span class="swatch-dot dot-chicago-2"></span>
+            <span class="swatch-dot dot-chicago-3"></span>
+            <span class="swatch-dot dot-chicago-4"></span>
+          </span>
+          <span class="swatch-label">Chicago</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="tokyo" onclick="setCityTheme('tokyo')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-tokyo-1"></span>
+            <span class="swatch-dot dot-tokyo-2"></span>
+            <span class="swatch-dot dot-tokyo-3"></span>
+            <span class="swatch-dot dot-tokyo-4"></span>
+          </span>
+          <span class="swatch-label">Tokyo</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="seoul" onclick="setCityTheme('seoul')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-seoul-1"></span>
+            <span class="swatch-dot dot-seoul-2"></span>
+            <span class="swatch-dot dot-seoul-3"></span>
+            <span class="swatch-dot dot-seoul-4"></span>
+          </span>
+          <span class="swatch-label">Seoul</span>
+        </button>
+      </div>
+      <p class="theme-current" id="theme-current-label">Current: <strong>San Francisco</strong></p>
+    </footer>
   </body>
 </html>

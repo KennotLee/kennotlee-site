@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <script src="../scripts/theme.js"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Lee Profile</title>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+  </head>
+  <!-- "page-pages" sets this page's accent color (see stylesheets/style.css) —
+       matches the "Pages" nav tab this is reached from, same as
+       prereq-styles.html (the sister gallery for line-map branch shapes). -->
+  <body class="page-pages">
+    <div class="header">
+      <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
+      <h1>kennotlee</h1>
+      <div class="subtitle">Personal Profile & Portfolio</div>
+    </div>
+    <ul class="navbar">
+      <li class="dropdown">
+        <details>
+          <summary>Home &#9662;</summary>
+          <ul class="dropdown-content">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+          </ul>
+        </details>
+      </li>
+      <li><a href="../pages.html" class="active">Pages</a></li>
+      <li><a href="../projects.html">Projects</a></li>
+      <li><a href="../classes.html">Classes</a></li>
+    </ul>
+    <div>
+      <div class="walloftext">
+        <h2>Prerequisite Tree Style Gallery</h2>
+        <p><span class="placeholder-note">Test page — not linked from Classes</span></p>
+        <p>
+          Different ways to draw a prerequisite TREE (real AND/OR logic, both
+          directions — what a course needs AND what needs it back), sister page to
+          <a href="prereq-styles.html">prereq-styles.html</a> which instead compares
+          LINE-MAP branch shapes. Search stylesheets/style.css for "GALLERY TREE
+          DIAGRAM" for the styles that are just for this page.
+        </p>
+      </div>
+
+      <div class="walloftext">
+        <h4>1. Plain AND/OR tree (current real component)</h4>
+        <p class="theme-picker-hint">The real <code>.prereq-tree</code> component, exactly as shipped on classes/ee2028.html today: rounded-rect nodes, top-down layout, one AND-level with a nested OR-fork. Only shows what a course NEEDS, not what needs it back.</p>
+        <div class="prereq-tree" style="margin: 20px 0;">
+          <div class="tree-level">
+            <div class="tree-node tree-node-prereq">CS1010E</div>
+            <div class="tree-fork">
+              <div class="tree-fork-row">
+                <div class="tree-node tree-node-prereq small">EE1111A</div>
+                <div class="tree-node tree-node-prereq small">EE2111A</div>
+              </div>
+              <span class="tree-fork-badge">OR</span>
+            </div>
+          </div>
+          <div class="tree-node tree-node-current">EE2028</div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>2. NUSMods-style dependency graph (brace connectors, colored nodes)</h4>
+        <p class="theme-picker-hint">Recreated from a screenshot, now following the site's own line colors (--line-4 red for reverse dependents, --line-2 green for prerequisites, --line-3 orange for the course itself — swap city theme in the footer and these recolor too) instead of fixed hex. Connected by plain right-angle brace connectors, relationship spelled out directly on the line ("needs" / "all of" / "one of"). Shows BOTH directions at once: what EE3731C needs (right side) and what needs EE3731C back (left side).</p>
+        <p class="theme-picker-hint">Boxed nodes are real links here (<code>href="#"</code> placeholders — wire real hrefs once this is real data) and lift on hover; the three plain-text nodes (EE4604, EE4605, EE2012A) have no page to link to, so they're inert <code>&lt;div&gt;</code>s with no hover — same "hover only if there's a link" rule as the rest of the site. GALLERY-ONLY markup.</p>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 700px; height: 210px;">
+          <svg viewBox="0 0 700 210" class="gallery-diagram-svg">
+            <!-- left ("needs") brace: 5 dependents merging into one line into EE3731C -->
+            <line x1="120" y1="20" x2="170" y2="20" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="120" y1="62" x2="170" y2="62" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="120" y1="104" x2="170" y2="104" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="120" y1="146" x2="170" y2="146" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="120" y1="188" x2="170" y2="188" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="170" y1="20" x2="170" y2="188" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="170" y1="104" x2="250" y2="104" style="stroke: var(--border); stroke-width: 2;" />
+            <!-- "all of" brace: EE3731C splits into the two "one of" groups -->
+            <line x1="350" y1="104" x2="410" y2="104" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="410" y1="62" x2="410" y2="146" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="410" y1="62" x2="500" y2="62" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="410" y1="146" x2="500" y2="146" style="stroke: var(--border); stroke-width: 2;" />
+            <!-- top "one of" brace: EE2012A / EE2012 / ST2334 -->
+            <line x1="500" y1="20" x2="500" y2="104" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="500" y1="20" x2="540" y2="20" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="500" y1="62" x2="540" y2="62" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="500" y1="104" x2="540" y2="104" style="stroke: var(--border); stroke-width: 2;" />
+            <!-- bottom "one of" brace: EE2023 / CG2023 -->
+            <line x1="500" y1="125" x2="500" y2="167" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="500" y1="125" x2="540" y2="125" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="500" y1="167" x2="540" y2="167" style="stroke: var(--border); stroke-width: 2;" />
+          </svg>
+          <div class="gallery-tree-label" style="left: 20px; top: 12px;">EE4604</div>
+          <div class="gallery-tree-label" style="left: 20px; top: 54px;">EE4605</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-dependent" style="left: 20px; top: 89px;">EE4309</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-dependent" style="left: 20px; top: 131px;">EE4212</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-dependent" style="left: 20px; top: 173px;">EE5907</a>
+          <div class="gallery-tree-relation" style="left: 210px; top: 96px;">needs</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-current" style="left: 250px; top: 89px;">EE3731C</a>
+          <div class="gallery-tree-relation" style="left: 380px; top: 96px;">all of</div>
+          <div class="gallery-tree-relation" style="left: 455px; top: 54px;">one of</div>
+          <div class="gallery-tree-relation" style="left: 455px; top: 138px;">one of</div>
+          <div class="gallery-tree-label" style="left: 540px; top: 12px;">EE2012A</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 540px; top: 47px;">EE2012</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 540px; top: 89px;">ST2334</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 540px; top: 110px;">EE2023</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 540px; top: 152px;">CG2023</a>
+        </div>
+        </div>
+      </div>
+
+      <div class="walloftext">
+        <h4>3. NUSMods dependency graph, large example (5 "one of" groups + a nested "at least 2 of")</h4>
+        <p class="theme-picker-hint">Recreated from a second screenshot: CS4243 is the course being viewed (orange, "current"), CS6240 is a single reverse dependent that needs it ("needs", red), and CS4243 itself needs "all of" 5 breadth requirement groups (each "one of", teal) — 35 leaf modules total. MA1507 (bottom-right, plain text — no page of its own) has its own further requirement one level deeper: "at least 2 of" MA1512/MA1511. Every coordinate here (all ~50 stub lines, 5 local brackets, the shared "all of" spine, and the nested branch) came out of one small arithmetic pass over a fixed row height, so line endpoints and box positions can't drift out of sync with each other the way hand-eyeballed numbers can — see the comment on ".gallery-diagram" in stylesheets/style.css for the OTHER half of that (matching this div's inline width/height to the viewBox below). GALLERY-ONLY markup.</p>
+        <div class="gallery-diagram-wrap">
+        <div class="gallery-zoom-controls">
+          <button type="button" onclick="zoomGalleryDiagram(this, -0.15)">&minus;</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0)">Reset</button>
+          <button type="button" onclick="zoomGalleryDiagram(this, 0.15)">+</button>
+        </div>
+        <div class="gallery-diagram-scroll">
+        <div class="gallery-diagram" style="width: 960px; height: 890px;">
+          <svg viewBox="0 0 960 890" class="gallery-diagram-svg">
+            <line x1="320" y1="431" x2="380" y2="431" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="120" y1="431" x2="220" y2="431" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="20" x2="560" y2="20" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="42" x2="560" y2="42" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="64" x2="560" y2="64" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="86" x2="560" y2="86" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="108" x2="560" y2="108" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="130" x2="560" y2="130" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="152" x2="560" y2="152" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="20" x2="480" y2="152" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="380" y1="86" x2="480" y2="86" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="190" x2="560" y2="190" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="212" x2="560" y2="212" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="234" x2="560" y2="234" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="256" x2="560" y2="256" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="278" x2="560" y2="278" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="300" x2="560" y2="300" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="322" x2="560" y2="322" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="344" x2="560" y2="344" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="366" x2="560" y2="366" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="388" x2="560" y2="388" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="410" x2="560" y2="410" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="190" x2="480" y2="410" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="380" y1="300" x2="480" y2="300" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="448" x2="560" y2="448" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="470" x2="560" y2="470" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="492" x2="560" y2="492" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="514" x2="560" y2="514" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="536" x2="560" y2="536" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="448" x2="480" y2="536" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="380" y1="492" x2="480" y2="492" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="574" x2="560" y2="574" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="596" x2="560" y2="596" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="618" x2="560" y2="618" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="640" x2="560" y2="640" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="662" x2="560" y2="662" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="684" x2="560" y2="684" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="574" x2="480" y2="684" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="380" y1="629" x2="480" y2="629" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="722" x2="560" y2="722" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="744" x2="560" y2="744" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="766" x2="560" y2="766" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="788" x2="560" y2="788" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="810" x2="560" y2="810" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="832" x2="560" y2="832" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="480" y1="722" x2="480" y2="832" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="380" y1="777" x2="480" y2="777" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="380" y1="86" x2="380" y2="777" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="660" y1="832" x2="760" y2="832" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="760" y1="810" x2="760" y2="854" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="760" y1="810" x2="820" y2="810" style="stroke: var(--border); stroke-width: 2;" />
+            <line x1="760" y1="854" x2="820" y2="854" style="stroke: var(--border); stroke-width: 2;" />
+          </svg>
+          <a href="#" class="gallery-tree-node gallery-tree-node-dependent" style="left: 20px; top: 416px;">CS6240</a>
+          <div class="gallery-tree-relation" style="left: 170px; top: 423px;">needs</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-current" style="left: 220px; top: 416px;">CS4243</a>
+          <div class="gallery-tree-relation" style="left: 350px; top: 423px;">all of</div>
+          <div class="gallery-tree-label" style="left: 560px; top: 13px;">YSC2232</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 27px;">MA2001</a>
+          <div class="gallery-tree-label" style="left: 560px; top: 57px;">MA1101R</div>
+          <div class="gallery-tree-label" style="left: 560px; top: 79px;">MA1311</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 93px;">MA1508E</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 115px;">MA1513</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 137px;">MA1522</a>
+          <div class="gallery-tree-relation" style="left: 430px; top: 78px;">one of</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 175px;">ST1131</a>
+          <div class="gallery-tree-label" style="left: 560px; top: 205px;">ST1131A</div>
+          <div class="gallery-tree-label" style="left: 560px; top: 227px;">ST1232</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 241px;">ST2131</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 263px;">MA2116</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 285px;">MA2116T</a>
+          <div class="gallery-tree-label" style="left: 560px; top: 315px;">MA2216</div>
+          <div class="gallery-tree-label" style="left: 560px; top: 337px;">EE2012A</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 351px;">EE2012</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 373px;">ST2334</a>
+          <div class="gallery-tree-label" style="left: 560px; top: 403px;">YSC2243</div>
+          <div class="gallery-tree-relation" style="left: 430px; top: 292px;">one of</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 433px;">CS2030</a>
+          <div class="gallery-tree-label" style="left: 560px; top: 463px;">CS2030S</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 477px;">CS2030DE</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 499px;">CS2113</a>
+          <div class="gallery-tree-label" style="left: 560px; top: 529px;">CS2113T</div>
+          <div class="gallery-tree-relation" style="left: 430px; top: 484px;">one of</div>
+          <div class="gallery-tree-label" style="left: 560px; top: 567px;">YSC2229</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 581px;">CS2040</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 603px;">CS2040S</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 625px;">CS2040DE</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 647px;">CS2040C</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 669px;">CS2040HS</a>
+          <div class="gallery-tree-relation" style="left: 430px; top: 621px;">one of</div>
+          <div class="gallery-tree-label" style="left: 560px; top: 715px;">MA1102R</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 729px;">MA2002</a>
+          <div class="gallery-tree-label" style="left: 560px; top: 759px;">YSC1216</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 773px;">MA1505</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 560px; top: 795px;">MA1521</a>
+          <div class="gallery-tree-label" style="left: 560px; top: 825px;">MA1507</div>
+          <div class="gallery-tree-relation" style="left: 430px; top: 769px;">one of</div>
+          <div class="gallery-tree-relation" style="left: 710px; top: 824px;">at least 2 of</div>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 820px; top: 795px;">MA1512</a>
+          <a href="#" class="gallery-tree-node gallery-tree-node-prereq" style="left: 820px; top: 839px;">MA1511</a>
+        </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    <footer class="theme-picker">
+      <h4>Subway Theme</h4>
+      <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system, just for fun.</p>
+      <div class="theme-swatches">
+        <button type="button" class="theme-swatch" data-city="sf" onclick="setCityTheme('sf')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-sf-1"></span>
+            <span class="swatch-dot dot-sf-2"></span>
+            <span class="swatch-dot dot-sf-3"></span>
+            <span class="swatch-dot dot-sf-4"></span>
+          </span>
+          <span class="swatch-label">San Francisco</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="nyc" onclick="setCityTheme('nyc')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-nyc-1"></span>
+            <span class="swatch-dot dot-nyc-2"></span>
+            <span class="swatch-dot dot-nyc-3"></span>
+            <span class="swatch-dot dot-nyc-4"></span>
+          </span>
+          <span class="swatch-label">New York</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="chicago" onclick="setCityTheme('chicago')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-chicago-1"></span>
+            <span class="swatch-dot dot-chicago-2"></span>
+            <span class="swatch-dot dot-chicago-3"></span>
+            <span class="swatch-dot dot-chicago-4"></span>
+          </span>
+          <span class="swatch-label">Chicago</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="tokyo" onclick="setCityTheme('tokyo')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-tokyo-1"></span>
+            <span class="swatch-dot dot-tokyo-2"></span>
+            <span class="swatch-dot dot-tokyo-3"></span>
+            <span class="swatch-dot dot-tokyo-4"></span>
+          </span>
+          <span class="swatch-label">Tokyo</span>
+        </button>
+        <button type="button" class="theme-swatch" data-city="seoul" onclick="setCityTheme('seoul')">
+          <span class="swatch-dots">
+            <span class="swatch-dot dot-seoul-1"></span>
+            <span class="swatch-dot dot-seoul-2"></span>
+            <span class="swatch-dot dot-seoul-3"></span>
+            <span class="swatch-dot dot-seoul-4"></span>
+          </span>
+          <span class="swatch-label">Seoul</span>
+        </button>
+      </div>
+      <p class="theme-current" id="theme-current-label">Current: <strong>San Francisco</strong></p>
+    </footer>
+  </body>
+</html>
