@@ -1148,6 +1148,18 @@ html[data-theme="dark"][data-city-theme="chicago"] .prereq-station.prereq .prere
   border-color: var(--nav-bg);
   box-shadow: none;
 }
+/* [LOCATION: the current-course dot for the default SF theme, DARK mode]
+   SF's tick is a SOLID fill (not a white-center-with-ring like the city
+   themes below), so its dark-mode fix is the inverse of the light one:
+   flip the black tick to near-white so it still reads as a solid "you are
+   here" mark instead of a black bar vanishing into the dark card. The ring
+   themes get their own, more specific dark override just below (2 attribute
+   selectors vs. this rule's 1), so they win over this and keep their
+   white-center look — this only lands on SF. */
+html[data-theme="dark"] .prereq-station.current .prereq-dot {
+  background: var(--heading);
+  border-color: var(--heading);
+}
 /* [LOCATION: the current-course dot for every RING-style theme — NYC,
    Chicago, Tokyo, Seoul] White inside, black ring: same contrast fix as
    SF's plain black above, but these themes carry their color via a
@@ -1170,6 +1182,54 @@ html[data-theme="dark"][data-city-theme="chicago"] .prereq-station.current .prer
 html[data-theme="dark"][data-city-theme="tokyo"] .prereq-station.current .prereq-dot,
 html[data-theme="dark"][data-city-theme="seoul"] .prereq-station.current .prereq-dot {
   background: var(--bg-card); /* true white would look like a punched hole on a dark card, same reasoning as every other dark-mode fill override on this page */
+  /* Flip the RING too: in light mode the ring is var(--nav-bg) (black),
+     which in dark mode is #000000 — a black ring vanishing into the dark
+     card, the same problem the SF tick had. Recolor it to the light
+     --heading so the "you are here" ring stays visible: now it's a
+     card-colored center inside a near-white ring. */
+  border-color: var(--heading);
+  box-shadow: 0 0 0 1px var(--heading);
+}
+
+/* ============================================================
+   FUTURE / dependent station — a plain .prereq-station that is neither a
+   .prereq in the chain nor the .current course. Per the map's own markup
+   (see the class pages' "add class ... or neither for a course this one
+   leads to" note) that's a DOWNSTREAM module which lists this one as a
+   prerequisite — the D3 graph's right-hand fan-out, or a bare trailing
+   station in the static map.
+
+   It should read NEUTRAL: the same plain black outline SF's tick and NYC's
+   ring already use, NOT the active city theme's accent color. Chicago,
+   Tokyo and Seoul default the dot's border to var(--accent) (and Seoul its
+   box-shadow "target" ring), which made a not-yet-taken course look like it
+   already sat on one specific colored line. Only the OUTLINE is neutralized
+   here — each theme keeps its own dot shape and card-colored fill.
+   ============================================================ */
+.prereq-station:not(.prereq):not(.current):not(.exempt) .prereq-dot {
+  border-color: var(--nav-bg);
+}
+/* Seoul carries its color in a two-layer box-shadow ring rather than the
+   border, so neutralize that ring's accent to the same black. */
+html[data-city-theme="seoul"] .prereq-station:not(.prereq):not(.current):not(.exempt) .prereq-dot {
+  box-shadow: 0 0 0 3px var(--bg-page), 0 0 0 5px var(--nav-bg);
+}
+/* Dark mode: a black outline vanishes into the dark card (the same problem
+   the current dot has — see its --heading override above), so raise the
+   neutral outline to the light --heading in dark mode. */
+html[data-theme="dark"] .prereq-station:not(.prereq):not(.current):not(.exempt) .prereq-dot {
+  border-color: var(--heading);
+}
+html[data-theme="dark"][data-city-theme="seoul"] .prereq-station:not(.prereq):not(.current):not(.exempt) .prereq-dot {
+  box-shadow: 0 0 0 3px var(--bg-page), 0 0 0 5px var(--heading);
+}
+/* SF's future station is a solid black TICK (a fill, not a bordered dot):
+   already neutral in light mode, but it would disappear on a dark card, so
+   flip its fill to the light --heading in dark mode exactly like the current
+   tick's dark override. Scoped to SF so the ring themes' future dots keep
+   their card-colored fill — only their outline changed, above. */
+html[data-theme="dark"][data-city-theme="sf"] .prereq-station:not(.prereq):not(.current):not(.exempt) .prereq-dot {
+  background: var(--heading);
 }
 
 /* ============================================================
