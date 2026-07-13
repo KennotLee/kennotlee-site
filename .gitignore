@@ -28,3 +28,4 @@ coverage
 *.sw?
 *.tsbuildinfo
 notes.txt
+/.tmp-edge-cache-563

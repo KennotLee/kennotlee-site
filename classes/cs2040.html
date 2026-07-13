@@ -35,16 +35,28 @@
            file — copy classes/_template.html instead, it has the blank
            fields and instructions. This file is CS2040's actual content. -->
       <div class="walloftext">
-        <h3>CS2040 &mdash; Data Structures and Algorithms</h3>
+        <!-- ==== EDIT: course title + tag pills ====
+             h2 is "CODE &mdash; Full Title" — the underline ("the line") is
+             tied to h2 site-wide (it marks a card's own top heading), so
+             this needs to stay h2 to keep it. Anything else you write in
+             this card (like the "Assignments"/"Labs and Tutorials"
+             headings below) can freely use h3/h4 with no line. Each
+             .tech-tag is a small pill (category / semester / year) — add,
+             remove, or reword freely. -->
+        <h2>CS2040 &mdash; Data Structures and Algorithms</h2>
         <div class="class-detail-meta">
           <span class="tech-tag">Computing Second Major</span>
           <span class="tech-tag">Semester 2</span>
           <span class="tech-tag">AY25/26</span>
         </div>
         <p><span class="placeholder-note">Incomplete content — this page is incomplete</span></p>
+        <!-- ==== EDIT: your notes / review for this course ====
+             Plain HTML, no markdown: <p> paragraphs, <ul>/<ol> lists,
+             <b>/<em>, <a href="...">links</a>, <code>, <blockquote>, <img>.
+             Delete the "placeholder-note" span above once the page is done. -->
 
         <p>
-          This class is a classic Data Structures and Algorithms course. Lectures are done online via zoom and recorded attendance optional. Tutorials have class participation and attendance taken. Goes through the tutorials for each week. Labs are just submitting a pseudocode of the kattis assignments and then coding on Java afterwards. You just need to submit the pseudocode and then you can code on your own time.
+          <!-- This class is a classic Data Structures and Algorithms course. Lectures are done online via zoom and recorded attendance optional. Tutorials have class participation and attendance taken. Goes through the tutorials for each week. Labs are just submitting a pseudocode of the kattis assignments and then coding on Java afterwards. You just need to submit the pseudocode and then you can code on your own time. -->
           <br>
           <br>
           <b>Course contents:</b>
@@ -61,22 +73,71 @@
           <li>Binary Search Tree/AVL Tree</li>     
           <li>Graphs</li>
           <li>Minimum spanning tree</li>
-          <li>single source shortest path</li>
-          <li>all pairs shortest path</li>
+          <li>Single Source Shortest Path (SSSP)</li>
+          <li>All Pairs Shortest Path (APSP)</li>
         </ol>
           <p>Grades breakdown:</p>
         <ul>
+          <li>Tutorial attendance and participation: 3%</li>
           <li>In Lab Assignments (ILA): 10%</li>
-          <li>Midterm: 30%</li>
-          <li>Final Exam: 50%</li>
+          <li> Lab Attendance: 2%</li>
+          <li>Take Home Assignments: 4%</li>
+          <li>Visualgo Quiz: 8%</li>
+          <li>Written Assessment: 8%</li>
+          <li>Midterm: 25%</li>
+          <li>Final Exam: 40%</li>
         </ul>
         <p>
-          Took this class over <a href="https://nusmods.com/courses/CS2040DE/data-structures-and-algorithms">CS2040DE</a> because I wanted to take it with my friends tbh. Also I did not really entrust a CS module to be handled by ECE department since I have heard feedback that the admin side of the module was not well run. I also wanted to challenge myself and just not coop myself up in Engineering. This module is probably harder than the DE variant. DE variant is filled with ISE Majors and Engineering Majors with <a href="https://cde.nus.edu.sg/ece/second-major-in-computing-design-and-engineering/"> Computing (Design and Engineering) Minor / 2nd Major </a> while this was filled with DSA and BZA students. When comparing both variants I preferred the style done by SOC since it's more structured and the questions were reasonably challenging. (Or maybe I'm biased by my choices)
+          Took this class over <a href="https://nusmods.com/courses/CS2040DE/data-structures-and-algorithms">CS2040DE</a> because I wanted to take it with my friends tbh. Also I did not really entrust a CS module to be handled by ECE department since I have heard feedback that the admin side of the module was not well run. I also wanted to challenge myself and just not coop myself up in Engineering. This module is probably harder than the DE variant. DE variant is filled with ISE Majors and Engineering Majors with <a href="https://cde.nus.edu.sg/ece/second-major-in-computing-design-and-engineering/"> Computing (Design and Engineering) Minor / 2nd Major </a> while this was filled with DSA and BZA students. When comparing both variants I preferred the style done by SOC since it's more structured and the questions were reasonably challenging. (Or maybe I'm biased by the choice I have made)
+        </p>
+
+        <h3>Assignments</h3>
+        <h4>Labs and Tutorials</h4>
+        <p>
+          Both labs and tutorial are graded for attendance. Participation in tutorial just means you asked or answer questions as they go through the tutorial for the week. Labs are pseudocode that you submit to the TA and then which makes up the majority of the marks in the lab while finishing and submitting the java code is where you get the full marks. (Some degree of error is permitted so long as it is reasonable). This part was confusing initially since I was not used to writing pseudocode. They are not difficult since they go through the concepts they were just taught the previous week
+        </p>
+        <h4>Take Home Assignments</h4>
+        <p>
+          Take home assignments are more challenging than the average labs and around the same level as tutorials or harder. You just have to submit the code on Kattis and they may or may not have restrictions(I guess to force you to not smurf / use AI). The take home assignments are usually 1-2 weeks long and you can submit multiple times. 
+        </p>
+        <h4>Visualgo Quiz</h4>
+        <p>
+          I have many complaints. However I will keep my rant short. Some of the questions are literally just counting lines and some are tracing how a hashmap works and everything in between in terms of how tedious. You miscount / off by one and boom 1 mark gone. This quiz may have costed me a whole grade range. It is also somewhat random since you can get an easy set of question or questions that just waste years of your life. You are allowed any online materials but no internet access.
+        </p>
+        <h4>Written Assessment</h4>
+        <p>This is like your mini midterm I guess just to test your understanding of the concepts before you go off for recess week. All hardcopy materials and calculators allowed just like the midterms.
+        </p>
+
+        <h4>Midterm</h4>
+        <p>
+          This is where the questions get somewhat difficult and the bellcurve tanks significantly. The questions are mostly coming out with pseudocode and so long as you match ~95% of the logic you get most if not all the marks. The median consistently lands around 50% of the paper. Hardcopy materials and calculators allowed.
+        </p>
+        <h4>Final Exam</h4>
+        <p>
+          The finals test the later half of the course for the most part and requires concepts and additional layer of thought to solve the questions. So you can't copy paste the algorithms and have to understand the steps and how to appropriately modify the question to understand. Just like midterms hardcopy materials and calculators allowed. 
+        </p>
+
+        <h4>Grades</h4>
+        <p>
+          Can't exactly remember but final grade was around 80 &plusmn;1
+          I got at or above Upper Quartile for all the assessments except for the VisuAlgo Quiz which I got 12 /15 and 10/15 or something (Don't be like me :P)
+          Expected Grade: B/B+ (Based off of CS2030 and 3 days before final exam being told in a consult that I was below passing mark by my tutorial GA ;-;)
+          Actual Grade: A 
         </p>
       </div>
 
+
       <div class="walloftext">
         <h4>Prerequisites</h4>
+        <!-- ==== EDIT: prerequisite map ====
+             Read left-to-right as Prerequisite(s) >>> Current >>> Next.
+             Each station is a .prereq-station: add class "prereq" for a
+             done/required course (grayed), "current" for THIS course
+             (filled), or neither for a course this one leads to. Change the
+             <span class="prereq-label"> text to the course code. Use
+             <a href="other.html" class="prereq-station ..."> instead of
+             <div> to make a station link to its own page. Full guide + an
+             OR-branch example: classes/_template.html. -->
         <div class="prereq-map">
           <div class="prereq-station prereq">
             <span class="prereq-dot"></span>

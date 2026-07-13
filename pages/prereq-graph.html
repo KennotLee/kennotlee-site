@@ -6,10 +6,12 @@
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kenneth Lee Profile</title>
+    <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+    <script src="../scripts/prereq-graph.js"></script>
     <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
   </head>
-  <!-- "page-classes" sets this page's accent color (see stylesheets/style.css) -->
-  <body class="page-classes">
+  <!-- "page-pages" sets this page's accent color (see stylesheets/style.css) -->
+  <body class="page-pages">
     <div class="header">
       <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()">Dark mode</button>
       <h1>kennotlee</h1>
@@ -26,67 +28,52 @@
           </ul>
         </details>
       </li>
-      <li><a href="../pages.html">Pages</a></li>
+      <li><a href="../pages.html" class="active">Pages</a></li>
       <li><a href="../projects.html">Projects</a></li>
-      <li><a href="../classes.html" class="active">Classes</a></li>
+      <li><a href="../classes.html">Classes</a></li>
     </ul>
     <div>
       <div class="walloftext">
-        <!-- ==== EDIT: course title + tag pills ====
-             h2 is "CODE &mdash; Full Title" — the underline ("the line") is
-             tied to h2 site-wide (it marks a card's own top heading), so
-             this needs to stay h2 to keep it. Any in-content subheadings
-             you add to this card can freely use h3/h4 with no line. Each
-             .tech-tag is a small pill (category / semester / year) — add,
-             remove, or reword freely. -->
-        <h2>MA1512 &mdash; Differential Equations for Engineering</h2>
-        <div class="class-detail-meta">
-          <span class="tech-tag">Math & Fundamentals</span>
-          <span class="tech-tag">Semester TBD</span>
-        </div>
-        <p><span class="placeholder-note">Placeholder content — swap in your real notes</span></p>
-        <!-- ==== EDIT: your notes / review for this course ====
-             Plain HTML, no markdown: <p> paragraphs, <ul>/<ol> lists,
-             <b>/<em>, <a href="...">links</a>, <code>, <blockquote>, <img>.
-             Delete the "placeholder-note" span above once the page is done. -->
+        <h2>Prerequisite graph, D3-driven</h2>
+        <p><span class="placeholder-note">Test page — not linked from Classes</span></p>
         <p>
-          Notes on MA1512 go here — lecture format, tutorials, grading breakdown, whatever's
-          worth remembering about this one.
+          One combined view centered on a module: its prerequisite chain
+          flows IN from the left, converging into the module in the
+          middle, then the module fans OUT to the right toward everything
+          that lists it as a prerequisite (Boston Green Line style). It's
+          the two separate directions from
+          <a href="prereq-d3-demo.html">the earlier D3 demo</a> — the
+          backward "what this needs" map and the forward "what this leads
+          to" fan-out — stitched into a single graph that shares the one
+          center station. Built as its own page on purpose, so reworking
+          the layout here can't break that still-working demo.
+          Everything else carries over: real D3-computed pixel
+          coordinates (same components, so city theme and dark mode still
+          work for free), rounded 90&deg; bends, ghost routing nodes,
+          drag-to-pan. Click any other station to re-center the whole
+          graph on <em>it</em>.
         </p>
       </div>
 
       <div class="walloftext">
-        <h4>Prerequisites</h4>
-        <!-- ==== EDIT: prerequisite map ====
-             Read left-to-right as Prerequisite(s) >>> Current >>> Next.
-             Each station is a .prereq-station: add class "prereq" for a
-             done/required course (grayed), "current" for THIS course
-             (filled), or neither for a course this one leads to. Change the
-             <span class="prereq-label"> text to the course code. Use
-             <a href="other.html" class="prereq-station ..."> to make a
-             station link. Full guide + OR-branch example: _template.html.
-             (The .theme-picker-hint <p> below is an optional note above the
-             map — reword or delete it.) -->
-        <p class="theme-picker-hint">Exempted from MA1301 — shown as a crossed-out (X) station with a dotted "dead" connection below, since it isn't actually part of the path taken.</p>
-        <div class="prereq-map">
-          <!-- MA1301 is "exempt": the extra class draws it as an X with a
-               dotted connector (see "EXEMPT / dead prerequisite" in
-               stylesheets/style.css) instead of a normal grayed dot. -->
-          <div class="prereq-station prereq exempt">
-            <span class="prereq-dot"></span>
-            <span class="prereq-label">MA1301</span>
-          </div>
-          <div class="prereq-station current">
-            <span class="prereq-dot"></span>
-            <span class="prereq-label">MA1512</span>
-          </div>
+        <div class="prereq-d3-controls">
+          <label for="target-select">Jump to a module:</label>
+          <select id="target-select"></select>
+          <button type="button" id="back-btn" onclick="goBackPrereq()">&larr; Back</button>
         </div>
-        <a class="back-link" href="../classes.html">&larr; Back to Classes</a>
+        <div class="prereq-d3-breadcrumb" id="prereq-breadcrumb"></div>
+        <!-- Single container: prerequisites (left) + current (center) +
+             dependents fan-out (right) are all drawn into this one SVG by
+             scripts/prereq-graph.js (shared with classes.html), sharing
+             the center station, so they scroll/pan as one continuous
+             graph. data-initial picks the first module shown. -->
+        <div class="prereq-d3-map" id="prereq-map" data-initial="CS2040"></div>
+        <div class="prereq-d3-info" id="prereq-info"></div>
       </div>
     </div>
     <footer class="theme-picker">
       <h4>Subway Theme</h4>
-      <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system, just for fun.</p>
+      <p class="theme-picker-hint">Swap the whole site's colors + font to another metro system — the map above redraws with the same live theme, try it.</p>
       <div class="theme-swatches">
         <button type="button" class="theme-swatch" data-city="sf" onclick="setCityTheme('sf')">
           <span class="swatch-dots">
@@ -136,5 +123,6 @@
       </div>
       <p class="theme-current" id="theme-current-label">Current: <strong>San Francisco</strong></p>
     </footer>
+
   </body>
 </html>
