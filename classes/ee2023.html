@@ -65,8 +65,18 @@
              station (not grayed — it's in the future, not yet taken) and
              is also linked since it has its own page. Omit the "next"
              station entirely on pages where nothing depends on the
-             course yet — don't leave a placeholder. -->
+             course yet — don't leave a placeholder.
+
+             MA1301 sits BEFORE MA1512 as an "exempt" station (X marker +
+             dotted connector, see "EXEMPT / dead prerequisite" in
+             stylesheets/style.css) — same treatment as its own entry on
+             ma1512.html, so the exemption reads consistently wherever
+             MA1301 shows up. No href: it has no detail page of its own. -->
         <div class="prereq-map">
+          <div class="prereq-station prereq exempt">
+            <span class="prereq-dot"></span>
+            <span class="prereq-label">MA1301</span>
+          </div>
           <a href="ma1512.html" class="prereq-station prereq">
             <span class="prereq-dot"></span>
             <span class="prereq-label">MA1512</span>
