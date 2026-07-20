@@ -88,7 +88,7 @@ let currentPrereqCode = null;
 // both check to skip ever drawing a marker for it. It has real
 // coordinates and participates in the layout like any other node;
 // it's just never rendered, purely a routing waypoint.
-const SLOT_W = 180; // horizontal space per real (non-ghost) column — trimmed from 220 so the map needs a horizontal scrollbar (see ".prereq-d3-map"'s overflow-x) less often on a narrow viewport
+const SLOT_W = 220; // horizontal space per real (non-ghost) column. Was temporarily trimmed to 180 to scroll less inside the 700px card — no longer needed now that ".prereq-d3-map" breaks out of the card on wide screens (see its max-width/centering in stylesheets/style.css); restored to the original roomier spacing. Narrow viewports still just scroll/drag-to-pan, same as before.
 const SPLIT = 80; // vertical offset of each branch sub-station from the center line
 const STATION_W = 140; // matches ".prereq-station"'s own CSS width
 const CORNER_R = 14; // shared 90-degree-bend radius — matches --prereq-branch-corner on the static CSS component, so every rounded corner reads as the same "house style" bend.
@@ -202,6 +202,13 @@ function renderPrereqMap(code, opts = {}) {
   const rightmost = dependents.length ? DEST_X : currentX;
   const width = rightmost + STATION_W / 2 + 40; // +40 for the rightmost rotated label
   mapEl.style.height = height + "px";
+  // Width too — the container hugs the graph's real width instead of just
+  // filling the card. This is what makes the CSS breakout work (see
+  // ".prereq-d3-map" in stylesheets/style.css): a wide graph grows past
+  // the 700px card up to the CSS max-width cap (then scrolls), a small
+  // graph stays exactly graph-sized and centered — with no dead
+  // full-card-width scroll strip either way.
+  mapEl.style.width = width + "px";
 
   const svg = d3.select(mapEl).append("svg")
     .attr("class", "prereq-d3-svg")
