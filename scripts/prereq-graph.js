@@ -54,6 +54,27 @@ const moduleData = {
     { type: "branch", alts: ["EE1111A", "EE2111A"] },
     { type: "station", code: "CS1010E" },
   ] },
+  // Downstream of EE2028 — each lists EE2028 as a prerequisite, so they
+  // appear in EE2028's fan-out (findDependents scans for exactly this). All
+  // are grayed placeholders for now EXCEPT CG3207, the one confirmed next
+  // step: a module carries `grayed: true` to render its fan-out station AND
+  // its connector muted (see the dependent-drawing pass in renderPrereqMap),
+  // the same "not the live path" look the left-side grayed prerequisites use.
+  CS2106: { name: "Introduction to Operating Systems", grayed: true, chain: [
+    { type: "station", code: "EE2028" },
+  ] },
+  CS3237: { name: "Introduction to Internet of Things", grayed: true, chain: [
+    { type: "station", code: "EE2028" },
+  ] },
+  CS3210: { name: "Parallel Computing", grayed: true, chain: [
+    { type: "station", code: "EE2028" },
+  ] },
+  EE4218: { name: "Embedded Hardware System Design", grayed: true, chain: [
+    { type: "station", code: "EE2028" },
+  ] },
+  CG3207: { name: "Computer Architecture", chain: [
+    { type: "station", code: "EE2028" },
+  ] },
   // CS1010E fans out to several downstream modules — CS2040/CS2030/EE2028
   // above already carry it as a prereq; these are extra dependents so the
   // fan-out has more to show. Placeholder names, real chains TBD.
@@ -88,7 +109,7 @@ let currentPrereqCode = null;
 // both check to skip ever drawing a marker for it. It has real
 // coordinates and participates in the layout like any other node;
 // it's just never rendered, purely a routing waypoint.
-const SLOT_W = 220; // horizontal space per real (non-ghost) column. Was temporarily trimmed to 180 to scroll less inside the 700px card — no longer needed now that ".prereq-d3-map" breaks out of the card on wide screens (see its max-width/centering in stylesheets/style.css); restored to the original roomier spacing. Narrow viewports still just scroll/drag-to-pan, same as before.
+const SLOT_W = 180; // horizontal space per real (non-ghost) column — trimmed from 220 so the map needs its horizontal scrollbar (see ".prereq-d3-map"'s overflow-x) less often inside the fixed-width card.
 const SPLIT = 80; // vertical offset of each branch sub-station from the center line
 const STATION_W = 140; // matches ".prereq-station"'s own CSS width
 const CORNER_R = 14; // shared 90-degree-bend radius — matches --prereq-branch-corner on the static CSS component, so every rounded corner reads as the same "house style" bend.
@@ -160,7 +181,21 @@ function renderPrereqMap(code, opts = {}) {
   const currentX = columns[columns.length - 1].x;
 
   // RIGHT HALF: everything that lists this module as a prerequisite.
-  const dependents = findDependents(code);
+  // findDependents returns them alphabetically; re-order so the LIVE
+  // (non-grayed) dependents sit on the CENTER line with the grayed
+  // placeholders split evenly above and below them. That way a confirmed
+  // next step (e.g. CG3207) reads as the straight-ahead continuation of the
+  // line, and the tentative/grayed ones fan off around it — instead of the
+  // live one landing wherever the alphabet happens to put it. Only reorders
+  // when the fan is actually a mix; an all-live or all-grayed fan stays
+  // plain alphabetical.
+  let dependents = findDependents(code);
+  const grayedDeps = dependents.filter(isGrayedDep);
+  const liveDeps = dependents.filter((d) => !isGrayedDep(d));
+  if (grayedDeps.length && liveDeps.length) {
+    const above = Math.ceil(grayedDeps.length / 2);
+    dependents = grayedDeps.slice(0, above).concat(liveDeps, grayedDeps.slice(above));
+  }
 
   // VERTICAL SIZING. The whole graph shares one horizontal line at
   // y = centerY. Both halves stick out vertically from it: the
@@ -170,7 +205,7 @@ function renderPrereqMap(code, opts = {}) {
   // labels rotate UP off each dot, so there's extra room reserved
   // above the topmost one.
   const hasBranch = columns.some((c) => c.type === "branch");
-  const FAN_SPACING = 75; // vertical gap between fanned-out dependents
+  const FAN_SPACING = 52; // vertical gap between fanned-out dependents — tight enough to keep a 5-wide fan compact (labels rotate up off each dot, so they clear each other well before the dots themselves would)
   const branchHalf = hasBranch ? SPLIT : 0;
   const fanHalf = dependents.length > 1 ? (dependents.length - 1) * FAN_SPACING / 2 : 0;
   const halfExtent = Math.max(branchHalf, fanHalf, 30);
@@ -202,13 +237,11 @@ function renderPrereqMap(code, opts = {}) {
   const rightmost = dependents.length ? DEST_X : currentX;
   const width = rightmost + STATION_W / 2 + 40; // +40 for the rightmost rotated label
   mapEl.style.height = height + "px";
-  // Width too — the container hugs the graph's real width instead of just
-  // filling the card. This is what makes the CSS breakout work (see
-  // ".prereq-d3-map" in stylesheets/style.css): a wide graph grows past
-  // the 700px card up to the CSS max-width cap (then scrolls), a small
-  // graph stays exactly graph-sized and centered — with no dead
-  // full-card-width scroll strip either way.
-  mapEl.style.width = width + "px";
+  // NOTE: only the SVG gets this real pixel width (below) — the container
+  // (.prereq-d3-map) stays at its normal card width. When the graph is
+  // wider than the card, it's the SVG that overflows and the container's
+  // own overflow-x:auto turns that into a horizontal scroll WITHIN the
+  // card, rather than the whole diagram spilling out past the card's edges.
 
   const svg = d3.select(mapEl).append("svg")
     .attr("class", "prereq-d3-svg")
@@ -250,18 +283,29 @@ function renderPrereqMap(code, opts = {}) {
   //     so the whole fan is vertically balanced on the center line.
   const depYs = dependents.map((_, i) => centerY - fanHalf + i * FAN_SPACING);
   if (dependents.length) {
+    // The shared horizontal spine (center station -> fan spine) is accent
+    // only if SOME dependent is a live/non-grayed path; if every dependent
+    // is grayed, the spine leads nowhere colored, so gray it too.
+    const anyLiveDep = dependents.some((d) => !isGrayedDep(d));
     svg.append("line")
-      .attr("class", "prereq-d3-line prereq-d3-line-accent")
+      .attr("class", "prereq-d3-line" + (anyLiveDep ? " prereq-d3-line-accent" : ""))
       .attr("x1", currentX).attr("y1", centerY)
       .attr("x2", FAN_X).attr("y2", centerY);
-    dependents.forEach((depCode, i) => {
+    // Draw grayed connectors FIRST so live (accent) ones layer on top where
+    // their vertical spine segments overlap near centerY — otherwise a
+    // later-drawn gray branch would overpaint the accent spine feeding a
+    // non-grayed dependent, graying part of a line that should stay colored.
+    const drawOrder = dependents
+      .map((_, i) => i)
+      .sort((a, b) => (isGrayedDep(dependents[a]) ? 0 : 1) - (isGrayedDep(dependents[b]) ? 0 : 1));
+    drawOrder.forEach((i) => {
       const y = depYs[i];
       const dir = y === centerY ? 0 : (y > centerY ? 1 : -1);
       const d = dir === 0
         ? `M ${FAN_X} ${centerY} L ${DEST_X} ${y}`
         : `M ${FAN_X} ${centerY} L ${FAN_X} ${y - dir * CORNER_R} Q ${FAN_X} ${y} ${FAN_X + CORNER_R} ${y} L ${DEST_X} ${y}`;
       svg.append("path")
-        .attr("class", "prereq-d3-line prereq-d3-line-accent")
+        .attr("class", "prereq-d3-line" + (isGrayedDep(dependents[i]) ? "" : " prereq-d3-line-accent"))
         .attr("fill", "none")
         .attr("d", d);
     });
@@ -281,7 +325,7 @@ function renderPrereqMap(code, opts = {}) {
     }
   });
   dependents.forEach((depCode, i) => {
-    addStationMarker(svg, mapEl, DEST_X, depYs[i], depCode, {});
+    addStationMarker(svg, mapEl, DEST_X, depYs[i], depCode, { prereq: isGrayedDep(depCode) });
   });
 
   d3.select(mapEl).selectAll(".prereq-station")
@@ -301,6 +345,14 @@ function renderPrereqMap(code, opts = {}) {
 // unlock". There's no reverse-lookup index, so it's a plain O(n) scan of
 // moduleData each render; fine at this size, would want a precomputed map
 // if this ever grew to hundreds of modules.
+// A dependent flagged `grayed: true` in moduleData renders muted — a grayed
+// fan-out station plus a gray (non-accent) connector — the same "not the
+// live path" treatment the left-side grayed prerequisites get, used here for
+// downstream modules that aren't a confirmed next step yet.
+function isGrayedDep(code) {
+  return !!(moduleData[code] && moduleData[code].grayed);
+}
+
 function findDependents(code) {
   return Object.keys(moduleData).filter((k) => {
     return moduleData[k].chain.some((step) =>

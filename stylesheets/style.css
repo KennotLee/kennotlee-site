@@ -2000,30 +2000,8 @@ a.gallery-tree-node:hover {
 .prereq-d3-map {
   position: relative;
   margin: 24px 0;
-  overflow-x: auto; /* the SVG inside has a fixed pixel width (as many columns/rows as the data needs) — on a narrow/squished viewport that can exceed the card's width, so scroll horizontally within the map instead of visually spilling out past the card into whatever's next to it. */
+  overflow-x: auto; /* the SVG inside has a fixed pixel width (as many columns/rows as the data needs) — when that exceeds the card's width, scroll horizontally WITHIN the map instead of letting the diagram spill out past the card into whatever's next to it. The SVG carries the true width; this container stays card-width and turns the overflow into a scroll. */
   overflow-y: hidden;
-  /* BREAKOUT: the card's 700px max-width is tuned for PROSE (~75 chars/
-     line) — see ".walloftext" — but this map is a diagram, not prose, and
-     was the one thing genuinely cramped by it (scripts/prereq-graph.js
-     even shrank its per-column SLOT_W to scroll less often). So the map
-     alone escapes the card on wide screens: renderPrereqMap() sets an
-     inline width matching the graph's real pixel width, and this cap +
-     centering lets that width grow past the card — up to 1100px or the
-     viewport minus a gutter, whichever is smaller — before overflow-x
-     scrolling kicks in. The max(100%, ...) floor keeps the cap from ever
-     being NARROWER than the card itself on small viewports (100vw - 64px
-     can dip below the card's own content width on phones, where the
-     @media 800px rule shrinks card padding to almost nothing).
-     Centering: left:50% puts the box's left edge at the card's midline,
-     translateX(-50%) pulls it back by half its OWN width — so whatever
-     width it ends up at (smaller than the card, or broken out past it),
-     it's always centered on the card. Overflow past the card is
-     symmetric, and since the card is itself viewport-centered
-     (margin:auto) the breakout can't poke past the viewport edge and
-     cause a page-level horizontal scrollbar. */
-  max-width: max(100%, min(1100px, calc(100vw - 64px)));
-  left: 50%;
-  transform: translateX(-50%);
 }
 /* When the D3 map is used as the "Subway map" view behind a Subway/Tree
    view-switcher (see classes/ee2028.html + initPrereqViewSwitcher in
