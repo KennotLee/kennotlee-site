@@ -1148,6 +1148,18 @@ html[data-theme="dark"][data-city-theme="chicago"] .prereq-station.prereq .prere
   border-color: var(--nav-bg);
   box-shadow: none;
 }
+/* [LOCATION: the current-course dot for the default SF theme, DARK mode]
+   SF's tick is a SOLID fill (not a white-center-with-ring like the city
+   themes below), so its dark-mode fix is the inverse of the light one:
+   flip the black tick to near-white so it still reads as a solid "you are
+   here" mark instead of a black bar vanishing into the dark card. The ring
+   themes get their own, more specific dark override just below (2 attribute
+   selectors vs. this rule's 1), so they win over this and keep their
+   white-center look — this only lands on SF. */
+html[data-theme="dark"] .prereq-station.current .prereq-dot {
+  background: var(--heading);
+  border-color: var(--heading);
+}
 /* [LOCATION: the current-course dot for every RING-style theme — NYC,
    Chicago, Tokyo, Seoul] White inside, black ring: same contrast fix as
    SF's plain black above, but these themes carry their color via a
@@ -1170,6 +1182,54 @@ html[data-theme="dark"][data-city-theme="chicago"] .prereq-station.current .prer
 html[data-theme="dark"][data-city-theme="tokyo"] .prereq-station.current .prereq-dot,
 html[data-theme="dark"][data-city-theme="seoul"] .prereq-station.current .prereq-dot {
   background: var(--bg-card); /* true white would look like a punched hole on a dark card, same reasoning as every other dark-mode fill override on this page */
+  /* Flip the RING too: in light mode the ring is var(--nav-bg) (black),
+     which in dark mode is #000000 — a black ring vanishing into the dark
+     card, the same problem the SF tick had. Recolor it to the light
+     --heading so the "you are here" ring stays visible: now it's a
+     card-colored center inside a near-white ring. */
+  border-color: var(--heading);
+  box-shadow: 0 0 0 1px var(--heading);
+}
+
+/* ============================================================
+   FUTURE / dependent station — a plain .prereq-station that is neither a
+   .prereq in the chain nor the .current course. Per the map's own markup
+   (see the class pages' "add class ... or neither for a course this one
+   leads to" note) that's a DOWNSTREAM module which lists this one as a
+   prerequisite — the D3 graph's right-hand fan-out, or a bare trailing
+   station in the static map.
+
+   It should read NEUTRAL: the same plain black outline SF's tick and NYC's
+   ring already use, NOT the active city theme's accent color. Chicago,
+   Tokyo and Seoul default the dot's border to var(--accent) (and Seoul its
+   box-shadow "target" ring), which made a not-yet-taken course look like it
+   already sat on one specific colored line. Only the OUTLINE is neutralized
+   here — each theme keeps its own dot shape and card-colored fill.
+   ============================================================ */
+.prereq-station:not(.prereq):not(.current):not(.exempt) .prereq-dot {
+  border-color: var(--nav-bg);
+}
+/* Seoul carries its color in a two-layer box-shadow ring rather than the
+   border, so neutralize that ring's accent to the same black. */
+html[data-city-theme="seoul"] .prereq-station:not(.prereq):not(.current):not(.exempt) .prereq-dot {
+  box-shadow: 0 0 0 3px var(--bg-page), 0 0 0 5px var(--nav-bg);
+}
+/* Dark mode: a black outline vanishes into the dark card (the same problem
+   the current dot has — see its --heading override above), so raise the
+   neutral outline to the light --heading in dark mode. */
+html[data-theme="dark"] .prereq-station:not(.prereq):not(.current):not(.exempt) .prereq-dot {
+  border-color: var(--heading);
+}
+html[data-theme="dark"][data-city-theme="seoul"] .prereq-station:not(.prereq):not(.current):not(.exempt) .prereq-dot {
+  box-shadow: 0 0 0 3px var(--bg-page), 0 0 0 5px var(--heading);
+}
+/* SF's future station is a solid black TICK (a fill, not a bordered dot):
+   already neutral in light mode, but it would disappear on a dark card, so
+   flip its fill to the light --heading in dark mode exactly like the current
+   tick's dark override. Scoped to SF so the ring themes' future dots keep
+   their card-colored fill — only their outline changed, above. */
+html[data-theme="dark"][data-city-theme="sf"] .prereq-station:not(.prereq):not(.current):not(.exempt) .prereq-dot {
+  background: var(--heading);
 }
 
 /* ============================================================
@@ -1358,25 +1418,40 @@ a.prereq-station:not(.prereq):hover .prereq-label {
 .prereq-branch .prereq-station {
   width: auto;
 }
-/* [LOCATION: the vertical bar directly under the TOP station's dot, e.g.
-   under EE1111A] Straight arm from dot1's center down to the merge Y. */
-.prereq-branch-arm-top {
+/* [LOCATION: the straight diagonal run from the TOP station's dot down to
+   the merge point, e.g. from EE1111A] Every curved-corner version of this
+   (tried and rejected three times: tight circle, wide flat ellipse, two
+   smaller bends with a straight run between them) always had a stretch
+   where both arms sat at the SAME x for most of their length — that's
+   what reads as a "T" no matter how the corner is rounded, since a fork
+   only looks like a fork where the two prongs are actually at different
+   x for the same y. A single straight bar, rotated to point exactly at
+   the merge point, has NO such shared segment: every point on the top
+   arm has a different x than the corresponding point on the bottom arm,
+   all the way down to the merge. transform-origin stays pinned at the
+   dot (unaffected by the rotation), so the bar's far end is what swings
+   over to meet the merge point — see --prereq-branch-dx/-angle/-length
+   above for the trig. */
+.prereq-branch-arm {
   position: absolute;
   top: calc(var(--prereq-dot-height) / 2);
   height: calc(var(--prereq-dot-height) / 2 + 55px - var(--prereq-branch-corner));
   left: calc(50% - (var(--prereq-line-height) / 2));
   width: var(--prereq-line-height);
+  height: var(--prereq-branch-length);
   background: var(--prereq-segment-color);
 }
-/* [LOCATION: the vertical bar directly above the BOTTOM station's dot,
-   e.g. above EE2111A] Straight arm from the merge Y up to dot2's center. */
+.prereq-branch-arm-top {
+  top: calc(var(--prereq-dot-height) / 2);
+  transform-origin: top center;
+  transform: rotate(calc(-1 * var(--prereq-branch-angle)));
+}
 .prereq-branch-arm-bottom {
   position: absolute;
   top: calc(var(--prereq-dot-height) + 55px + var(--prereq-branch-corner));
   bottom: calc(var(--prereq-dot-height) / 2 + 24px);
-  left: calc(50% - (var(--prereq-line-height) / 2));
-  width: var(--prereq-line-height);
-  background: var(--prereq-segment-color);
+  transform-origin: bottom center;
+  transform: rotate(var(--prereq-branch-angle));
 }
 /* [LOCATION: the two small corner joints, in the middle of the branch,
    where each arm above turns into the merge line] Eased corners — style
@@ -1416,8 +1491,8 @@ a.prereq-station:not(.prereq):hover .prereq-label {
    branch, continuing on to whatever's next in the .prereq-map (e.g. into
    CS1010E)] Output line continuing right to whatever comes after the
    branch — sits at the true merge Y (see the geometry note above, NOT
-   50%), starting right where the corner joints end so it reads as one
-   continuous straight run rather than overlapping them.
+   50%), starting right where the curves end so it reads as one
+   continuous bend rather than overlapping them.
    IMPORTANT: matches ".prereq-map > .prereq-branch:not(:last-child)::after"
    exactly (same prefix) on purpose — the base rule above it is scoped
    that way too, and needs EQUAL specificity for this override to actually
@@ -1925,7 +2000,7 @@ a.gallery-tree-node:hover {
 .prereq-d3-map {
   position: relative;
   margin: 24px 0;
-  overflow-x: auto; /* the SVG inside has a fixed pixel width (as many columns/rows as the data needs) — on a narrow/squished viewport that can exceed the card's width, so scroll horizontally within the map instead of visually spilling out past the card into whatever's next to it. */
+  overflow-x: auto; /* the SVG inside has a fixed pixel width (as many columns/rows as the data needs) — when that exceeds the card's width, scroll horizontally WITHIN the map instead of letting the diagram spill out past the card into whatever's next to it. The SVG carries the true width; this container stays card-width and turns the overflow into a scroll. */
   overflow-y: hidden;
 }
 /* When the D3 map is used as the "Subway map" view behind a Subway/Tree
