@@ -231,6 +231,7 @@ body.page-home { --accent: var(--line-1); }     /* index.html */
 body.page-pages { --accent: var(--line-2); }    /* pages.html */
 body.page-projects { --accent: var(--line-3); } /* projects.html */
 body.page-classes { --accent: var(--line-4); }  /* classes.html, classes/*.html */
+body.page-blog { --accent: var(--line-1); }     /* blog.html, blog/*.html */
 
 /* ============================================================
    PER-CATEGORY COLORS (Classes page only)
