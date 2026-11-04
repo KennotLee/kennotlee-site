@@ -2244,3 +2244,97 @@ a.prereq-d3-breadcrumb-item:hover {
     padding: 16px 8px 20px 8px;
   }
 }
+
+/* ============================================================
+   EXPERIENCES TIMELINE (index.html "My Experiences")
+   A vertical subway line: each <li class="exp-stop"> is a station.
+   The dot reuses the city theme's --prereq-dot-* variables, so it
+   matches the class prerequisite maps in every theme. Width and
+   height are swapped versus .prereq-dot because this line runs
+   vertically: SF's tall thin tick becomes a horizontal tick across
+   the line, and round/square dots are unaffected.
+   ============================================================ */
+.walloftext ol.exp-line {
+  list-style: none;
+  margin: 8px 0 0 0;
+  padding: 0;
+  --exp-rail: 32px;          /* width of the column holding dot + line */
+  --exp-dot-top: 4px;        /* nudges the dot down to sit beside the date */
+}
+.walloftext .exp-stop {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--exp-rail) 1fr;
+  column-gap: 16px;
+  margin: 0;
+  padding-bottom: 28px;
+}
+.walloftext .exp-stop:last-child {
+  padding-bottom: 0;
+}
+/* Line segment from this station's dot down to the next one. The next
+   dot sits at the same offset inside its own <li>, so a segment that is
+   exactly 100% tall lands on it. */
+.exp-stop:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--exp-dot-top) + var(--prereq-dot-width) / 2);
+  left: calc(var(--exp-rail) / 2 - var(--prereq-line-height) / 2);
+  width: var(--prereq-line-height);
+  height: 100%;
+  background: var(--accent);
+}
+.exp-dot {
+  position: relative;
+  z-index: 1;
+  justify-self: center;
+  margin-top: var(--exp-dot-top);
+  width: var(--prereq-dot-height);
+  height: var(--prereq-dot-width);
+  border-radius: var(--prereq-dot-radius);
+  background: var(--prereq-dot-fill);
+  border: var(--prereq-dot-border-width) solid var(--prereq-dot-border-color);
+  box-shadow: var(--prereq-dot-ring);
+}
+/* SF's tick is solid near-black, which disappears on a dark card. */
+html[data-theme="dark"][data-city-theme="sf"] .exp-dot {
+  background: var(--heading);
+}
+.exp-body {
+  min-width: 0; /* lets long org names wrap instead of widening the grid */
+}
+.exp-date {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.walloftext .exp-role {
+  margin: 0 0 2px 0;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+.exp-org {
+  color: var(--text);
+  opacity: 0.85;
+  margin-bottom: 10px;
+}
+.exp-stop .exp-body > :last-child {
+  margin-bottom: 0;
+}
+.walloftext .exp-body ul {
+  margin: 0 0 12px 0;
+}
+/* "Now" badge for a role still in progress: <li class="exp-stop current"> */
+.exp-stop.current .exp-date::after {
+  content: "Now";
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  background: var(--highlight);
+  color: var(--highlight-text);
+  letter-spacing: 1px;
+  vertical-align: 1px;
+}
